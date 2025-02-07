@@ -1,0 +1,40 @@
+{
+  "id": "urn:usrp:6dd61598f5be470ea19ca9b8ef012116",
+  "first_name": "TEst",
+  "last_name": "TEST",
+  "email_address": "TEST@ATEST",
+  "additional_name": null,
+  "address": null,
+  "mobile_number": "\"01203288344343\"",
+  "birth_date": null,
+  "birth_country_code": null,
+  "bank_account_number": "gb82372364763435",
+  "tax_id": null,
+  "tax_id_name": null,
+  "created_at": "2024-12-07T08:47:59.601142",
+  "kyc_status": null,
+  "kyc_documents": [
+    {
+      "id": "a6d648f3-d8cf-4599-a46e-62f83613eb2c",
+      "profile_id": "urn:usrp:6dd61598f5be470ea19ca9b8ef012116",
+      "document_type": "photo_id_front",
+      "document_sub_type": null,
+      "document_status": "pending",
+      "document_path": "urn:usrp:6dd61598f5be470ea19ca9b8ef012116/photoIdFront.png",
+      "reject_reason": null,
+      "created_at": "2024-12-07T09:40:07.151886",
+      "updated_at": null
+    },
+    {
+      "id": "cd68631d-e949-4565-8e11-c4ccf73aa792",
+      "profile_id": "urn:usrp:6dd61598f5be470ea19ca9b8ef012116",
+      "document_type": "photo_proof_residence",
+      "document_sub_type": null,
+      "document_status": "pending",
+      "document_path": "urn:usrp:6dd61598f5be470ea19ca9b8ef012116/photoProofResidence.png",
+      "reject_reason": null,
+      "created_at": "2024-12-07T09:40:07.174581",
+      "updated_at": null
+    }
+  ]
+}

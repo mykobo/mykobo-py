@@ -1,0 +1,4 @@
+.envrc
+.venv
+.ropeproject
+.pytest_cache
