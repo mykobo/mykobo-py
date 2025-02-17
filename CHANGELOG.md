@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v0.2.0 (2025-02-17)
+
+### Features
+
+- Add ledger support
+  ([`9a100e2`](https://github.com/mykobo/mykobo-py/commit/9a100e2ccb9e0624d3e98c1ad27a04fdb70c26f4))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+
 ## v0.1.0 (2025-02-07)
 
 ### Features
