@@ -4,7 +4,7 @@ from requests.models import Response
 import json
 from mykobo_py.client import MykoboServiceClient
 from .models.request import RegisterWalletRequest
-from mykobo_py.identity.models.auth import ServiceToken
+from mykobo_py.identity.models.auth import Token
 from logging import Logger
 
 class WalletServiceClient(MykoboServiceClient):
@@ -12,7 +12,7 @@ class WalletServiceClient(MykoboServiceClient):
         super().__init__(logger, wallet_service_url)
         self.wallet_service_url = wallet_service_url
 
-    def get_wallet_profile(self, token: ServiceToken, account: str) -> Response:
+    def get_wallet_profile(self, token: Token, account: str) -> Response:
         response = requests.get(
             f"{self.wallet_service_url}/user/wallet/{account}",
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
@@ -20,7 +20,7 @@ class WalletServiceClient(MykoboServiceClient):
         response.raise_for_status()
         return response
 
-    def register_wallet(self, token: ServiceToken, request: RegisterWalletRequest) -> Response:
+    def register_wallet(self, token: Token, request: RegisterWalletRequest) -> Response:
         response = requests.post(
             f"{self.wallet_service_url}/wallet/register",
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
