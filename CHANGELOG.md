@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v0.2.1 (2025-02-17)
+
+### Bug Fixes
+
+- Fix library version in poetry
+  ([`a76d06c`](https://github.com/mykobo/mykobo-py/commit/a76d06c42c5cdd7537f026991b440e854f120d01))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+
 ## v0.2.0 (2025-02-17)
 
 ### Features
