@@ -1,6 +1,23 @@
 # CHANGELOG
 
 
+## v0.2.4 (2025-02-22)
+
+### Bug Fixes
+
+- Correct pyproject path
+  ([`272940f`](https://github.com/mykobo/mykobo-py/commit/272940fa6b2b203eeaeb27b1aa1422ba8f032283))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+### Chores
+
+- Fixing versioning
+  ([`be54553`](https://github.com/mykobo/mykobo-py/commit/be54553255922f5718794ef52f2d518510b0fd14))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+
 ## v0.2.3 (2025-02-22)
 
 
