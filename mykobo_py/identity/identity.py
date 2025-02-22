@@ -7,6 +7,7 @@ from .models.auth import Token, OtcChallenge
 from .models.request import CustomerRequest, NewDocumentRequest, NewKycReviewRequest
 from mykobo_py.utils import del_none
 from mykobo_py.client import MykoboServiceClient
+from mykobo_py.identity.models.request import UserProfileFilterRequest
 
 
 class IdentityServiceClient(MykoboServiceClient):
@@ -58,7 +59,7 @@ class IdentityServiceClient(MykoboServiceClient):
         }
 
         response = requests.post(
-            f"{self.host}/authenticate",
+            f"{self.host}/authenticate/otp/validate",
             headers=self.generate_headers(None, **{"Content-type": "application/json"}),
             data=json.dumps(data)
         )
@@ -162,6 +163,16 @@ class IdentityServiceClient(MykoboServiceClient):
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
             data=json.dumps(del_none(payload.to_dict().copy()))
+        )
+        response.raise_for_status()
+        return response
+
+    def list_profiles(self, token: Token, filters: UserProfileFilterRequest) -> Response:
+        url = f"{self.host}/user/list"
+        response = requests.post(
+            url,
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+            data=json.dumps(del_none(filters.to_dict().copy()))
         )
         response.raise_for_status()
         return response

@@ -28,3 +28,11 @@ class WalletServiceClient(MykoboServiceClient):
         )
         response.raise_for_status()
         return response
+
+    def get_user_wallets(self, token: Token, profile: str) -> Response:
+        response = requests.get(
+            f"{self.wallet_service_url}/wallet/user/{profile}",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+        )
+        response.raise_for_status()
+        return response

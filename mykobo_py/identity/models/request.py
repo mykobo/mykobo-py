@@ -3,41 +3,44 @@ from datetime import datetime
 
 from dataclasses_json.api import dataclass_json
 
+from mykobo_py.utils import del_none
+from typing import Optional
+
 @dataclass_json
 @dataclass
 class CustomerRequest:
-    id: str | None = None
-    account: str | None = None
-    first_name: str | None = None
-    last_name: str | None = None
-    email_address: str | None = None
-    additional_name: str | None = None
-    address: str | None = None
-    mobile_number: str | None = None
-    birth_date: str | None = None
-    birth_country_code: str | None = None
-    id_country_code: str | None = None
-    bank_account_number: str | None = None
-    tax_id: str | None = None
-    tax_id_name: str | None = None
-    credential_id: str | None = None
+    id: Optional[str]
+    account: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
+    email_address: Optional[str]
+    additional_name: Optional[str]
+    address: Optional[str]
+    mobile_number: Optional[str]
+    birth_date: Optional[str]
+    birth_country_code: Optional[str]
+    id_country_code: Optional[str]
+    bank_account_number: Optional[str]
+    tax_id: Optional[str]
+    tax_id_name: Optional[str]
+    credential_id: Optional[str]
 
     @property
     def to_dict(self):
-        return self.to_dict()
+        return del_none(self.to_dict())
 
 @dataclass_json
 @dataclass
 class UpdateProfileRequest:
-    bank_account_number: str | None = None
-    tax_id: str | None = None
-    tax_id_name: str | None = None
-    suspended_at: str | None = None
-    deleted_at: str | None = None
+    bank_account_number: Optional[str]
+    tax_id: Optional[str]
+    tax_id_name: Optional[str]
+    suspended_at: Optional[str]
+    deleted_at: Optional[str]
 
     @property
     def to_dict(self):
-        return self.to_dict()
+        return del_none(self.to_dict())
 
 @dataclass_json
 @dataclass
@@ -45,14 +48,14 @@ class NewDocumentRequest:
     profile_id: str
     document_type: str
     document_status: str
-    document_path: str | None = None
+    document_path: Optional[str]
+    updated_at: Optional[str]
+    document_sub_type: Optional[str]
     created_at: str = datetime.now().isoformat()
-    updated_at: str | None = None
-    document_sub_type: str | None = None
 
     @property
     def to_dict(self):
-        return self.to_dict()
+        return del_none(self.to_dict())
 
 @dataclass_json
 @dataclass
@@ -62,4 +65,22 @@ class NewKycReviewRequest:
 
     @property
     def to_dict(self):
-        return self.to_dict()
+        return del_none(self.to_dict())
+
+
+@dataclass_json
+@dataclass
+class UserProfileFilterRequest:
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email_address: Optional[str] = None
+    bank_account_number: Optional[str] = None
+    id_country_code: Optional[str] = None
+    suspended_at: Optional[str] = None
+    deleted_at: Optional[str] = None
+    page: int = 1
+    limit: int = 10
+
+    @property
+    def to_dict(self):
+        return del_none(self.to_dict())
