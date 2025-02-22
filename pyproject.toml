@@ -20,7 +20,7 @@ python-semantic-release = "^9.18.0"
 [tool.semantic_release]
 version_variable = [
     "mykobo_py/__init__.py:__version__",
-    "pyproject.toml:version",
+    "pyproject.toml:tool.poetry.version",
 ]
 branch = "main"
 major_on_zero = false
