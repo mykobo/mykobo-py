@@ -1,6 +1,23 @@
 # CHANGELOG
 
 
+## v0.3.0 (2025-02-22)
+
+### Chores
+
+- Bump version
+  ([`084efd2`](https://github.com/mykobo/mykobo-py/commit/084efd276b52eca65dfaceba5dfbf50483c2c96b))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+### Features
+
+- Get user profile and user list
+  ([`1ad3dce`](https://github.com/mykobo/mykobo-py/commit/1ad3dce46525d7b97d88795446eda0553f1a438c))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+
 ## v0.2.6 (2025-02-22)
 
 
