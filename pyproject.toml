@@ -17,6 +17,18 @@ requests-mock = "^1.12.1"
 python-dotenv = "^1.0.1"
 python-semantic-release = "^9.18.0"
 
+[tool.semantic_release]
+version_variable = [
+    "src_folder/__init__.py:__version__",
+    "pyproject.toml:version",
+]
+branch = "main"
+major_on_zero = false
+tag_format = "{version}"
+
+[tool.semantic_release.changelog]
+fiile = "CHANGELOG.md"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

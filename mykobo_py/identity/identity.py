@@ -36,6 +36,21 @@ class IdentityServiceClient(MykoboServiceClient):
         else:
              return Token.from_json(response.json())
 
+    def refresh_token(self, refresh_token: str) -> Token:
+        data = {
+            "refresh_token": refresh_token
+        }
+
+        response = requests.post(
+            f"{self.host}/authenticate/refresh",
+            headers=self.generate_headers(None, **{"Content-type": "application/json"}),
+            data=json.dumps(data)
+        )
+
+        response.raise_for_status()
+        return Token.from_json(response.json())
+
+
     def otp_challenge(self, nonce: str, otp: int) -> Token:
         data = {
             "nonce": nonce,
