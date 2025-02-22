@@ -19,7 +19,7 @@ python-semantic-release = "^9.18.0"
 
 [tool.semantic_release]
 version_variable = [
-    "src_folder/__init__.py:__version__",
+    "mykobo_py/__init__.py:__version__",
     "pyproject.toml:version",
 ]
 branch = "main"
