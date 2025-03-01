@@ -29,10 +29,14 @@ class LedgerServiceClient(MykoboServiceClient):
               "limit": 2
            }
         """
+        params_dict = params.to_dict()
+        params_dict["from"] = params.from_date
+        params_dict["to"] = params.to_date
+
         response = requests.post(
             f"{self.host}/transactions/list",
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
-            json=params.to_dict()
+            json=params_dict
         )
         response.raise_for_status()
         return response.json()
