@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v0.3.1 (2025-03-01)
+
+### Bug Fixes
+
+- Transform from and to dates
+  ([`d223e64`](https://github.com/mykobo/mykobo-py/commit/d223e642d23702fb11d35be2772bf3730019a475))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+
 ## v0.3.0 (2025-02-22)
 
 ### Chores
