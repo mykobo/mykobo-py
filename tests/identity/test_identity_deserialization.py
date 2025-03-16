@@ -1,8 +1,10 @@
 import json
 import logging
+import datetime
 from dotenv import load_dotenv
 
 from mykobo_py.identity.identity import IdentityServiceClient
+from mykobo_py.identity.models.auth import Token
 from mykobo_py.identity.models.request import CustomerRequest
 from os import getenv
 
@@ -11,6 +13,12 @@ load_dotenv()
 logger = logging.getLogger("test")
 host = getenv("IDENTITY_SERVICE_HOST", "http://fallback")
 identity_service = IdentityServiceClient(host, logger)
+test_token = Token(
+    subject_id="urn:usrp:fb497b2fcbfa479991de4e8b0abecad6",
+    token="test_token",
+    refresh_token="test_token",
+    expires_at=datetime.datetime.now() + datetime.timedelta(days=30)
+)
 
 def test_service_authentication(requests_mock):
     with open("tests/stubs/authenticate_success.json") as f:
@@ -29,9 +37,9 @@ def test_get_profile(requests_mock):
 
     with open("tests/stubs/customer_kyc_complete.json") as f:
         json_data = json.loads(f.read())
-        requests_mock.get(f"{host}/kyc/profile/{id}", json=json_data)
+        requests_mock.get(f"{host}/user/profile/{id}", json=json_data)
 
-    profile = identity_service.get_user_profile(id)
+    profile = identity_service.get_user_profile(test_token, id)
     user_profile = UserProfile.from_json(profile.json())
     assert user_profile.id == "urn:usrp:fb497b2fcbfa479991de4e8b0abecad6"
     assert len(user_profile.kyc_documents) == 2
@@ -55,7 +63,7 @@ def test_new_customer(requests_mock):
         email_address="john@mykobo.co"
     )
 
-    response = identity_service.create_new_customer(payload)
+    response = identity_service.create_new_customer(test_token, payload)
     print(response.json())
     assert response
     assert response.status_code == 200
