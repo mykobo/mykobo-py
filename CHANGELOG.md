@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v0.4.1 (2025-03-16)
+
+### Bug Fixes
+
+- Fix for identity service tests
+  ([`9a47f69`](https://github.com/mykobo/mykobo-py/commit/9a47f692ea51473978937998f76f871cedbbe9fa))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+
 ## v0.4.0 (2025-03-16)
 
 ### Features
