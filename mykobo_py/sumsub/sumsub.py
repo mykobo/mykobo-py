@@ -5,7 +5,7 @@ from mykobo_py.client import MykoboServiceClient
 from mykobo_py.identity.models.auth import Token
 from mykobo_py.sumsub.models.requests import AccessTokenRequest, NewApplicantRequest, NewDocumentRequest
 
-class ServiceClient(MykoboServiceClient):
+class SumsubServiceClient(MykoboServiceClient):
     def __init__(self, host, logger):
         super().__init__(logger, host)
 

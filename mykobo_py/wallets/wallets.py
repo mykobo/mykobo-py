@@ -1,3 +1,4 @@
+from typing import Optional
 import requests
 from requests.models import Response
 
@@ -12,9 +13,12 @@ class WalletServiceClient(MykoboServiceClient):
         super().__init__(logger, wallet_service_url)
         self.wallet_service_url = wallet_service_url
 
-    def get_wallet_profile(self, token: Token, account: str) -> Response:
+    def get_wallet_profile(self, token: Token, account: str, memo: Optional[str] = None) -> Response:
+        url = f"{self.wallet_service_url}/user/wallet/{account}"
+        if memo is not None:
+            url += f"?memo={memo}"
         response = requests.get(
-            f"{self.wallet_service_url}/user/wallet/{account}",
+            url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
         )
         response.raise_for_status()

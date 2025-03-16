@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 from mykobo_py.client import MykoboServiceClient
 from logging import Logger
 import requests
@@ -41,9 +42,12 @@ class LedgerServiceClient(MykoboServiceClient):
         response.raise_for_status()
         return response.json()
 
-    def get_transaction_statuses(self, token: Token):
+    def get_transaction_statuses(self, token: Token, status: Optional[str] = None):
+        url = f"{self.host}/transactions/statuses"
+        if status:
+            url += f"/transitions/{status}"
         response = requests.get(
-            f"{self.host}/transactions/statuses",
+            url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"})
         )
         response.raise_for_status()
@@ -52,6 +56,14 @@ class LedgerServiceClient(MykoboServiceClient):
     def get_transaction_by_reference(self, token: Token, reference: str):
         response = requests.get(
             f"{self.host}/transactions/reference/{reference}/details",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"})
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def get_transaction_by_external_id(self, token: Token, external_id: str):
+        response = requests.get(
+            f"{self.host}/transactions/external/{external_id}",
             headers=self.generate_headers(token, **{"Content-type": "application/json"})
         )
         response.raise_for_status()
