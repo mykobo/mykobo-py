@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v0.4.0 (2025-03-16)
+
+### Features
+
+- Support for business service (getting fees)
+  ([`90dd5b6`](https://github.com/mykobo/mykobo-py/commit/90dd5b66d2506fe966691e36ede9b3740833f52b))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+
 ## v0.3.1 (2025-03-01)
 
 ### Bug Fixes
