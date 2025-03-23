@@ -1,6 +1,23 @@
 # CHANGELOG
 
 
+## v0.4.2 (2025-03-23)
+
+### Bug Fixes
+
+- Update model property for pending payments
+  ([`e1461c0`](https://github.com/mykobo/mykobo-py/commit/e1461c02e678eb5dae1cd4cba1bbbe603ced9dab))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+### Chores
+
+- Bump pyproject version
+  ([`79b1678`](https://github.com/mykobo/mykobo-py/commit/79b1678120b8febf5c11ae64ed85f3c0d40fc5e1))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+
 ## v0.4.1 (2025-03-16)
 
 ### Bug Fixes
