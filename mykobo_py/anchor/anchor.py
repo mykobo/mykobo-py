@@ -21,6 +21,7 @@ class AnchorRpcClient:
                 "params": params
             }
         ]
+        self.logger.info(payload)
         url = f"{self.host}"
         response = requests.post(url, json=payload)
         return response.json()
