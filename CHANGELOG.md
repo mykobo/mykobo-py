@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v0.4.3 (2025-04-03)
+
+### Bug Fixes
+
+- Add is_pending_on_chain_funds
+  ([`25fdd1b`](https://github.com/mykobo/mykobo-py/commit/25fdd1b0ecc0e176e67414368cfcea7a1aa34626))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+
 ## v0.4.2 (2025-03-23)
 
 ### Bug Fixes
