@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v0.4.4 (2025-04-03)
+
+### Bug Fixes
+
+- Add missing method
+  ([`fc376b3`](https://github.com/mykobo/mykobo-py/commit/fc376b3591e8a7c676cbd13f532a680487b7fa4c))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+
 ## v0.4.3 (2025-04-03)
 
 ### Bug Fixes
