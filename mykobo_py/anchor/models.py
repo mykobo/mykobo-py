@@ -119,6 +119,10 @@ class Transaction:
     def is_pending_on_chain_fulfillment(self):
         return self.status == "pending_anchor" and self.kind == "deposit"
 
+    @property
+    def is_pending_on_chain_funds(self):
+        return self.status == "pending_user_transfer_start" and self.kind == "withdrawal"
+
     @staticmethod
     def from_json(json_data: dict) -> 'Transaction':
         return Transaction(
