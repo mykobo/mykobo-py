@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v0.4.5 (2025-04-03)
+
+### Bug Fixes
+
+- Add pending off chain fulfillment
+  ([`ea12aa0`](https://github.com/mykobo/mykobo-py/commit/ea12aa099765c67d9b772172b5389a3bbe01e3a9))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+
 ## v0.4.4 (2025-04-03)
 
 ### Bug Fixes
