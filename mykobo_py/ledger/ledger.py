@@ -34,13 +34,18 @@ class LedgerServiceClient(MykoboServiceClient):
         params_dict["from"] = params.from_date
         params_dict["to"] = params.to_date
 
-        response = requests.post(
-            f"{self.host}/transactions/list",
-            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
-            json=params_dict
-        )
-        response.raise_for_status()
-        return response.json()
+        try:
+            self.logger.info(f"Getting transactions with {params}")
+            response = requests.post(
+                f"{self.host}/transactions/list",
+                headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+                json=params_dict
+            )
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.HTTPError as e:
+            self.logger.error(e)
+            return {}
 
     def get_transaction_statuses(self, token: Token, status: Optional[str] = None):
         url = f"{self.host}/transactions/statuses"

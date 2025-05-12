@@ -8,7 +8,8 @@ class MykoboServiceClient:
         self.logger = logger
         self.host = host
 
-    def generate_headers(self, token: Optional[Token], **kwargs) -> dict:
+    @staticmethod
+    def generate_headers(token: Optional[Token], **kwargs) -> dict:
         headers = {}
         if token:
             headers["Authorization"] = f"Bearer {token.token}"
