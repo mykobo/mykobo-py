@@ -1,6 +1,23 @@
 # CHANGELOG
 
 
+## v0.4.6 (2025-05-12)
+
+### Bug Fixes
+
+- Idenfy support for mykobo py
+  ([`c2a6ae1`](https://github.com/mykobo/mykobo-py/commit/c2a6ae1672b69a9ffbf348cf09730e7a71281c2c))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+### Chores
+
+- Idenfy support for mykobo py
+  ([`3b1d906`](https://github.com/mykobo/mykobo-py/commit/3b1d906294c3c20e7010ec55a3101a3e2966f6db))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+
 ## v0.4.5 (2025-04-03)
 
 ### Bug Fixes
