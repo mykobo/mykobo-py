@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v0.4.8 (2025-05-13)
+
+### Bug Fixes
+
+- Adding error, and pending urls to model for idenfy
+  ([`f4f1c39`](https://github.com/mykobo/mykobo-py/commit/f4f1c39a2485abfbf0b70fab2753bb8b9cf9ecb8))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+
 ## v0.4.7 (2025-05-13)
 
 ### Bug Fixes
