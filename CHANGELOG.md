@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v0.4.7 (2025-05-13)
+
+### Bug Fixes
+
+- Better match idenfy request model
+  ([`b75ae65`](https://github.com/mykobo/mykobo-py/commit/b75ae65e88708798f72190892e7fa84625b3af1d))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+
 ## v0.4.6 (2025-05-12)
 
 ### Bug Fixes
