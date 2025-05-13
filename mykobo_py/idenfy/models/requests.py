@@ -4,11 +4,14 @@ from typing import Dict
 
 @dataclass
 class AccessTokenRequest:
-    # this is our profile id. For sumsub it would be external to them.
-    profile_id: str
+    external_ref: str
+    success_url: str
+    failure_url: str
 
     def to_dict(self) -> Dict:
         return {
-            "profile_id": self.profile_id
+            "externalRef": self.external_ref,
+            "successUrl": self.success_url,
+            "failureUrl": self.failure_url
         }
 

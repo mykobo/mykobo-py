@@ -13,6 +13,11 @@ class IdenfyServiceClient(MykoboServiceClient):
 
 
     def get_access_token(self, request: AccessTokenRequest) -> Response:
+        """
+        Get access token from Idenfy service, using parameters from AccessTokenRequest.
+        """
+
+        self.logger.info(f"Sending {request} to {self.host}...")
         url = f"{self.host}/access_token"
         response = requests.post(
             url,
@@ -23,6 +28,7 @@ class IdenfyServiceClient(MykoboServiceClient):
         return response
 
     def initiate_kyc(self, request: AccessTokenRequest):
+        self.logger.info(f"Initiating KYC with {request} to {self.host}...")
         url = f"{self.host}/initiate_kyc"
         response = requests.post(
             url,
