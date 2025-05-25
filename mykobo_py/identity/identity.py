@@ -86,11 +86,14 @@ class IdentityServiceClient(MykoboServiceClient):
                     json_response = response.json()
                     if "error" in json_response:
                         self.logger.error(f"Failed to acquire token! Reason: {json_response['error']}")
+                        return None
+                    return None
                 except Exception as e:
                     self.logger.error(f"Failed to acquire token! Reason: {response.content.decode('utf-8')}:{e}")
+                    return None
         except Exception as e:
             self.logger.warning("Could not acquire token. Reason: %s", e)
-
+            return None
 
     def check_scope(self, token: Token, target_token: str, scope: str) -> Response:
         response = requests.post(

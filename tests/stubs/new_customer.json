@@ -9,6 +9,7 @@
   "birth_date": null,
   "birth_country_code": null,
   "bank_account_number": "gb82372364763435",
+  "bank_number": null,
   "tax_id": null,
   "tax_id_name": null,
   "created_at": "2024-12-07T08:47:59.601142",

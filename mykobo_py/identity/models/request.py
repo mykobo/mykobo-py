@@ -21,6 +21,7 @@ class CustomerRequest:
     birth_country_code: Optional[str] = None
     id_country_code: Optional[str] = None
     bank_account_number: Optional[str] = None
+    bank_number: Optional[str] = None
     tax_id: Optional[str] = None
     tax_id_name: Optional[str] = None
     credential_id: Optional[str] = None
