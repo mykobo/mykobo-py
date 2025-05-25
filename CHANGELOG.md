@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v0.4.9 (2025-05-25)
+
+### Bug Fixes
+
+- Better support for bank_number
+  ([`f1eac22`](https://github.com/mykobo/mykobo-py/commit/f1eac22386482425f50298b03f64c48d8f8eb061))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+
 ## v0.4.8 (2025-05-13)
 
 ### Bug Fixes
