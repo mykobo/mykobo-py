@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v0.4.10 (2025-05-28)
+
+### Bug Fixes
+
+- Catch exceptions in anchor requests
+  ([`0c6dd84`](https://github.com/mykobo/mykobo-py/commit/0c6dd84dc08505417f87a16fd3cfe17e0e827661))
+
+Signed-off-by: Kwabena Aning <kwabena.aning@gmail.com>
+
+
 ## v0.4.9 (2025-05-25)
 
 ### Bug Fixes
