@@ -34,6 +34,10 @@ class CustomerRequest:
 @dataclass
 class UpdateProfileRequest:
     bank_account_number: Optional[str]
+    bank_number: Optional[str]
+    address_line_1: Optional[str]
+    address_line_2: Optional[str]
+    id_country_code: Optional[str]
     tax_id: Optional[str]
     tax_id_name: Optional[str]
     suspended_at: Optional[str]
