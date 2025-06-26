@@ -1,10 +1,12 @@
 import json
 import os
+from typing import Optional
+
 import requests
 from logging import Logger
 from requests import Response
 from .models.auth import Token, OtcChallenge
-from .models.request import CustomerRequest, NewDocumentRequest, NewKycReviewRequest
+from .models.request import CustomerRequest, NewDocumentRequest, NewKycReviewRequest, UpdateProfileRequest
 from mykobo_py.utils import del_none
 from mykobo_py.client import MykoboServiceClient
 from mykobo_py.identity.models.request import UserProfileFilterRequest
@@ -176,6 +178,19 @@ class IdentityServiceClient(MykoboServiceClient):
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
             data=json.dumps(del_none(filters.to_dict().copy()))
+        )
+        response.raise_for_status()
+        return response
+
+
+    def update_user_profile(self, token: Token, id: Optional[str], payload: UpdateProfileRequest) -> Response:
+        url = f"{self.host}/user/profile/update"
+        if id:
+            url += f"/{id}"
+        response = requests.patch(
+            url,
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+            data=json.dumps(del_none(payload.to_dict().copy()))
         )
         response.raise_for_status()
         return response
