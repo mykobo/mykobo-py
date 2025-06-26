@@ -183,10 +183,10 @@ class IdentityServiceClient(MykoboServiceClient):
         return response
 
 
-    def update_user_profile(self, token: Token, id: Optional[str], payload: UpdateProfileRequest) -> Response:
+    def update_user_profile(self, token: Token, profile_id: Optional[str], payload: UpdateProfileRequest) -> Response:
         url = f"{self.host}/user/profile/update"
-        if id:
-            url += f"/{id}"
+        if profile_id:
+            url += f"/{profile_id}"
         response = requests.patch(
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
