@@ -15,7 +15,8 @@ class CustomerRequest:
     last_name: Optional[str] = None
     email_address: Optional[str] = None
     additional_name: Optional[str] = None
-    address: Optional[str] = None
+    address_line_1: Optional[str] = None
+    address_line_2: Optional[str] = None
     mobile_number: Optional[str] = None
     birth_date: Optional[str] = None
     birth_country_code: Optional[str] = None
