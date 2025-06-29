@@ -60,7 +60,10 @@ def test_new_customer(requests_mock):
     payload = CustomerRequest(
         first_name="John",
         last_name="Doe",
-        email_address="john@mykobo.co"
+        email_address="john@mykobo.co",
+        address_line_1="123 Main St",
+        address_line_2="London",
+        id_country_code="GB",
     )
 
     response = identity_service.create_new_customer(test_token, payload)
