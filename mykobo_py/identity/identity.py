@@ -133,6 +133,15 @@ class IdentityServiceClient(MykoboServiceClient):
         response.raise_for_status()
         return response
 
+    def get_profile_by_email(self, token: Token, email: str) -> Response:
+        url = f"{self.host}/user/profile/email/{email}"
+        self.logger.debug(f"Requesting user profile from IDENTITY SERVICE for {email}")
+        response = requests.get(
+            url, headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+        )
+        response.raise_for_status()
+        return response
+
     def get_user_kyc_profile(self, token: Token, id: str) -> Response:
         url = f"{self.host}/kyc/profile/{id}"
         self.logger.debug(f"Requesting user profile from IDENTITY SERVICE for {id}")
