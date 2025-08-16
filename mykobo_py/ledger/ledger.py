@@ -73,3 +73,11 @@ class LedgerServiceClient(MykoboServiceClient):
         )
         response.raise_for_status()
         return response.json()
+
+    def get_transaction_compliance_events(self, token: Token, reference: str):
+        response = requests.get(
+            f"{self.host}/transactions/reference/{reference}/compliance",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"})
+        )
+        response.raise_for_status()
+        return response.json()
