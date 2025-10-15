@@ -110,6 +110,7 @@ class Transaction:
     creator: Creator
     client_domain: str
     client_name: str
+    request_client_ip_address: str
 
     @property
     def is_pending_off_chain_funds(self):
@@ -123,9 +124,13 @@ class Transaction:
     def is_pending_on_chain_funds(self):
         return self.status == "pending_user_transfer_start" and self.kind == "withdrawal"
 
+    @property
     def is_pending_off_chain_fulfillment(self):
         return self.status == "pending_anchor" and self.kind == "withdrawal"
 
+    @property
+    def has_ip_address(self):
+        return self.request_client_ip_address != ""
 
     @staticmethod
     def from_json(json_data: dict) -> 'Transaction':
@@ -147,7 +152,8 @@ class Transaction:
             customers=Customers.from_json(json_data.get('customers', {})),
             creator=Creator.from_json(json_data.get('creator', {})),
             client_domain=json_data.get('client_domain', ''),
-            client_name=json_data.get('client_name', '')
+            client_name=json_data.get('client_name', ''),
+            request_client_ip_address=json_data.get('request_client_ip_address', '')
         )
 
     def dict(self):
