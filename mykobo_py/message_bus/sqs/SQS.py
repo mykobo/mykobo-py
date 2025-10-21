@@ -7,10 +7,10 @@ class SQS:
     queue_url: Optional[str]
     logger = logging.getLogger('interactive_ui.message_bus')
 
-    def __init__(self, queue_url: str):
+    def __init__(self, queue_url: str, region='eu-east-1'):
         self.logger.debug("QUEUE_URL: {}".format(queue_url))
         self.queue_url = queue_url
-        self.client = boto3.client('sqs', endpoint_url=queue_url)
+        self.client = boto3.client('sqs', endpoint_url=queue_url, region_name=region)
 
     def send_message(self, message: Dict[str, Any], target_queue: str, process: str):
         response = self.client.send_message(
