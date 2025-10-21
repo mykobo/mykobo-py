@@ -5,7 +5,7 @@ import json
 
 class SQS:
     queue_url: Optional[str]
-    logger = logging.getLogger('interactive_ui.message_bus')
+    logger = logging.getLogger(__name__)
 
     def __init__(self, queue_url: str, region='eu-east-1'):
         self.logger.debug("QUEUE_URL: {}".format(queue_url))
