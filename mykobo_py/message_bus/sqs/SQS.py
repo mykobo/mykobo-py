@@ -1,3 +1,5 @@
+import os
+
 import boto3
 import logging
 from typing import Optional, Any, Dict
@@ -7,9 +9,10 @@ class SQS:
     queue_url: Optional[str]
     logger = logging.getLogger(__name__)
 
-    def __init__(self, queue_url: str, region='eu-east-1'):
+    def __init__(self, queue_url: str):
         self.logger.debug("QUEUE_URL: {}".format(queue_url))
         self.queue_url = queue_url
+        region = os.environ.get("AWS_REGION", "eu-west-1")
         self.client = boto3.client('sqs', endpoint_url=queue_url, region_name=region)
 
     def send_message(self, message: Dict[str, Any], target_queue: str, process: str):
