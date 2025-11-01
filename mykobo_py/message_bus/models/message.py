@@ -12,6 +12,12 @@ class InstructionType(str, Enum):
     PAYMENT = "PAYMENT"
     STATUS_UPDATE = "STATUS_UPDATE"
     CORRECTION = "CORRECTION"
+    TRANSACTION = "TRANSACTION"
+
+class TransactionType(str, Enum):
+    """Enum for transaction types"""
+    DEPOSIT = "DEPOSIT"
+    WITHDRAW = "WITHDRAW"
 
 
 def validate_required_fields(instance: Any, required_fields: List[str], class_name: str = None):
@@ -126,10 +132,54 @@ class CorrectionPayload:
 
 @dataclass_json
 @dataclass
+class TransactionPayload:
+    """Payload for transaction instructions"""
+    external_reference: str
+    source: str
+    reference: str
+    first_name: str
+    last_name: str
+    transaction_type: TransactionType
+    status: str
+    incoming_currency: str
+    outgoing_currency: str
+    value: str
+    fee: str
+    payer: Optional[str]
+    payee: Optional[str]
+
+    def __post_init__(self):
+        """Validate that all required fields are provided"""
+        # Convert string to enum if needed
+        if isinstance(self.transaction_type, str):
+            self.transaction_type = TransactionType(self.transaction_type)
+
+        if self.transaction_type == TransactionType.DEPOSIT and self.payer is None:
+            raise ValueError("Deposit transactions must be specify a payer id")
+
+        if self.transaction_type == TransactionType.WITHDRAW and self.payee is None:
+            raise ValueError("Withdraw transactions must be specify a payee id")
+
+        validate_required_fields(
+            self,
+            [
+                'external_reference', 'source', 'reference', 'first_name', 'last_name',
+                'transaction_type', 'status', 'incoming_currency', 'outgoing_currency',
+                'value', 'fee'
+            ]
+        )
+
+    @property
+    def to_dict(self):
+        return del_none(self.to_dict())
+
+
+@dataclass_json
+@dataclass
 class MessageBusMessage:
     """Complete message bus message structure - supports multiple payload types"""
     meta_data: MetaData
-    payload: Union[PaymentPayload, StatusUpdatePayload, CorrectionPayload]
+    payload: Union[PaymentPayload, StatusUpdatePayload, CorrectionPayload, TransactionPayload]
 
     def __post_init__(self):
         """Validate that instruction_type matches the payload type"""
@@ -142,6 +192,7 @@ class MessageBusMessage:
             InstructionType.PAYMENT: PaymentPayload,
             InstructionType.STATUS_UPDATE: StatusUpdatePayload,
             InstructionType.CORRECTION: CorrectionPayload,
+            InstructionType.TRANSACTION: TransactionPayload,
         }
 
         expected_payload_type = payload_type_map[self.meta_data.instruction_type]
