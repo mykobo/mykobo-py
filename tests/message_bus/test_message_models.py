@@ -7,6 +7,7 @@ from mykobo_py.message_bus.models import (
     PaymentPayload,
     StatusUpdatePayload,
     CorrectionPayload,
+    InstructionType,
 )
 
 
@@ -92,6 +93,42 @@ class TestMetaData:
                 idempotency_key=""
             )
         assert "idempotency_key" in str(exc_info.value)
+
+    def test_metadata_with_enum_instruction_type(self):
+        """Test MetaData with InstructionType enum"""
+        metadata = MetaData(
+            source="BANKING_SERVICE",
+            instruction_type=InstructionType.PAYMENT,
+            created_at="2021-01-01T00:00:00Z",
+            token="test.token.here",
+            idempotency_key="unique-key-123"
+        )
+        assert metadata.instruction_type == InstructionType.PAYMENT
+        assert metadata.instruction_type.value == "PAYMENT"
+
+    def test_metadata_string_converts_to_enum(self):
+        """Test MetaData converts string instruction_type to enum"""
+        metadata = MetaData(
+            source="BANKING_SERVICE",
+            instruction_type="STATUS_UPDATE",
+            created_at="2021-01-01T00:00:00Z",
+            token="test.token.here",
+            idempotency_key="unique-key-123"
+        )
+        assert metadata.instruction_type == InstructionType.STATUS_UPDATE
+        assert isinstance(metadata.instruction_type, InstructionType)
+
+    def test_metadata_invalid_instruction_type(self):
+        """Test MetaData raises error for invalid instruction_type"""
+        with pytest.raises(ValueError) as exc_info:
+            MetaData(
+                source="BANKING_SERVICE",
+                instruction_type="INVALID_TYPE",
+                created_at="2021-01-01T00:00:00Z",
+                token="test.token.here",
+                idempotency_key="unique-key-123"
+            )
+        assert "INVALID_TYPE" in str(exc_info.value)
 
 
 class TestPaymentPayload:
@@ -523,3 +560,25 @@ class TestMessageBusMessage:
         )
 
         assert message1.meta_data.idempotency_key != message2.meta_data.idempotency_key
+
+    def test_create_message_with_enum_instruction_type(self):
+        """Test creating message with InstructionType enum"""
+        payload = PaymentPayload(
+            external_reference="P763763453G",
+            payer_name="John Doe",
+            currency="EUR",
+            value="123.00",
+            source="BANK_MODULR",
+            reference="MYK123344545",
+            bank_account_number="GB123266734836738787454"
+        )
+
+        message = MessageBusMessage.create(
+            source="BANKING_SERVICE",
+            instruction_type=InstructionType.PAYMENT,
+            payload=payload,
+            service_token="test.token.here"
+        )
+
+        assert message.meta_data.instruction_type == InstructionType.PAYMENT
+        assert isinstance(message.meta_data.instruction_type, InstructionType)

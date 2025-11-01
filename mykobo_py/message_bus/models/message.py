@@ -1,9 +1,17 @@
 from dataclasses import dataclass
 from typing import Optional, Union, List, Any
 from datetime import datetime, UTC
+from enum import Enum
 import uuid
 from dataclasses_json import dataclass_json
 from mykobo_py.utils import del_none
+
+
+class InstructionType(str, Enum):
+    """Enum for message instruction types"""
+    PAYMENT = "PAYMENT"
+    STATUS_UPDATE = "STATUS_UPDATE"
+    CORRECTION = "CORRECTION"
 
 
 def validate_required_fields(instance: Any, required_fields: List[str], class_name: str = None):
@@ -35,13 +43,17 @@ def validate_required_fields(instance: Any, required_fields: List[str], class_na
 class MetaData:
     """Metadata for message bus messages"""
     source: str
-    instruction_type: str
+    instruction_type: InstructionType
     created_at: str
     token: str
     idempotency_key: str
 
     def __post_init__(self):
         """Validate that all required fields are provided"""
+        # Convert string to enum if needed
+        if isinstance(self.instruction_type, str):
+            self.instruction_type = InstructionType(self.instruction_type)
+
         validate_required_fields(
             self,
             ['source', 'instruction_type', 'created_at', 'token', 'idempotency_key']
@@ -126,7 +138,7 @@ class MessageBusMessage:
     @staticmethod
     def create(
         source: str,
-        instruction_type: str,
+        instruction_type: Union[InstructionType, str],
         payload: Union[PaymentPayload, StatusUpdatePayload, CorrectionPayload],
         service_token: str,
         idempotency_key: Optional[str] = None
@@ -136,7 +148,7 @@ class MessageBusMessage:
 
         Args:
             source: The source system (e.g., "BANKING_SERVICE", "ANCHOR_MYKOBO", "WATCHTOWER")
-            instruction_type: The type of instruction (e.g., "PAYMENT", "STATUS_UPDATE", "CORRECTION")
+            instruction_type: The type of instruction (InstructionType enum or string: "PAYMENT", "STATUS_UPDATE", "CORRECTION")
             payload: The payload object (PaymentPayload, StatusUpdatePayload, or CorrectionPayload)
             service_token: The JWT token from the identity module
             idempotency_key: Optional idempotency key. If not provided, a UUID will be generated
@@ -148,6 +160,10 @@ class MessageBusMessage:
             idempotency_key = str(uuid.uuid4())
 
         created_at = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        # Convert string to enum if needed
+        if isinstance(instruction_type, str):
+            instruction_type = InstructionType(instruction_type)
 
         meta_data = MetaData(
             source=source,

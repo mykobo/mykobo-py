@@ -4,6 +4,7 @@ from mykobo_py.message_bus.models.message import (
     PaymentPayload,
     StatusUpdatePayload,
     CorrectionPayload,
+    InstructionType,
 )
 
 __all__ = [
@@ -12,4 +13,5 @@ __all__ = [
     "PaymentPayload",
     "StatusUpdatePayload",
     "CorrectionPayload",
+    "InstructionType",
 ]
