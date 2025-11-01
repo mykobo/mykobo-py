@@ -582,3 +582,145 @@ class TestMessageBusMessage:
 
         assert message.meta_data.instruction_type == InstructionType.PAYMENT
         assert isinstance(message.meta_data.instruction_type, InstructionType)
+
+    def test_payment_instruction_requires_payment_payload(self):
+        """Test that PAYMENT instruction_type requires PaymentPayload"""
+        # Valid: PAYMENT with PaymentPayload
+        payload = PaymentPayload(
+            external_reference="P123",
+            payer_name="John Doe",
+            currency="EUR",
+            value="100.00",
+            source="BANK",
+            reference="REF123",
+            bank_account_number="GB123"
+        )
+
+        message = MessageBusMessage(
+            meta_data=MetaData(
+                source="BANKING_SERVICE",
+                instruction_type=InstructionType.PAYMENT,
+                created_at="2021-01-01T00:00:00Z",
+                token="test.token",
+                idempotency_key="key-123"
+            ),
+            payload=payload
+        )
+        assert isinstance(message.payload, PaymentPayload)
+
+    def test_payment_instruction_rejects_wrong_payload(self):
+        """Test that PAYMENT instruction_type rejects non-PaymentPayload"""
+        wrong_payload = StatusUpdatePayload(
+            reference="REF123",
+            status="PENDING",
+            message="Test"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            MessageBusMessage(
+                meta_data=MetaData(
+                    source="BANKING_SERVICE",
+                    instruction_type=InstructionType.PAYMENT,
+                    created_at="2021-01-01T00:00:00Z",
+                    token="test.token",
+                    idempotency_key="key-123"
+                ),
+                payload=wrong_payload
+            )
+
+        assert "instruction_type PAYMENT requires PaymentPayload" in str(exc_info.value)
+        assert "StatusUpdatePayload" in str(exc_info.value)
+
+    def test_status_update_instruction_requires_status_update_payload(self):
+        """Test that STATUS_UPDATE instruction_type requires StatusUpdatePayload"""
+        # Valid: STATUS_UPDATE with StatusUpdatePayload
+        payload = StatusUpdatePayload(
+            reference="REF123",
+            status="PENDING_SERVICE",
+            message="Waiting for service"
+        )
+
+        message = MessageBusMessage(
+            meta_data=MetaData(
+                source="ANCHOR_MYKOBO",
+                instruction_type=InstructionType.STATUS_UPDATE,
+                created_at="2021-01-01T00:00:00Z",
+                token="test.token",
+                idempotency_key="key-456"
+            ),
+            payload=payload
+        )
+        assert isinstance(message.payload, StatusUpdatePayload)
+
+    def test_status_update_instruction_rejects_wrong_payload(self):
+        """Test that STATUS_UPDATE instruction_type rejects non-StatusUpdatePayload"""
+        wrong_payload = PaymentPayload(
+            external_reference="P123",
+            payer_name="John Doe",
+            currency="EUR",
+            value="100.00",
+            source="BANK",
+            reference="REF123",
+            bank_account_number="GB123"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            MessageBusMessage(
+                meta_data=MetaData(
+                    source="ANCHOR_MYKOBO",
+                    instruction_type=InstructionType.STATUS_UPDATE,
+                    created_at="2021-01-01T00:00:00Z",
+                    token="test.token",
+                    idempotency_key="key-456"
+                ),
+                payload=wrong_payload
+            )
+
+        assert "instruction_type STATUS_UPDATE requires StatusUpdatePayload" in str(exc_info.value)
+        assert "PaymentPayload" in str(exc_info.value)
+
+    def test_correction_instruction_requires_correction_payload(self):
+        """Test that CORRECTION instruction_type requires CorrectionPayload"""
+        # Valid: CORRECTION with CorrectionPayload
+        payload = CorrectionPayload(
+            reference="REF123",
+            value="50.00",
+            message="Overpayment",
+            currency="EUR",
+            source="BANK_WISE"
+        )
+
+        message = MessageBusMessage(
+            meta_data=MetaData(
+                source="WATCHTOWER",
+                instruction_type=InstructionType.CORRECTION,
+                created_at="2021-01-01T00:00:00Z",
+                token="test.token",
+                idempotency_key="key-789"
+            ),
+            payload=payload
+        )
+        assert isinstance(message.payload, CorrectionPayload)
+
+    def test_correction_instruction_rejects_wrong_payload(self):
+        """Test that CORRECTION instruction_type rejects non-CorrectionPayload"""
+        wrong_payload = StatusUpdatePayload(
+            reference="REF123",
+            status="PENDING",
+            message="Test"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            MessageBusMessage(
+                meta_data=MetaData(
+                    source="WATCHTOWER",
+                    instruction_type=InstructionType.CORRECTION,
+                    created_at="2021-01-01T00:00:00Z",
+                    token="test.token",
+                    idempotency_key="key-789"
+                ),
+                payload=wrong_payload
+            )
+
+        assert "instruction_type CORRECTION requires CorrectionPayload" in str(exc_info.value)
+        assert "StatusUpdatePayload" in str(exc_info.value)

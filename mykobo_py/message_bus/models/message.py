@@ -131,6 +131,26 @@ class MessageBusMessage:
     meta_data: MetaData
     payload: Union[PaymentPayload, StatusUpdatePayload, CorrectionPayload]
 
+    def __post_init__(self):
+        """Validate that instruction_type matches the payload type"""
+        # Ensure instruction_type is an enum
+        if isinstance(self.meta_data.instruction_type, str):
+            self.meta_data.instruction_type = InstructionType(self.meta_data.instruction_type)
+
+        # Validate instruction_type matches payload type
+        payload_type_map = {
+            InstructionType.PAYMENT: PaymentPayload,
+            InstructionType.STATUS_UPDATE: StatusUpdatePayload,
+            InstructionType.CORRECTION: CorrectionPayload,
+        }
+
+        expected_payload_type = payload_type_map[self.meta_data.instruction_type]
+        if not isinstance(self.payload, expected_payload_type):
+            raise ValueError(
+                f"instruction_type {self.meta_data.instruction_type.value} requires "
+                f"{expected_payload_type.__name__} but got {type(self.payload).__name__}"
+            )
+
     @property
     def to_dict(self):
         return del_none(self.to_dict())
