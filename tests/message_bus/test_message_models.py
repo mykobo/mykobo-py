@@ -1,5 +1,6 @@
 import pytest
 import json
+from datetime import datetime
 from mykobo_py.message_bus.models import (
     MessageBusMessage,
     MetaData,
@@ -18,12 +19,14 @@ class TestMetaData:
             source="BANKING_SERVICE",
             instruction_type="PAYMENT",
             created_at="2021-01-01T00:00:00Z",
-            token="test.token.here"
+            token="test.token.here",
+            idempotency_key="unique-key-123"
         )
         assert metadata.source == "BANKING_SERVICE"
         assert metadata.instruction_type == "PAYMENT"
         assert metadata.created_at == "2021-01-01T00:00:00Z"
         assert metadata.token == "test.token.here"
+        assert metadata.idempotency_key == "unique-key-123"
 
     def test_metadata_missing_source(self):
         """Test MetaData validation fails when source is missing"""
@@ -32,7 +35,8 @@ class TestMetaData:
                 source="",
                 instruction_type="PAYMENT",
                 created_at="2021-01-01T00:00:00Z",
-                token="test.token.here"
+                token="test.token.here",
+                idempotency_key="unique-key-123"
             )
         assert "MetaData missing required fields: source" in str(exc_info.value)
 
@@ -43,7 +47,8 @@ class TestMetaData:
                 source="BANKING_SERVICE",
                 instruction_type=None,
                 created_at="2021-01-01T00:00:00Z",
-                token="test.token.here"
+                token="test.token.here",
+                idempotency_key="unique-key-123"
             )
         assert "instruction_type" in str(exc_info.value)
 
@@ -54,11 +59,13 @@ class TestMetaData:
                 source="",
                 instruction_type="PAYMENT",
                 created_at="",
-                token=""
+                token="",
+                idempotency_key=""
             )
         assert "source" in str(exc_info.value)
         assert "created_at" in str(exc_info.value)
         assert "token" in str(exc_info.value)
+        assert "idempotency_key" in str(exc_info.value)
 
     def test_metadata_from_json(self):
         """Test deserializing MetaData from JSON"""
@@ -66,11 +73,25 @@ class TestMetaData:
             "source": "BANKING_SERVICE",
             "instruction_type": "PAYMENT",
             "created_at": "2021-01-01T00:00:00Z",
-            "token": "test.token.here"
+            "token": "test.token.here",
+            "idempotency_key": "unique-key-123"
         })
         metadata = MetaData.from_json(json_str)
         assert metadata.source == "BANKING_SERVICE"
         assert metadata.instruction_type == "PAYMENT"
+        assert metadata.idempotency_key == "unique-key-123"
+
+    def test_metadata_missing_idempotency_key(self):
+        """Test MetaData validation fails when idempotency_key is missing"""
+        with pytest.raises(ValueError) as exc_info:
+            MetaData(
+                source="BANKING_SERVICE",
+                instruction_type="PAYMENT",
+                created_at="2021-01-01T00:00:00Z",
+                token="test.token.here",
+                idempotency_key=""
+            )
+        assert "idempotency_key" in str(exc_info.value)
 
 
 class TestPaymentPayload:
@@ -224,7 +245,8 @@ class TestMessageBusMessage:
                 source="BANKING_SERVICE",
                 instruction_type="PAYMENT",
                 created_at="2021-01-01T00:00:00Z",
-                token="test.token.here"
+                token="test.token.here",
+                idempotency_key="unique-key-123"
             ),
             payload=PaymentPayload(
                 external_reference="P763763453G",
@@ -238,6 +260,7 @@ class TestMessageBusMessage:
         )
         assert message.meta_data.source == "BANKING_SERVICE"
         assert message.meta_data.instruction_type == "PAYMENT"
+        assert message.meta_data.idempotency_key == "unique-key-123"
         assert isinstance(message.payload, PaymentPayload)
         assert message.payload.external_reference == "P763763453G"
 
@@ -248,7 +271,8 @@ class TestMessageBusMessage:
                 source="ANCHOR_MYKOBO",
                 instruction_type="STATUS_UPDATE",
                 created_at="2021-01-01T00:00:00Z",
-                token="test.token.here"
+                token="test.token.here",
+                idempotency_key="unique-key-456"
             ),
             payload=StatusUpdatePayload(
                 reference="MYK123344545",
@@ -257,6 +281,7 @@ class TestMessageBusMessage:
             )
         )
         assert message.meta_data.source == "ANCHOR_MYKOBO"
+        assert message.meta_data.idempotency_key == "unique-key-456"
         assert isinstance(message.payload, StatusUpdatePayload)
         assert message.payload.status == "PENDING_SERVICE"
 
@@ -267,7 +292,8 @@ class TestMessageBusMessage:
                 source="WATCHTOWER",
                 instruction_type="CORRECTION",
                 created_at="2021-01-01T00:00:00Z",
-                token="test.token.here"
+                token="test.token.here",
+                idempotency_key="unique-key-789"
             ),
             payload=CorrectionPayload(
                 reference="MYK123344545",
@@ -278,6 +304,7 @@ class TestMessageBusMessage:
             )
         )
         assert message.meta_data.source == "WATCHTOWER"
+        assert message.meta_data.idempotency_key == "unique-key-789"
         assert isinstance(message.payload, CorrectionPayload)
         assert message.payload.value == "2.00"
 
@@ -288,7 +315,8 @@ class TestMessageBusMessage:
                 "source": "BANKING_SERVICE",
                 "instruction_type": "PAYMENT",
                 "created_at": "2021-01-01T00:00:00Z",
-                "token": "test.token.here"
+                "token": "test.token.here",
+                "idempotency_key": "unique-key-123"
             },
             "payload": {
                 "external_reference": "P763763453G",
@@ -302,6 +330,7 @@ class TestMessageBusMessage:
         })
         message = MessageBusMessage.from_json(json_str)
         assert message.meta_data.source == "BANKING_SERVICE"
+        assert message.meta_data.idempotency_key == "unique-key-123"
         assert message.payload.external_reference == "P763763453G"
 
     def test_status_update_message_from_json(self):
@@ -311,7 +340,8 @@ class TestMessageBusMessage:
                 "source": "ANCHOR_MYKOBO",
                 "instruction_type": "STATUS_UPDATE",
                 "created_at": "2021-01-01T00:00:00Z",
-                "token": "test.token.here"
+                "token": "test.token.here",
+                "idempotency_key": "unique-key-456"
             },
             "payload": {
                 "reference": "MYK123344545",
@@ -321,6 +351,7 @@ class TestMessageBusMessage:
         })
         message = MessageBusMessage.from_json(json_str)
         assert message.meta_data.instruction_type == "STATUS_UPDATE"
+        assert message.meta_data.idempotency_key == "unique-key-456"
         assert message.payload.reference == "MYK123344545"
 
     def test_correction_message_from_json(self):
@@ -330,7 +361,8 @@ class TestMessageBusMessage:
                 "source": "WATCHTOWER",
                 "instruction_type": "CORRECTION",
                 "created_at": "2021-01-01T00:00:00Z",
-                "token": "test.token.here"
+                "token": "test.token.here",
+                "idempotency_key": "unique-key-789"
             },
             "payload": {
                 "reference": "MYK123344545",
@@ -342,6 +374,7 @@ class TestMessageBusMessage:
         })
         message = MessageBusMessage.from_json(json_str)
         assert message.meta_data.instruction_type == "CORRECTION"
+        assert message.meta_data.idempotency_key == "unique-key-789"
         assert message.payload.value == "2.00"
 
     def test_message_to_json(self):
@@ -351,7 +384,8 @@ class TestMessageBusMessage:
                 source="BANKING_SERVICE",
                 instruction_type="PAYMENT",
                 created_at="2021-01-01T00:00:00Z",
-                token="test.token.here"
+                token="test.token.here",
+                idempotency_key="unique-key-123"
             ),
             payload=PaymentPayload(
                 external_reference="P763763453G",
@@ -366,4 +400,126 @@ class TestMessageBusMessage:
         json_str = message.to_json()
         parsed = json.loads(json_str)
         assert parsed["meta_data"]["source"] == "BANKING_SERVICE"
+        assert parsed["meta_data"]["idempotency_key"] == "unique-key-123"
         assert parsed["payload"]["external_reference"] == "P763763453G"
+
+    def test_create_payment_message(self):
+        """Test creating payment message with convenience function"""
+        payload = PaymentPayload(
+            external_reference="P763763453G",
+            payer_name="John Doe",
+            currency="EUR",
+            value="123.00",
+            source="BANK_MODULR",
+            reference="MYK123344545",
+            bank_account_number="GB123266734836738787454"
+        )
+
+        message = MessageBusMessage.create(
+            source="BANKING_SERVICE",
+            instruction_type="PAYMENT",
+            payload=payload,
+            service_token="test.token.here"
+        )
+
+        assert message.meta_data.source == "BANKING_SERVICE"
+        assert message.meta_data.instruction_type == "PAYMENT"
+        assert message.meta_data.token == "test.token.here"
+        assert message.meta_data.idempotency_key is not None
+        assert len(message.meta_data.idempotency_key) > 0
+        assert message.payload == payload
+
+        # Verify created_at format
+        created_at_dt = datetime.strptime(message.meta_data.created_at, "%Y-%m-%dT%H:%M:%SZ")
+        assert isinstance(created_at_dt, datetime)
+
+    def test_create_status_update_message(self):
+        """Test creating status update message with convenience function"""
+        payload = StatusUpdatePayload(
+            reference="MYK123344545",
+            status="PENDING_SERVICE",
+            message="Payment was received"
+        )
+
+        message = MessageBusMessage.create(
+            source="ANCHOR_MYKOBO",
+            instruction_type="STATUS_UPDATE",
+            payload=payload,
+            service_token="test.token.here"
+        )
+
+        assert message.meta_data.source == "ANCHOR_MYKOBO"
+        assert message.meta_data.instruction_type == "STATUS_UPDATE"
+        assert message.payload == payload
+
+    def test_create_correction_message(self):
+        """Test creating correction message with convenience function"""
+        payload = CorrectionPayload(
+            reference="MYK123344545",
+            value="2.00",
+            message="Over paid",
+            currency="EUR",
+            source="BANK_WISE"
+        )
+
+        message = MessageBusMessage.create(
+            source="WATCHTOWER",
+            instruction_type="CORRECTION",
+            payload=payload,
+            service_token="test.token.here"
+        )
+
+        assert message.meta_data.source == "WATCHTOWER"
+        assert message.meta_data.instruction_type == "CORRECTION"
+        assert message.payload == payload
+
+    def test_create_message_with_custom_idempotency_key(self):
+        """Test creating message with custom idempotency key"""
+        payload = PaymentPayload(
+            external_reference="P763763453G",
+            payer_name="John Doe",
+            currency="EUR",
+            value="123.00",
+            source="BANK_MODULR",
+            reference="MYK123344545",
+            bank_account_number="GB123266734836738787454"
+        )
+
+        custom_key = "my-custom-idempotency-key-123"
+        message = MessageBusMessage.create(
+            source="BANKING_SERVICE",
+            instruction_type="PAYMENT",
+            payload=payload,
+            service_token="test.token.here",
+            idempotency_key=custom_key
+        )
+
+        assert message.meta_data.idempotency_key == custom_key
+
+    def test_create_message_generates_unique_idempotency_keys(self):
+        """Test that auto-generated idempotency keys are unique"""
+        payload = PaymentPayload(
+            external_reference="P763763453G",
+            payer_name="John Doe",
+            currency="EUR",
+            value="123.00",
+            source="BANK_MODULR",
+            reference="MYK123344545",
+            bank_account_number="GB123266734836738787454"
+        )
+
+        message1 = MessageBusMessage.create(
+            source="BANKING_SERVICE",
+            instruction_type="PAYMENT",
+            payload=payload,
+            service_token="test.token.here"
+        )
+
+        message2 = MessageBusMessage.create(
+            source="BANKING_SERVICE",
+            instruction_type="PAYMENT",
+            payload=payload,
+            service_token="test.token.here"
+        )
+
+        assert message1.meta_data.idempotency_key != message2.meta_data.idempotency_key

@@ -19,16 +19,28 @@ python-dotenv = "^1.0.1"
 python-semantic-release = "^9.18.0"
 
 [tool.semantic_release]
-version_variable = [
-    "mykobo_py/__init__.py:__version__",
-    "pyproject.toml:version",
-]
+version_toml = ["pyproject.toml:tool.poetry.version"]
+version_variables = ["mykobo_py/__init__.py:__version__"]
 branch = "main"
 major_on_zero = false
 tag_format = "{version}"
+build_command = "poetry build"
+commit_message = "chore(release): {version} [skip ci]"
 
 [tool.semantic_release.changelog]
-fiile = "CHANGELOG.md"
+exclude_commit_patterns = []
+
+[tool.semantic_release.changelog.default_templates]
+changelog_file = "CHANGELOG.md"
+
+[tool.semantic_release.branches.main]
+match = "main"
+prerelease = false
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = ["feat", "fix", "docs", "style", "refactor", "perf", "test", "build", "ci", "chore"]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf"]
 
 [build-system]
 requires = ["poetry-core"]

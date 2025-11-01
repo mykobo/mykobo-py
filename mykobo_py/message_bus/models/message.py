@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional, Union, List, Any
+from datetime import datetime, UTC
+import uuid
 from dataclasses_json import dataclass_json
 from mykobo_py.utils import del_none
 
@@ -36,10 +38,14 @@ class MetaData:
     instruction_type: str
     created_at: str
     token: str
+    idempotency_key: str
 
     def __post_init__(self):
         """Validate that all required fields are provided"""
-        validate_required_fields(self, ['source', 'instruction_type', 'created_at', 'token'])
+        validate_required_fields(
+            self,
+            ['source', 'instruction_type', 'created_at', 'token', 'idempotency_key']
+        )
 
     @property
     def to_dict(self):
@@ -116,3 +122,42 @@ class MessageBusMessage:
     @property
     def to_dict(self):
         return del_none(self.to_dict())
+
+    @staticmethod
+    def create(
+        source: str,
+        instruction_type: str,
+        payload: Union[PaymentPayload, StatusUpdatePayload, CorrectionPayload],
+        service_token: str,
+        idempotency_key: Optional[str] = None
+    ) -> 'MessageBusMessage':
+        """
+        Convenience function to create a complete MessageBusMessage.
+
+        Args:
+            source: The source system (e.g., "BANKING_SERVICE", "ANCHOR_MYKOBO", "WATCHTOWER")
+            instruction_type: The type of instruction (e.g., "PAYMENT", "STATUS_UPDATE", "CORRECTION")
+            payload: The payload object (PaymentPayload, StatusUpdatePayload, or CorrectionPayload)
+            service_token: The JWT token from the identity module
+            idempotency_key: Optional idempotency key. If not provided, a UUID will be generated
+
+        Returns:
+            A complete MessageBusMessage instance
+        """
+        if idempotency_key is None:
+            idempotency_key = str(uuid.uuid4())
+
+        created_at = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        meta_data = MetaData(
+            source=source,
+            instruction_type=instruction_type,
+            created_at=created_at,
+            token=service_token,
+            idempotency_key=idempotency_key
+        )
+
+        return MessageBusMessage(
+            meta_data=meta_data,
+            payload=payload
+        )
