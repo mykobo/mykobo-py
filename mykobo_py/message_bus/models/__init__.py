@@ -1,11 +1,17 @@
 from mykobo_py.message_bus.models.message import (
     MessageBusMessage,
     MetaData,
+)
+from mykobo_py.message_bus.models.instruction import (
     PaymentPayload,
     StatusUpdatePayload,
     CorrectionPayload,
     TransactionPayload,
+)
+from mykobo_py.message_bus.models.base import (
     InstructionType,
+    EventType,
+    TransactionType,
 )
 
 __all__ = [
@@ -16,4 +22,6 @@ __all__ = [
     "CorrectionPayload",
     "TransactionPayload",
     "InstructionType",
+    "EventType",
+    "TransactionType",
 ]

@@ -1,0 +1,112 @@
+from dataclasses import dataclass
+from typing import Optional
+
+from dataclasses_json import dataclass_json
+
+from mykobo_py.message_bus.models.base import validate_required_fields, TransactionType, Payload
+from mykobo_py.utils import del_none
+
+
+@dataclass_json
+@dataclass
+class PaymentPayload(Payload):
+    """Payload for payment instructions"""
+    external_reference: str
+    payer_name: Optional[str]
+    currency: str
+    value: str
+    source: str
+    reference: str
+    bank_account_number: Optional[str]
+
+    def __post_init__(self):
+        """Validate that all required fields are provided"""
+        validate_required_fields(
+            self,
+            ['external_reference', 'currency', 'value', 'source', 'reference']
+        )
+
+    @property
+    def to_dict(self):
+        return del_none(self.to_dict())
+
+
+@dataclass_json
+@dataclass
+class StatusUpdatePayload(Payload):
+    """Payload for status update instructions"""
+    reference: str
+    status: str
+    message: str
+
+    def __post_init__(self):
+        """Validate that all required fields are provided"""
+        validate_required_fields(self, ['reference', 'status', 'message'])
+
+    @property
+    def to_dict(self):
+        return del_none(self.to_dict())
+
+
+@dataclass_json
+@dataclass
+class CorrectionPayload(Payload):
+    """Payload for correction instructions"""
+    reference: str
+    value: str
+    message: str
+    currency: str
+    source: str
+
+    def __post_init__(self):
+        """Validate that all required fields are provided"""
+        validate_required_fields(self, ['reference', 'value', 'message', 'currency', 'source'])
+
+    @property
+    def to_dict(self):
+        return del_none(self.to_dict())
+
+
+@dataclass_json
+@dataclass
+class TransactionPayload(Payload):
+    """Payload for transaction instructions"""
+    external_reference: str
+    source: str
+    reference: str
+    first_name: str
+    last_name: str
+    transaction_type: TransactionType
+    status: str
+    incoming_currency: str
+    outgoing_currency: str
+    value: str
+    fee: str
+    payer: Optional[str]
+    payee: Optional[str]
+
+    def __post_init__(self):
+        """Validate that all required fields are provided"""
+        # Convert string to enum if needed
+        if isinstance(self.transaction_type, str):
+            self.transaction_type = TransactionType(self.transaction_type)
+
+        if self.transaction_type == TransactionType.DEPOSIT and self.payer is None:
+            raise ValueError("Deposit transactions must be specify a payer id")
+
+        if self.transaction_type == TransactionType.WITHDRAW and self.payee is None:
+            raise ValueError("Withdraw transactions must be specify a payee id")
+
+        validate_required_fields(
+            self,
+            [
+                'external_reference', 'source', 'reference', 'first_name', 'last_name',
+                'transaction_type', 'status', 'incoming_currency', 'outgoing_currency',
+                'value', 'fee'
+            ]
+        )
+
+    @property
+    def to_dict(self):
+        return del_none(self.to_dict())
+

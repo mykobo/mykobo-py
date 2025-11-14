@@ -8,6 +8,7 @@ from mykobo_py.message_bus.models import (
     StatusUpdatePayload,
     CorrectionPayload,
     InstructionType,
+    EventType,
 )
 
 
@@ -41,17 +42,18 @@ class TestMetaData:
             )
         assert "MetaData missing required fields: source" in str(exc_info.value)
 
-    def test_metadata_missing_instruction_type(self):
-        """Test MetaData validation fails when instruction_type is missing"""
+    def test_metadata_missing_instruction_type_and_event(self):
+        """Test MetaData validation fails when both instruction_type and event are missing"""
         with pytest.raises(ValueError) as exc_info:
             MetaData(
                 source="BANKING_SERVICE",
                 instruction_type=None,
+                event=None,
                 created_at="2021-01-01T00:00:00Z",
                 token="test.token.here",
                 idempotency_key="unique-key-123"
             )
-        assert "instruction_type" in str(exc_info.value)
+        assert "instruction_type or event" in str(exc_info.value)
 
     def test_metadata_missing_multiple_fields(self):
         """Test MetaData validation fails when multiple fields are missing"""
@@ -124,11 +126,38 @@ class TestMetaData:
             MetaData(
                 source="BANKING_SERVICE",
                 instruction_type="INVALID_TYPE",
+                event=None,
                 created_at="2021-01-01T00:00:00Z",
                 token="test.token.here",
                 idempotency_key="unique-key-123"
             )
         assert "INVALID_TYPE" in str(exc_info.value)
+
+    def test_metadata_with_event(self):
+        """Test MetaData with event field"""
+        metadata = MetaData(
+            source="BANKING_SERVICE",
+            instruction_type=None,
+            event=EventType.NEW_TRANSACTION,
+            created_at="2021-01-01T00:00:00Z",
+            token="test.token.here",
+            idempotency_key="unique-key-123"
+        )
+        assert metadata.event == EventType.NEW_TRANSACTION
+        assert metadata.instruction_type is None
+
+    def test_metadata_event_string_converts_to_enum(self):
+        """Test MetaData converts string event to enum"""
+        metadata = MetaData(
+            source="BANKING_SERVICE",
+            instruction_type=None,
+            event="NEW_TRANSACTION",
+            created_at="2021-01-01T00:00:00Z",
+            token="test.token.here",
+            idempotency_key="unique-key-123"
+        )
+        assert metadata.event == EventType.NEW_TRANSACTION
+        assert isinstance(metadata.event, EventType)
 
 
 class TestPaymentPayload:
@@ -628,7 +657,7 @@ class TestMessageBusMessage:
                 payload=wrong_payload
             )
 
-        assert "instruction_type PAYMENT requires PaymentPayload" in str(exc_info.value)
+        assert "PAYMENT requires PaymentPayload" in str(exc_info.value)
         assert "StatusUpdatePayload" in str(exc_info.value)
 
     def test_status_update_instruction_requires_status_update_payload(self):
@@ -676,7 +705,7 @@ class TestMessageBusMessage:
                 payload=wrong_payload
             )
 
-        assert "instruction_type STATUS_UPDATE requires StatusUpdatePayload" in str(exc_info.value)
+        assert "STATUS_UPDATE requires StatusUpdatePayload" in str(exc_info.value)
         assert "PaymentPayload" in str(exc_info.value)
 
     def test_correction_instruction_requires_correction_payload(self):
@@ -722,5 +751,96 @@ class TestMessageBusMessage:
                 payload=wrong_payload
             )
 
-        assert "instruction_type CORRECTION requires CorrectionPayload" in str(exc_info.value)
+        assert "CORRECTION requires CorrectionPayload" in str(exc_info.value)
         assert "StatusUpdatePayload" in str(exc_info.value)
+
+    def test_create_event_message(self):
+        """Test creating event message with convenience function"""
+        from mykobo_py.message_bus.models.event import NewTransactionEventPayload
+
+        payload = NewTransactionEventPayload(
+            created_at="2021-01-01T00:00:00Z",
+            kind="DEPOSIT",
+            reference="TXN123",
+            source="BANKING_SERVICE"
+        )
+
+        message = MessageBusMessage.create(
+            source="BANKING_SERVICE",
+            payload=payload,
+            service_token="test.token.here",
+            event=EventType.NEW_TRANSACTION
+        )
+
+        assert message.meta_data.source == "BANKING_SERVICE"
+        assert message.meta_data.event == EventType.NEW_TRANSACTION
+        assert message.meta_data.instruction_type is None
+        assert message.meta_data.token == "test.token.here"
+        assert message.meta_data.idempotency_key is not None
+        assert len(message.meta_data.idempotency_key) > 0
+        assert message.payload == payload
+
+    def test_create_event_message_with_string_event_type(self):
+        """Test creating event message with string event type"""
+        from mykobo_py.message_bus.models.event import NewTransactionEventPayload
+
+        payload = NewTransactionEventPayload(
+            created_at="2021-01-01T00:00:00Z",
+            kind="DEPOSIT",
+            reference="TXN123",
+            source="BANKING_SERVICE"
+        )
+
+        message = MessageBusMessage.create(
+            source="BANKING_SERVICE",
+            payload=payload,
+            service_token="test.token.here",
+            event="NEW_TRANSACTION"
+        )
+
+        assert message.meta_data.event == EventType.NEW_TRANSACTION
+        assert isinstance(message.meta_data.event, EventType)
+        assert message.meta_data.instruction_type is None
+
+    def test_create_message_requires_instruction_or_event(self):
+        """Test that create method requires either instruction_type or event"""
+        from mykobo_py.message_bus.models.event import NewTransactionEventPayload
+
+        payload = NewTransactionEventPayload(
+            created_at="2021-01-01T00:00:00Z",
+            kind="DEPOSIT",
+            reference="TXN123",
+            source="BANKING_SERVICE"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            MessageBusMessage.create(
+                source="BANKING_SERVICE",
+                payload=payload,
+                service_token="test.token.here"
+            )
+
+        assert "Either instruction_type or event must be provided" in str(exc_info.value)
+
+    def test_create_message_rejects_both_instruction_and_event(self):
+        """Test that create method rejects both instruction_type and event"""
+        payload = PaymentPayload(
+            external_reference="P763763453G",
+            payer_name="John Doe",
+            currency="EUR",
+            value="123.00",
+            source="BANK_MODULR",
+            reference="MYK123344545",
+            bank_account_number="GB123266734836738787454"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            MessageBusMessage.create(
+                source="BANKING_SERVICE",
+                payload=payload,
+                service_token="test.token.here",
+                instruction_type=InstructionType.PAYMENT,
+                event=EventType.NEW_TRANSACTION
+            )
+
+        assert "Cannot specify both instruction_type and event" in str(exc_info.value)
