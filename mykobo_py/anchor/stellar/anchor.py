@@ -1,9 +1,8 @@
 from typing import Optional
 import requests
 from time import time
-from pprint import pprint
 
-from mykobo_py.anchor.models import Transaction
+from mykobo_py.anchor.stellar.models import Transaction
 
 
 class AnchorRpcClient:
