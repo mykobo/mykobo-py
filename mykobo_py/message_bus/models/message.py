@@ -27,6 +27,7 @@ class MetaData:
     idempotency_key: str
     instruction_type: Optional[InstructionType] = None
     event: Optional[EventType] = None
+    ip_address: Optional[str] = None
 
     def __post_init__(self):
         """Validate that all required fields are provided"""
@@ -117,7 +118,8 @@ class MessageBusMessage:
         service_token: str,
         instruction_type: Optional[Union[InstructionType, str]] = None,
         event: Optional[Union[EventType, str]] = None,
-        idempotency_key: Optional[str] = None
+        idempotency_key: Optional[str] = None,
+        ip_address: Optional[str] = None
     ) -> 'MessageBusMessage':
         """
         Convenience function to create a complete MessageBusMessage.
@@ -159,7 +161,8 @@ class MessageBusMessage:
             event=event,
             created_at=created_at,
             token=service_token,
-            idempotency_key=idempotency_key
+            idempotency_key=idempotency_key,
+            ip_address=ip_address
         )
 
         return MessageBusMessage(
