@@ -1,0 +1,84 @@
+{
+  "transaction": {
+    "id": "urn:tx:8cbb9c5d50274e4b850df5914d001cdc",
+    "external_reference": "c8056ae8-e8a7-4c96-9cb7-d79213c88fa9",
+    "source": "ANCHOR_PLATFORM",
+    "reference": "1001764006159",
+    "transaction_type": "DEPOSIT",
+    "status": "FULFILLED",
+    "incoming_currency": "EUR",
+    "outgoing_currency": "EURC",
+    "requested_amount": 76.86,
+    "expected_amount_in": 76.86,
+    "amount_out": 75.9,
+    "amount_in": 76.86,
+    "fee": 0.96,
+    "payer": "urn:usrp:545e8fd4776f458fa9cf204edc841c79",
+    "payee": null,
+    "created_at": "2025-11-24T17:42:41",
+    "updated_at": "2025-12-05T17:40:28.091941",
+    "requester_first_name": "Segundo Manuel Arribas",
+    "requester_last_name": "Sánchez",
+    "originating_ip_address": "45.13.211.143"
+  },
+  "events": [
+    {
+      "Payment": {
+        "id": "urn:pay:69114f8f70304aff9edb63cdf5cacc46",
+        "external_reference": "eb3c794a029843dcb225054d7caa9e0b",
+        "source": "BANK_BCB",
+        "reference": "1001764006159",
+        "payer_name": "Segundo Manuel Arribas Sánchez",
+        "currency": "EUR",
+        "value": "76.86000000",
+        "bank_account_number": null,
+        "created_at": "2025-12-05T17:17:36",
+        "applied_at": "2025-12-05T17:19:28.073115"
+      }
+    },
+    {
+      "Payment": {
+        "id": "urn:pay:e218128a1bc84745bb0086736069f531",
+        "external_reference": "91e43c132260b4d9cc19d510cb9d497aad16411bf432c612ac1dfd20f94826a2",
+        "source": "CHAIN_STELLAR",
+        "reference": "1001764006159",
+        "payer_name": "MYKOBO",
+        "currency": "EURC",
+        "value": "75.90000000",
+        "bank_account_number": null,
+        "created_at": "2025-12-05T17:38:13",
+        "applied_at": "2025-12-05T17:40:28.091948"
+      }
+    },
+    {
+      "StatusUpdate": {
+        "id": "urn:txsu::96114b250c404920aa27120c62a10000",
+        "reference": "1001764006159",
+        "status": "READY_TO_FULFILL",
+        "message": "1001764006159 ",
+        "created_at": "2025-12-05T17:33:32",
+        "applied_at": "2025-12-05T17:36:58.058808"
+      }
+    },
+    {
+      "StatusUpdate": {
+        "id": "urn:txsu:d10dcf6bf56e45269ca7530bf1164ed8",
+        "reference": "1001764006159",
+        "status": "APPROVED",
+        "message": "Transaction has passed all compliance checks",
+        "created_at": "2025-12-05T17:33:55.547298",
+        "applied_at": "2025-12-05T17:36:58.058865"
+      }
+    },
+    {
+      "StatusUpdate": {
+        "id": "urn:txsu:52f3fdeca8bd44a490b7addb28ae5697",
+        "reference": "1001764006159",
+        "status": "PENDING_CHAIN",
+        "message": "Message sent to chain services for fulfillment",
+        "created_at": "2025-12-05T17:36:58.069710",
+        "applied_at": "2025-12-05T17:40:28.091934"
+      }
+    }
+  ]
+}

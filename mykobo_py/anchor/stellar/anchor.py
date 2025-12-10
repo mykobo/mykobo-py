@@ -43,7 +43,7 @@ class AnchorRpcClient:
             if response.ok:
                 return Transaction.from_json(response.json())
             else:
-                self.logger.waning(f"CLIENT: Error fetching transaction {response.content}")
+                self.logger.warning(f"CLIENT: Error fetching transaction {response.content}")
                 return None
         except Exception as e:
             self.logger.error(f"CLIENT Failed to get transaction {transaction_id}: {e}")
