@@ -19,7 +19,6 @@ class IdentityServiceClient(MykoboServiceClient):
         self.app_key = os.getenv("IDENTITY_ACCESS_KEY")
         self.app_secret = os.getenv("IDENTITY_SECRET_KEY")
 
-
     def authenticate(self, email, password) -> Token | OtcChallenge:
         data = {
             "email": email,
@@ -37,7 +36,7 @@ class IdentityServiceClient(MykoboServiceClient):
         if response.json().get("otp_required"):
             return OtcChallenge.from_json(response.json())
         else:
-             return Token.from_json(response.json())
+            return Token.from_json(response.json())
 
     def refresh_token(self, refresh_token: str) -> Token:
         data = {
@@ -53,7 +52,6 @@ class IdentityServiceClient(MykoboServiceClient):
         response.raise_for_status()
         return Token.from_json(response.json())
 
-
     def otp_challenge(self, nonce: str, otp: int) -> Token:
         data = {
             "nonce": nonce,
@@ -68,7 +66,6 @@ class IdentityServiceClient(MykoboServiceClient):
 
         response.raise_for_status()
         return Token.from_json(response.json())
-
 
     def acquire_token(self) -> Token | None:
         try:
@@ -151,7 +148,7 @@ class IdentityServiceClient(MykoboServiceClient):
         response.raise_for_status()
         return response
 
-    def create_new_customer(self,token: Token, payload: CustomerRequest) -> Response:
+    def create_new_customer(self, token: Token, payload: CustomerRequest) -> Response:
         response = requests.post(
             f"{self.host}/user/profile/new",
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
@@ -169,7 +166,6 @@ class IdentityServiceClient(MykoboServiceClient):
         )
         response.raise_for_status()
         return response
-
 
     def initiate_kyc_review(self, token: Token, payload: NewKycReviewRequest) -> Response:
         url = f"{self.host}/kyc/reviews/initiate"
@@ -191,7 +187,6 @@ class IdentityServiceClient(MykoboServiceClient):
         response.raise_for_status()
         return response
 
-
     def update_user_profile(self, token: Token, profile_id: Optional[str], payload: UpdateProfileRequest) -> Response:
         url = f"{self.host}/user/profile/update"
         if profile_id:
@@ -200,6 +195,25 @@ class IdentityServiceClient(MykoboServiceClient):
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
             data=json.dumps(del_none(payload.to_dict().copy()))
+        )
+        response.raise_for_status()
+        return response
+
+    def get_user_risk_score(self, token: Token, profile_id: str) -> Response:
+        url = f"{self.host}/user/profile/{profile_id}/risk_profile"
+        response = requests.get(
+            url,
+            headers=self.generate_headers(token, **{"Content-type": "application/json"})
+        )
+        response.raise_for_status()
+        return response
+
+    def get_user_risk_score_history(self, token: Token, profile_id: str) -> Response:
+        url = f"{self.host}/user/profile/{profile_id}/risk_history"
+
+        response = requests.get(
+            url,
+            headers=self.generate_headers(token, **{"Content-type": "application/json"})
         )
         response.raise_for_status()
         return response

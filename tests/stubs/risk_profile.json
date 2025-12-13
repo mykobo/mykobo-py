@@ -1,0 +1,37 @@
+{
+  "risk_score": 13.0,
+  "break_down": {
+    "total_score": 13.0,
+    "verification": {
+      "tax_residence_verified": 0.5,
+      "name_verified": 1.0,
+      "aml_passed": 1.0,
+      "phone_verified": 0.5,
+      "id_verified": 1.0,
+      "email_verified": 0.0,
+      "dob_verified": 0.5,
+      "residence_verified": 0.5,
+      "citizenship_verified": 0.5,
+      "is_not_pep": 4.0
+    },
+    "source_of_funds": {
+      "score": 1.0,
+      "breakdown": {
+        "sof.EMPLOYMENT": 1.0
+      }
+    },
+    "country_risk_jurisdiction": {
+      "score": 1.5,
+      "breakdown": {
+        "crj.LOW": 1.5
+      }
+    },
+    "expected_volume": {
+      "score": 1.0,
+      "breakdown": {
+        "ev.BELOW_THRESHOLD": 1.0
+      }
+    }
+  },
+  "latest_score_history": null
+}

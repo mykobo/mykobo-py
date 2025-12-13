@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Dict
 from datetime import datetime
 
 
@@ -98,3 +98,77 @@ class UserProfile:
             kyc_status=KycStatus.from_json(json_payload["kyc_status"]) if json_payload.get("kyc_status") else None,
             kyc_documents=[KycDocument.from_json(doc) for doc in json_payload["kyc_documents"]]
         )
+
+@dataclass
+class ScoreIndicators:
+    tax_residence_verified: float
+    name_verified: float
+    aml_passed: float
+    phone_verified: float
+    id_verified: float
+    email_verified: float
+    dob_verified: float
+    residence_verified: float
+    citizenship_verified: float
+    is_not_pep: float
+
+    @staticmethod
+    def from_json(json_payload: dict) -> 'ScoreIndicators':
+        return ScoreIndicators(
+            tax_residence_verified=json_payload["tax_residence_verified"],
+            name_verified=json_payload["name_verified"],
+            aml_passed=json_payload["aml_passed"],
+            phone_verified=json_payload["phone_verified"],
+            id_verified=json_payload["id_verified"],
+            email_verified=json_payload["email_verified"],
+            dob_verified=json_payload["dob_verified"],
+            residence_verified=json_payload["residence_verified"],
+            citizenship_verified=json_payload["citizenship_verified"],
+            is_not_pep=json_payload["is_not_pep"]
+        )
+
+@dataclass
+class Score:
+    score: float
+    breakdown: Dict[str, float]
+
+    @staticmethod
+    def from_json(json_payload: dict) -> 'Score':
+        return Score(
+            score=json_payload["score"],
+            breakdown=json_payload["breakdown"]
+        )
+
+@dataclass
+class ScoreBreakdown:
+    total_score: float
+    verification: ScoreIndicators
+    source_of_funds: Score
+    country_risk_jurisdiction: Score
+    expected_volume: Score
+
+    @staticmethod
+    def from_json(json_payload: dict) -> 'ScoreBreakdown':
+        return ScoreBreakdown(
+            total_score=json_payload["total_score"],
+            verification=ScoreIndicators.from_json(json_payload["verification"]),
+            source_of_funds=Score.from_json(json_payload["source_of_funds"]),
+            country_risk_jurisdiction=Score.from_json(json_payload["country_risk_jurisdiction"]),
+            expected_volume=Score.from_json(json_payload["expected_volume"])
+        )
+
+
+@dataclass
+class UserRiskProfile:
+    risk_score: float
+    latest_score_history: Optional[float]
+    breakdown: ScoreBreakdown
+
+    @staticmethod
+    def from_json(json_payload: dict) -> 'UserRiskProfile':
+        return UserRiskProfile(
+            risk_score=json_payload["risk_score"],
+            latest_score_history=json_payload.get("latest_score_history"),
+            breakdown=ScoreBreakdown.from_json(json_payload["break_down"])
+        )
+

@@ -8,7 +8,7 @@ from mykobo_py.identity.models.auth import Token
 from mykobo_py.identity.models.request import CustomerRequest
 from os import getenv
 
-from mykobo_py.identity.models.response import UserProfile
+from mykobo_py.identity.models.response import UserProfile, UserRiskProfile
 load_dotenv()
 logger = logging.getLogger("test")
 host = getenv("IDENTITY_SERVICE_HOST", "http://fallback")
@@ -73,3 +73,41 @@ def test_new_customer(requests_mock):
 
     user_profile = UserProfile.from_json(response.json())
     assert user_profile.id == "urn:usrp:6dd61598f5be470ea19ca9b8ef012116"
+
+
+def test_user_risk_profile_deserialization():
+    with open("tests/stubs/risk_profile.json") as f:
+        json_data = json.loads(f.read())
+
+    risk_profile = UserRiskProfile.from_json(json_data)
+
+    # Test top-level fields
+    assert risk_profile.risk_score == 13.0
+    assert risk_profile.latest_score_history is None
+
+    # Test breakdown
+    assert risk_profile.breakdown.total_score == 13.0
+
+    # Test verification indicators
+    assert risk_profile.breakdown.verification.tax_residence_verified == 0.5
+    assert risk_profile.breakdown.verification.name_verified == 1.0
+    assert risk_profile.breakdown.verification.aml_passed == 1.0
+    assert risk_profile.breakdown.verification.phone_verified == 0.5
+    assert risk_profile.breakdown.verification.id_verified == 1.0
+    assert risk_profile.breakdown.verification.email_verified == 0.0
+    assert risk_profile.breakdown.verification.dob_verified == 0.5
+    assert risk_profile.breakdown.verification.residence_verified == 0.5
+    assert risk_profile.breakdown.verification.citizenship_verified == 0.5
+    assert risk_profile.breakdown.verification.is_not_pep == 4.0
+
+    # Test source of funds
+    assert risk_profile.breakdown.source_of_funds.score == 1.0
+    assert risk_profile.breakdown.source_of_funds.breakdown == {"sof.EMPLOYMENT": 1.0}
+
+    # Test country risk jurisdiction
+    assert risk_profile.breakdown.country_risk_jurisdiction.score == 1.5
+    assert risk_profile.breakdown.country_risk_jurisdiction.breakdown == {"crj.LOW": 1.5}
+
+    # Test expected volume
+    assert risk_profile.breakdown.expected_volume.score == 1.0
+    assert risk_profile.breakdown.expected_volume.breakdown == {"ev.BELOW_THRESHOLD": 1.0}
