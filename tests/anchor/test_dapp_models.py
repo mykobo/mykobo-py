@@ -1,4 +1,3 @@
-import pytest
 import json
 import os
 from mykobo_py.anchor.dapp.models import Transaction
@@ -263,7 +262,7 @@ class TestTransaction:
 
     def test_transaction_from_payload_file(self):
         """Test loading transaction from the transaction-payload.json file"""
-        payload_file = os.path.join(os.path.dirname(__file__), "transaction-payload.json")
+        payload_file = os.path.join(os.path.dirname(__file__), "fixtures/transaction-payload.json")
 
         with open(payload_file, 'r') as f:
             json_data = json.load(f)
