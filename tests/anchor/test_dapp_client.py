@@ -1,25 +1,25 @@
 import pytest
 import logging
-from mykobo_py.anchor.solana.anchor import SolanaAnchorClient
-from mykobo_py.anchor.solana.models import Transaction
+from mykobo_py.anchor.dapp.anchor import DappAnchorClient
+from mykobo_py.anchor.dapp.models import Transaction
 
 
 logger = logging.getLogger("test")
 host = "https://test-anchor.example.com"
 
 
-class TestSolanaAnchorClient:
+class TestDappAnchorClient:
     """Tests for SolanaAnchorClient"""
 
     def test_client_initialization(self):
         """Test initializing SolanaAnchorClient"""
-        client = SolanaAnchorClient(host, logger)
+        client = DappAnchorClient(host, logger)
         assert client.host == host
         assert client.logger == logger
 
     def test_make_request_success(self, requests_mock):
         """Test making a successful JSON-RPC request"""
-        client = SolanaAnchorClient(host, logger)
+        client = DappAnchorClient(host, logger)
 
         mock_response = [
             {
@@ -39,7 +39,7 @@ class TestSolanaAnchorClient:
 
     def test_make_request_failure(self, requests_mock):
         """Test handling request failure"""
-        client = SolanaAnchorClient(host, logger)
+        client = DappAnchorClient(host, logger)
 
         requests_mock.post(host, exc=Exception("Connection error"))
 
@@ -49,7 +49,7 @@ class TestSolanaAnchorClient:
 
     def test_get_transaction_success(self, requests_mock):
         """Test getting a transaction successfully"""
-        client = SolanaAnchorClient(host, logger)
+        client = DappAnchorClient(host, logger)
         transaction_id = "29147822-396e-4817-9b64-931c92a05f46"
 
         mock_transaction_data = {
@@ -76,7 +76,7 @@ class TestSolanaAnchorClient:
         }
 
         requests_mock.get(
-            f"{host}/api/transactions/{transaction_id}",
+            f"{host}/api/transaction/{transaction_id}",
             json=mock_transaction_data
         )
 
@@ -93,11 +93,11 @@ class TestSolanaAnchorClient:
 
     def test_get_transaction_not_found(self, requests_mock):
         """Test getting a transaction that doesn't exist"""
-        client = SolanaAnchorClient(host, logger)
+        client = DappAnchorClient(host, logger)
         transaction_id = "non-existent-id"
 
         requests_mock.get(
-            f"{host}/api/transactions/{transaction_id}",
+            f"{host}/api/transaction/{transaction_id}",
             status_code=404
         )
 
@@ -107,11 +107,11 @@ class TestSolanaAnchorClient:
 
     def test_get_transaction_server_error(self, requests_mock):
         """Test handling server error when getting transaction"""
-        client = SolanaAnchorClient(host, logger)
+        client = DappAnchorClient(host, logger)
         transaction_id = "test-id"
 
         requests_mock.get(
-            f"{host}/api/transactions/{transaction_id}",
+            f"{host}/api/transaction/{transaction_id}",
             status_code=500
         )
 
@@ -121,11 +121,11 @@ class TestSolanaAnchorClient:
 
     def test_get_transaction_exception(self, requests_mock):
         """Test handling exception when getting transaction"""
-        client = SolanaAnchorClient(host, logger)
+        client = DappAnchorClient(host, logger)
         transaction_id = "test-id"
 
         requests_mock.get(
-            f"{host}/api/transactions/{transaction_id}",
+            f"{host}/api/transaction/{transaction_id}",
             exc=Exception("Network error")
         )
 
@@ -135,7 +135,7 @@ class TestSolanaAnchorClient:
 
     def test_make_request_payload_format(self, requests_mock):
         """Test that make_request sends properly formatted JSON-RPC payload"""
-        client = SolanaAnchorClient(host, logger)
+        client = DappAnchorClient(host, logger)
 
         def check_request(request, context):
             payload = request.json()
@@ -155,7 +155,7 @@ class TestSolanaAnchorClient:
 
     def test_get_transaction_with_completed_status(self, requests_mock):
         """Test getting a completed transaction with tx_hash"""
-        client = SolanaAnchorClient(host, logger)
+        client = DappAnchorClient(host, logger)
         transaction_id = "completed-tx-id"
 
         mock_transaction_data = {
@@ -182,7 +182,7 @@ class TestSolanaAnchorClient:
         }
 
         requests_mock.get(
-            f"{host}/api/transactions/{transaction_id}",
+            f"{host}/api/transaction/{transaction_id}",
             json=mock_transaction_data
         )
 

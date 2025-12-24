@@ -24,6 +24,9 @@ class Transaction:
     updated_at: str
     value: str
     wallet_address: str
+    network: Optional[str]
+    client_domain: Optional[str]
+    comment: Optional[str]
 
     @property
     def is_pending_anchor(self):
@@ -63,7 +66,10 @@ class Transaction:
             tx_hash=json_data.get('tx_hash'),
             updated_at=json_data.get('updated_at', ''),
             value=json_data.get('value', '0'),
-            wallet_address=json_data.get('wallet_address', '')
+            wallet_address=json_data.get('wallet_address', ''),
+            network=json_data.get('network'),
+            client_domain=json_data.get('client_domain'),
+            comment=json_data.get('comment'),
         )
 
     def dict(self):

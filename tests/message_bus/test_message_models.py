@@ -844,3 +844,24 @@ class TestMessageBusMessage:
             )
 
         assert "Cannot specify both instruction_type and event" in str(exc_info.value)
+
+    def test_transaction_status_update(self):
+        """Test transaction_status update"""
+        payload = json.dumps({
+            "meta_data": {
+                "source": "MYKOBO_LEDGER",
+                "created_at": "2025-12-20T17:27:51Z",
+                "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46c3ZjOjI4MDc4MTY1NDdkYTQwMzE4ZmVmM2NhNDZkNWEzZjVjIiwianRpIjoidXJuOnRrbjo2YTFiZjAxODZmNzY0YTFhYmIzOGM4MTMxZTZmNGQyZCIsImlzcyI6InByZC5pZGVudGl0eS5teWtvYm8uY28iLCJpYXQiOjE3NjU5NTIxMzEsImV4cCI6MTc2NjU1NjkzMSwiYXVkIjoiU2VydmljZSIsInNjb3BlIjpbInVzZXI6cmVhZCIsInVzZXI6d3JpdGUiLCJ1c2VyOmFkbWluIiwic2VydmljZTpyZWFkIiwidG9rZW46cmVhZCIsImJ1c2luZXNzOnJlYWQiLCJidXNpbmVzczpyZWFkIiwid2FsbGV0OnJlYWQiLCJ3YWxsZXQ6d3JpdGUiLCJ0cmFuc2FjdGlvbjpyZWFkIiwidHJhbnNhY3Rpb246d3JpdGUiLCJ0cmFuc2FjdGlvbjphZG1pbiIsInBheW1lbnQ6cmVhZCIsInBheW1lbnQ6d3JpdGUiLCJwYXltZW50OmFkbWluIl19.c_0e7v-fMMWdCpown3e4hXbFKnjM2tyOV_ty827VgFA",
+                "idempotency_key": "677a921e-56a6-40af-ac83-db78ca1faf00",
+                "instruction_type": "STATUS_UPDATE"
+            },
+            "payload": {
+                "reference": "1001766240984",
+                "status": "FUNDS_RECEIVED",
+                "message": "Payment received and applied successfully",
+                "transaction_id": "c1059c63-49d7-45d9-81c4-0aaf7e263382"
+            }
+        })
+
+        message = MessageBusMessage.from_json(payload)
+        print(message)

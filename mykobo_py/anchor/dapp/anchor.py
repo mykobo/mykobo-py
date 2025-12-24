@@ -2,10 +2,10 @@ from typing import Optional
 import requests
 from time import time
 
-from mykobo_py.anchor.solana.models import Transaction
+from mykobo_py.anchor.dapp.models import Transaction
 
 
-class SolanaAnchorClient:
+class DappAnchorClient:
     def __init__(self, host, logger):
         self.host = host
         self.logger = logger
@@ -20,6 +20,7 @@ class SolanaAnchorClient:
                 "params": params
             }
         ]
+
         self.logger.info(payload)
         url = f"{self.host}"
         try:
@@ -31,9 +32,9 @@ class SolanaAnchorClient:
 
     def get_transaction(self, transaction_id) -> Optional[Transaction]:
         try:
-            self.logger.info(f"Getting transaction {transaction_id} from {self.host}/api/transactions/{transaction_id}")
-            print(f"Getting transaction {transaction_id} from {self.host}/api/transactions/{transaction_id}")
-            response = requests.get(url=f"{self.host}/api/transactions/{transaction_id}")
+            self.logger.info(f"Getting transaction {transaction_id} from {self.host}/api/transaction/{transaction_id}")
+            print(f"Getting transaction {transaction_id} from {self.host}/api/transaction/{transaction_id}")
+            response = requests.get(url=f"{self.host}/api/transaction/{transaction_id}")
             if response.ok:
                 return Transaction.from_json(response.json())
             else:
