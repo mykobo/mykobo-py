@@ -32,9 +32,8 @@ class DappAnchorClient:
 
     def get_transaction(self, transaction_id) -> Optional[Transaction]:
         try:
-            self.logger.info(f"Getting transaction {transaction_id} from {self.host}/api/transaction/{transaction_id}")
-            print(f"Getting transaction {transaction_id} from {self.host}/api/transaction/{transaction_id}")
-            response = requests.get(url=f"{self.host}/api/transaction/{transaction_id}")
+            self.logger.info(f"Getting transaction {transaction_id} from {self.host}/api/transactions/{transaction_id}")
+            response = requests.get(url=f"{self.host}/api/transactions/{transaction_id}")
             if response.ok:
                 return Transaction.from_json(response.json())
             else:
