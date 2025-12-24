@@ -76,7 +76,7 @@ class TestDappAnchorClient:
         }
 
         requests_mock.get(
-            f"{host}/api/transaction/{transaction_id}",
+            f"{host}/api/transactions/{transaction_id}",
             json=mock_transaction_data
         )
 
@@ -97,7 +97,7 @@ class TestDappAnchorClient:
         transaction_id = "non-existent-id"
 
         requests_mock.get(
-            f"{host}/api/transaction/{transaction_id}",
+            f"{host}/api/transactions/{transaction_id}",
             status_code=404
         )
 
@@ -111,7 +111,7 @@ class TestDappAnchorClient:
         transaction_id = "test-id"
 
         requests_mock.get(
-            f"{host}/api/transaction/{transaction_id}",
+            f"{host}/api/transactions/{transaction_id}",
             status_code=500
         )
 
@@ -125,7 +125,7 @@ class TestDappAnchorClient:
         transaction_id = "test-id"
 
         requests_mock.get(
-            f"{host}/api/transaction/{transaction_id}",
+            f"{host}/api/transactions/{transaction_id}",
             exc=Exception("Network error")
         )
 
@@ -182,7 +182,7 @@ class TestDappAnchorClient:
         }
 
         requests_mock.get(
-            f"{host}/api/transaction/{transaction_id}",
+            f"{host}/api/transactions/{transaction_id}",
             json=mock_transaction_data
         )
 
