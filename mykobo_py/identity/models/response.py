@@ -172,3 +172,41 @@ class UserRiskProfile:
             breakdown=ScoreBreakdown.from_json(json_payload["break_down"])
         )
 
+
+@dataclass
+class ProfileChangeLog:
+    id: str
+    profile_id: str
+    changed_by_credential_id: str
+    field_name: str
+    old_value: Optional[str]
+    new_value: Optional[str]
+    created_at: datetime
+
+    @staticmethod
+    def from_json(json_payload: dict) -> 'ProfileChangeLog':
+        return ProfileChangeLog(
+            id=json_payload["id"],
+            profile_id=json_payload["profile_id"],
+            changed_by_credential_id=json_payload["changed_by_credential_id"],
+            field_name=json_payload["field_name"],
+            old_value=json_payload.get("old_value"),
+            new_value=json_payload.get("new_value"),
+            created_at=datetime.fromisoformat(json_payload["created_at"])
+        )
+
+
+@dataclass
+class ProfileChangeLogResponse:
+    profile_id: str
+    total_changes: int
+    logs: List[ProfileChangeLog]
+
+    @staticmethod
+    def from_json(json_payload: dict) -> 'ProfileChangeLogResponse':
+        return ProfileChangeLogResponse(
+            profile_id=json_payload["profile_id"],
+            total_changes=json_payload["total_changes"],
+            logs=[ProfileChangeLog.from_json(log) for log in json_payload["logs"]]
+        )
+

@@ -217,3 +217,12 @@ class IdentityServiceClient(MykoboServiceClient):
         )
         response.raise_for_status()
         return response
+
+    def get_profile_logs(self, token: Token, profile_id: str) -> Response:
+        url = f"{self.host}/user/profile/{profile_id}/logs"
+        response = requests.get(
+            url,
+            headers=self.generate_headers(token, **{"Content-type": "application/json"})
+        )
+        response.raise_for_status()
+        return response

@@ -1,0 +1,51 @@
+{
+  "profile_id": "urn:usrp:dd4fdc2870d742e19b1df78b649a1e98",
+  "total_changes": 5,
+  "logs": [
+    {
+      "id": "urn:usrp:aud7273e5a705054e9ca4b908a7ce2ac4dc",
+      "profile_id": "urn:usrp:dd4fdc2870d742e19b1df78b649a1e98",
+      "changed_by_credential_id": "urn:usr:2195c9abc2d7437ead11e198b1267bb6",
+      "field_name": "address_line_1",
+      "old_value": "998 Ernesto Knoll",
+      "new_value": "3595 Main Street S",
+      "created_at": "2025-12-30T11:42:04.399849"
+    },
+    {
+      "id": "urn:usrp:audd57ad33e98fa4c78922cf584b1639022",
+      "profile_id": "urn:usrp:dd4fdc2870d742e19b1df78b649a1e98",
+      "changed_by_credential_id": "urn:usr:2195c9abc2d7437ead11e198b1267bb6",
+      "field_name": "address_line_2",
+      "old_value": null,
+      "new_value": "Jacintoland",
+      "created_at": "2025-12-30T11:42:04.399849"
+    },
+    {
+      "id": "urn:usrp:aud7c394321caa4489dabbb4c45017a2c29",
+      "profile_id": "urn:usrp:dd4fdc2870d742e19b1df78b649a1e98",
+      "changed_by_credential_id": "urn:usr:2195c9abc2d7437ead11e198b1267bb6",
+      "field_name": "bank_account_number",
+      "old_value": "SA6047U6828J38E362030318",
+      "new_value": "BR8217006060409834986264349Y4",
+      "created_at": "2025-12-30T11:42:04.399849"
+    },
+    {
+      "id": "urn:usrp:aude33d06558f4d4831be833aa50d896f72",
+      "profile_id": "urn:usrp:dd4fdc2870d742e19b1df78b649a1e98",
+      "changed_by_credential_id": "urn:usr:2195c9abc2d7437ead11e198b1267bb6",
+      "field_name": "tax_id",
+      "old_value": "h",
+      "new_value": "r",
+      "created_at": "2025-12-30T11:42:04.399849"
+    },
+    {
+      "id": "urn:usrp:aud0d0223c7b68e4768978e97a938e25622",
+      "profile_id": "urn:usrp:dd4fdc2870d742e19b1df78b649a1e98",
+      "changed_by_credential_id": "urn:usr:2195c9abc2d7437ead11e198b1267bb6",
+      "field_name": "id_country_code",
+      "old_value": "PW",
+      "new_value": "NI",
+      "created_at": "2025-12-30T11:42:04.399849"
+    }
+  ]
+}
