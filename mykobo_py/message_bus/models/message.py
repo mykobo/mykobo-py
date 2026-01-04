@@ -131,6 +131,7 @@ class MessageBusMessage:
             instruction_type: The type of instruction (InstructionType enum or string). Required if event is not provided.
             event: The type of event (EventType enum or string). Required if instruction_type is not provided.
             idempotency_key: Optional idempotency key. If not provided, a UUID will be generated
+            ip_address: Optional IP address
 
         Returns:
             A complete MessageBusMessage instance
