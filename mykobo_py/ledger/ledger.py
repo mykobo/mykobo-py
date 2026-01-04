@@ -1,3 +1,4 @@
+import datetime
 import os
 from typing import Optional
 from mykobo_py.client import MykoboServiceClient
@@ -5,6 +6,7 @@ from logging import Logger
 import requests
 from mykobo_py.identity.models.auth import Token
 from mykobo_py.ledger.models.request import TransactionFilterRequest
+from mykobo_py.utils import LEDGER_DATE_TIME_FORMAT
 
 
 class LedgerServiceClient(MykoboServiceClient):
@@ -79,5 +81,18 @@ class LedgerServiceClient(MykoboServiceClient):
             f"{self.host}/transactions/reference/{reference}/compliance",
             headers=self.generate_headers(token, **{"Content-type": "application/json"})
         )
+        response.raise_for_status()
+        return response.json()
+
+    def get_transaction_stats(self, token: Token, to_date: Optional[str], from_date: Optional[str]):
+        url = f"{self.host}/transactions/stats"
+        if to_date:
+            to_date = datetime.datetime.strptime(to_date, LEDGER_DATE_TIME_FORMAT)
+            url = f"{url}?{to_date}"
+        if from_date:
+            from_date = datetime.datetime.strptime(from_date, LEDGER_DATE_TIME_FORMAT)
+            url = f"{url}?{from_date}"
+
+        response = requests.get(url, headers=self.generate_headers(token, **{"Content-type": "application/json"}))
         response.raise_for_status()
         return response.json()

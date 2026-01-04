@@ -13,3 +13,5 @@ def del_none(d:  Dict):
         elif isinstance(value, dict):
             del_none(value)
     return d
+
+LEDGER_DATE_TIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
