@@ -88,15 +88,13 @@ class LedgerServiceClient(MykoboServiceClient):
         url = f"{self.host}/transactions/stats"
 
         if to_date:
-            to_date = datetime.datetime.strptime(to_date, LEDGER_DATE_TIME_FORMAT)
             url = f"{url}?to={to_date}"
 
         if from_date:
-            from_date = datetime.datetime.strptime(from_date, LEDGER_DATE_TIME_FORMAT)
             if to_date:
                 url = f"{url}&from={from_date}"
             else:
-                url = f"{url}?from={to_date}"
+                url = f"{url}?from={from_date}"
 
         response = requests.get(url, headers=self.generate_headers(token, **{"Content-type": "application/json"}))
         response.raise_for_status()
