@@ -37,7 +37,7 @@ class StatusUpdatePayload(Payload):
     """Payload for status update instructions"""
     reference: str
     status: str
-    message: Optional[str]
+    message: Optional[str] = None
 
     def __post_init__(self):
         """Validate that all required fields are provided"""
