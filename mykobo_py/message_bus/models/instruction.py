@@ -37,11 +37,11 @@ class StatusUpdatePayload(Payload):
     """Payload for status update instructions"""
     reference: str
     status: str
-    message: str
+    message: Optional[str]
 
     def __post_init__(self):
         """Validate that all required fields are provided"""
-        validate_required_fields(self, ['reference', 'status', 'message'])
+        validate_required_fields(self, ['reference', 'status'])
 
     @property
     def to_dict(self):
