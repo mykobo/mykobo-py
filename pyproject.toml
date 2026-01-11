@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mykobo-py"
-version = "1.11.7"
+version = "1.11.8"
 description = "Python library to interact with the MyKobo APIs"
 authors = ["Kwabena Aning <kwabena.aning@gmail.com>"]
 readme = "README.md"
