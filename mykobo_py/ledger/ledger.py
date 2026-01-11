@@ -84,7 +84,7 @@ class LedgerServiceClient(MykoboServiceClient):
         response.raise_for_status()
         return response.json()
 
-    def get_transaction_stats(self, token: Token, to_date: Optional[str], from_date: Optional[str]):
+    def get_transaction_stats(self, token: Token, to_date: Optional[str], from_date: Optional[str], profile_id: Optional[str]):
         url = f"{self.host}/transactions/stats"
 
         if to_date:
@@ -95,6 +95,8 @@ class LedgerServiceClient(MykoboServiceClient):
                 url = f"{url}&from={from_date}"
             else:
                 url = f"{url}?from={from_date}"
+        if profile_id:
+            url = f"{url}&profileId={profile_id}"
 
         response = requests.get(url, headers=self.generate_headers(token, **{"Content-type": "application/json"}))
         response.raise_for_status()
