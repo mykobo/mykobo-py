@@ -46,6 +46,12 @@ class TransactionType(str, Enum):
     WITHDRAW = "WITHDRAW"
 
 
+class Direction(str, Enum):
+    """Enum for payment direction"""
+    INBOUND = "INBOUND"
+    OUTBOUND = "OUTBOUND"
+
+
 class EventType(str, Enum):
     """Enum for event types"""
     NEW_TRANSACTION = "NEW_TRANSACTION"

@@ -3,7 +3,7 @@ from typing import Optional
 
 from dataclasses_json import dataclass_json
 
-from mykobo_py.message_bus.models.base import validate_required_fields, TransactionType, Payload
+from mykobo_py.message_bus.models.base import validate_required_fields, TransactionType, Direction, Payload
 from mykobo_py.utils import del_none
 
 
@@ -17,13 +17,18 @@ class PaymentPayload(Payload):
     value: str
     source: str
     reference: str
+    direction: Direction
     bank_account_number: Optional[str]
 
     def __post_init__(self):
         """Validate that all required fields are provided"""
+        # Convert string to enum if needed
+        if isinstance(self.direction, str):
+            self.direction = Direction(self.direction)
+
         validate_required_fields(
             self,
-            ['external_reference', 'currency', 'value', 'source', 'reference']
+            ['external_reference', 'currency', 'value', 'source', 'reference', 'direction']
         )
 
     @property

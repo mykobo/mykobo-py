@@ -7,6 +7,7 @@ from mykobo_py.message_bus.models import (
     MetaData,
     PaymentPayload,
     InstructionType,
+    Direction,
 )
 
 
@@ -77,6 +78,7 @@ class TestSQS:
                 value="100.00",
                 source="BANK",
                 reference="REF123",
+                direction=Direction.INBOUND,
                 bank_account_number="GB123"
             )
         )
@@ -110,6 +112,7 @@ class TestSQS:
             value="250.00",
             source="BANK_WISE",
             reference="REF789",
+            direction="INBOUND",
             bank_account_number="GB456"
         )
 

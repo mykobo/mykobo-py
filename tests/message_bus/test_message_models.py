@@ -9,6 +9,7 @@ from mykobo_py.message_bus.models import (
     CorrectionPayload,
     InstructionType,
     EventType,
+    Direction,
 )
 
 
@@ -172,6 +173,7 @@ class TestPaymentPayload:
             value="123.00",
             source="BANK_MODULR",
             reference="MYK123344545",
+            direction=Direction.INBOUND,
             bank_account_number="GB123266734836738787454"
         )
         assert payload.external_reference == "P763763453G"
@@ -187,6 +189,7 @@ class TestPaymentPayload:
             value="123.00",
             source="BANK_MODULR",
             reference="MYK123344545",
+            direction=Direction.INBOUND,
             bank_account_number=None
         )
         assert payload.payer_name is None
@@ -202,6 +205,7 @@ class TestPaymentPayload:
                 value="123.00",
                 source="BANK_MODULR",
                 reference="MYK123344545",
+                direction=Direction.INBOUND,
                 bank_account_number="GB123266734836738787454"
             )
         assert "external_reference" in str(exc_info.value)
@@ -215,6 +219,7 @@ class TestPaymentPayload:
             "value": "123.00",
             "source": "BANK_MODULR",
             "reference": "MYK123344545",
+            "direction": "INBOUND",
             "bank_account_number": "GB123266734836738787454"
         })
         payload = PaymentPayload.from_json(json_str)
@@ -321,6 +326,7 @@ class TestMessageBusMessage:
                 value="123.00",
                 source="BANK_MODULR",
                 reference="MYK123344545",
+                direction=Direction.INBOUND,
                 bank_account_number="GB123266734836738787454"
             )
         )
@@ -391,6 +397,7 @@ class TestMessageBusMessage:
                 "value": "123.00",
                 "source": "BANK_MODULR",
                 "reference": "MYK123344545",
+                "direction": "INBOUND",
                 "bank_account_number": "GB123266734836738787454"
             }
         })
@@ -460,6 +467,7 @@ class TestMessageBusMessage:
                 value="123.00",
                 source="BANK_MODULR",
                 reference="MYK123344545",
+                direction=Direction.INBOUND,
                 bank_account_number="GB123266734836738787454"
             )
         )
@@ -478,6 +486,7 @@ class TestMessageBusMessage:
             value="123.00",
             source="BANK_MODULR",
             reference="MYK123344545",
+            direction=Direction.INBOUND,
             bank_account_number="GB123266734836738787454"
         )
 
@@ -548,6 +557,7 @@ class TestMessageBusMessage:
             value="123.00",
             source="BANK_MODULR",
             reference="MYK123344545",
+            direction=Direction.INBOUND,
             bank_account_number="GB123266734836738787454"
         )
 
@@ -571,6 +581,7 @@ class TestMessageBusMessage:
             value="123.00",
             source="BANK_MODULR",
             reference="MYK123344545",
+            direction=Direction.INBOUND,
             bank_account_number="GB123266734836738787454"
         )
 
@@ -599,6 +610,7 @@ class TestMessageBusMessage:
             value="123.00",
             source="BANK_MODULR",
             reference="MYK123344545",
+            direction=Direction.INBOUND,
             bank_account_number="GB123266734836738787454"
         )
 
@@ -622,6 +634,7 @@ class TestMessageBusMessage:
             value="100.00",
             source="BANK",
             reference="REF123",
+            direction=Direction.INBOUND,
             bank_account_number="GB123"
         )
 
@@ -690,6 +703,7 @@ class TestMessageBusMessage:
             value="100.00",
             source="BANK",
             reference="REF123",
+            direction=Direction.INBOUND,
             bank_account_number="GB123"
         )
 
@@ -831,6 +845,7 @@ class TestMessageBusMessage:
             value="123.00",
             source="BANK_MODULR",
             reference="MYK123344545",
+            direction=Direction.INBOUND,
             bank_account_number="GB123266734836738787454"
         )
 

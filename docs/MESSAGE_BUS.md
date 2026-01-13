@@ -31,7 +31,7 @@ sqs = SQS(queue_url="http://localhost:4566")
 ### Sending Messages
 
 ```python
-from mykobo_py.message_bus.models import MessageBusMessage, InstructionType, PaymentPayload
+from mykobo_py.message_bus.models import MessageBusMessage, InstructionType, PaymentPayload, Direction
 
 # Create a message using the convenience function
 message = MessageBusMessage.create(
@@ -44,6 +44,7 @@ message = MessageBusMessage.create(
         value="100.00",
         source="BANK",
         reference="REF123",
+        direction="INBOUND",
         bank_account_number="GB123"
     ),
     service_token="your.jwt.token",
@@ -147,7 +148,7 @@ kafka = Kafka(
 ### Sending Messages
 
 ```python
-from mykobo_py.message_bus.models import MessageBusMessage, InstructionType, PaymentPayload
+from mykobo_py.message_bus.models import MessageBusMessage, InstructionType, PaymentPayload, Direction
 
 # Create a message using the convenience function
 message = MessageBusMessage.create(
@@ -160,6 +161,7 @@ message = MessageBusMessage.create(
         value="100.00",
         source="BANK",
         reference="REF123",
+        direction="INBOUND",
         bank_account_number="GB123"
     ),
     service_token="your.jwt.token",
@@ -338,7 +340,7 @@ All messages follow this structure:
 
 ```python
 from mykobo_py.message_bus.sqs import SQS
-from mykobo_py.message_bus.models import MessageBusMessage, InstructionType, PaymentPayload
+from mykobo_py.message_bus.models import MessageBusMessage, InstructionType, PaymentPayload, Direction
 
 # Initialize
 sqs = SQS(queue_url="http://localhost:4566")
@@ -354,6 +356,7 @@ message = MessageBusMessage.create(
         value="100.00",
         source="BANK",
         reference="REF123",
+        direction="INBOUND",
         bank_account_number="GB123"
     ),
     service_token="your.jwt.token"
@@ -373,7 +376,7 @@ if result:
 
 ```python
 from mykobo_py.message_bus.kafka import Kafka
-from mykobo_py.message_bus.models import MessageBusMessage, InstructionType, PaymentPayload
+from mykobo_py.message_bus.models import MessageBusMessage, InstructionType, PaymentPayload, Direction
 
 # Initialize with authentication and client IDs
 kafka = Kafka(
@@ -397,6 +400,7 @@ message = MessageBusMessage.create(
         value="100.00",
         source="BANK",
         reference="REF123",
+        direction="INBOUND",
         bank_account_number="GB123"
     ),
     service_token="your.jwt.token"
