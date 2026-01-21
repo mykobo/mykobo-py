@@ -169,7 +169,7 @@ class UserRiskProfile:
         return UserRiskProfile(
             risk_score=json_payload["risk_score"],
             latest_score_history=json_payload.get("latest_score_history"),
-            breakdown=ScoreBreakdown.from_json(json_payload["break_down"])
+            breakdown=ScoreBreakdown.from_json(json_payload.get("break_down"))
         )
 
 
