@@ -169,7 +169,7 @@ class UserRiskProfile:
 
     @staticmethod
     def from_json(json_payload: dict) -> 'UserRiskProfile':
-        breakdown = json_payload.get("breakdown")
+        breakdown = json_payload.get("break_down")
         return UserRiskProfile(
             risk_score=json_payload["risk_score"],
             latest_score_history=json_payload.get("latest_score_history"),
