@@ -143,18 +143,21 @@ class Score:
 class ScoreBreakdown:
     total_score: float
     verification: ScoreIndicators
-    source_of_funds: Score
+    source_of_funds: Optional[Score]
     country_risk_jurisdiction: Optional[Score]
-    expected_volume: Score
+    expected_volume: Optional[Score]
 
     @staticmethod
     def from_json(json_payload: dict) -> 'ScoreBreakdown':
+        jurisdiction = json_payload.get("country_risk_jurisdiction")
+        source_of_funds = json_payload.get("source_of_funds")
+        expected_volume = json_payload.get("expected_volume")
         return ScoreBreakdown(
             total_score=json_payload["total_score"],
             verification=ScoreIndicators.from_json(json_payload["verification"]),
-            source_of_funds=Score.from_json(json_payload["source_of_funds"]),
-            country_risk_jurisdiction=Score.from_json(json_payload.get("country_risk_jurisdiction")),
-            expected_volume=Score.from_json(json_payload["expected_volume"])
+            source_of_funds=Score.from_json(source_of_funds) if source_of_funds else None,
+            country_risk_jurisdiction=Score.from_json(jurisdiction) if jurisdiction else None,
+            expected_volume=Score.from_json(expected_volume) if expected_volume else None,
         )
 
 
@@ -162,14 +165,15 @@ class ScoreBreakdown:
 class UserRiskProfile:
     risk_score: float
     latest_score_history: Optional[float]
-    breakdown: ScoreBreakdown
+    breakdown: Optional[ScoreBreakdown]
 
     @staticmethod
     def from_json(json_payload: dict) -> 'UserRiskProfile':
+        breakdown = json_payload.get("breakdown")
         return UserRiskProfile(
             risk_score=json_payload["risk_score"],
             latest_score_history=json_payload.get("latest_score_history"),
-            breakdown=ScoreBreakdown.from_json(json_payload.get("break_down"))
+            breakdown=ScoreBreakdown.from_json(breakdown) if breakdown else None,
         )
 
 
