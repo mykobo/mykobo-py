@@ -144,7 +144,7 @@ class ScoreBreakdown:
     total_score: float
     verification: ScoreIndicators
     source_of_funds: Score
-    country_risk_jurisdiction: Score
+    country_risk_jurisdiction: Optional[Score]
     expected_volume: Score
 
     @staticmethod
@@ -153,7 +153,7 @@ class ScoreBreakdown:
             total_score=json_payload["total_score"],
             verification=ScoreIndicators.from_json(json_payload["verification"]),
             source_of_funds=Score.from_json(json_payload["source_of_funds"]),
-            country_risk_jurisdiction=Score.from_json(json_payload["country_risk_jurisdiction"]),
+            country_risk_jurisdiction=Score.from_json(json_payload.get("country_risk_jurisdiction")),
             expected_volume=Score.from_json(json_payload["expected_volume"])
         )
 
