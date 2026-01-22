@@ -1,3 +1,5 @@
+import json
+
 from mykobo_py.business.models import FeeConfiguration
 from mykobo_py.client import MykoboServiceClient
 from mykobo_py.identity.models.auth import Token
@@ -28,11 +30,11 @@ class BusinessServiceClient(MykoboServiceClient):
         return response
 
     def new_fee(self, token: Token, configuration: FeeConfiguration) -> Response:
-        url = f"{self.host}/new_fee"
+        url = f"{self.host}/fees/new"
         response = requests.post(
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
-            json=configuration.json()
+            json=configuration.to_json()
         )
         response.raise_for_status()
         return response
