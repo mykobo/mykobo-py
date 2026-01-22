@@ -38,7 +38,7 @@ class BusinessServiceClient(MykoboServiceClient):
         return response
 
 
-    def all_fees(self, token: Token, configuration: FeeConfiguration) -> Response:
+    def all_fees(self, token: Token) -> Response:
         url = f"{self.host}/fee_configurations"
         response = requests.get(
             url,
