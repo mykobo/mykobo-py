@@ -1,8 +1,9 @@
 from datetime import datetime
+from dataclasses import dataclass
+from dataclasses_json.api import dataclass_json
 
-
-@dataclasses
-@dataclasses_json
+@dataclass_json
+@dataclass
 class FeeConfiguration:
     transaction_type: str
     fee_rate: float
