@@ -101,3 +101,12 @@ class LedgerServiceClient(MykoboServiceClient):
         response = requests.get(url, headers=self.generate_headers(token, **{"Content-type": "application/json"}))
         response.raise_for_status()
         return response.json()
+
+    def get_compliance_gates(self, token: Token):
+        url = f"{self.host}/transactions/compliance_gates"
+        response = requests.get(
+            url,
+            headers=self.generate_headers(token, **{"Content-type": "application/json"})
+        )
+        response.raise_for_status()
+        return response.json()
