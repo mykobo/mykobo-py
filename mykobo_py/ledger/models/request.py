@@ -23,7 +23,7 @@ class TransactionFilterRequest:
 
 @dataclass_json
 @dataclass
-class VerificationExceptionRequest:
+class GetVerificationExceptionRequest:
     user_id: Optional[str]
     from_date: Optional[str]
     to_date: Optional[str]
@@ -31,6 +31,19 @@ class VerificationExceptionRequest:
     created_by: Optional[str]
     page: int
     limit: int
+
+    def to_dict(self) -> Dict:
+        return del_none(self.to_dict())
+
+@dataclass_json
+@dataclass
+class AddVerificationException:
+    user_id: str
+    verifier_type: str
+    error_code: str
+    reason: str
+    created_by: str
+    expires_at: Optional[str]
 
     def to_dict(self) -> Dict:
         return del_none(self.to_dict())
