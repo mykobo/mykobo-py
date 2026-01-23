@@ -110,6 +110,15 @@ class LedgerServiceClient(MykoboServiceClient):
         response.raise_for_status()
         return response.json()
 
+    def get_verification_error_codes(self, token: Token):
+        url = f"{self.host}/transactions/verification/error_codes"
+        response = requests.get(
+            url,
+            headers=self.generate_headers(token, **{"Content-type": "application/json"})
+        )
+        response.raise_for_status()
+        return response.json()
+
     def get_exceptions(self, token: Token, params: GetVerificationExceptionRequest):
         params_dict = params.to_dict()
         params_dict["from"] = params.from_date
