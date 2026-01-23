@@ -1,3 +1,4 @@
+import json
 import os
 from typing import Optional
 from mykobo_py.client import MykoboServiceClient
@@ -138,7 +139,7 @@ class LedgerServiceClient(MykoboServiceClient):
         response = requests.post(
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
-            params=exception.to_dict()
+            json=exception.to_dict()
         )
         response.raise_for_status()
         return response.json()
