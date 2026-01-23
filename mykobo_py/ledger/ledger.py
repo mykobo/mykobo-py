@@ -5,7 +5,7 @@ from mykobo_py.client import MykoboServiceClient
 from logging import Logger
 import requests
 from mykobo_py.identity.models.auth import Token
-from mykobo_py.ledger.models.request import TransactionFilterRequest
+from mykobo_py.ledger.models.request import TransactionFilterRequest, VerificationExceptionRequest
 from mykobo_py.utils import LEDGER_DATE_TIME_FORMAT
 
 
@@ -107,6 +107,20 @@ class LedgerServiceClient(MykoboServiceClient):
         response = requests.get(
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"})
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def get_exceptions(self, token: Token, params: VerificationExceptionRequest):
+        params_dict = params.to_dict()
+        params_dict["from"] = params.from_date
+        params_dict["to"] = params.to_date
+
+        url = f"{self.host}/transactions/exceptions"
+        response = requests.get(
+            url,
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+            params=params_dict
         )
         response.raise_for_status()
         return response.json()

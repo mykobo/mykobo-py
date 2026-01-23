@@ -19,3 +19,18 @@ class TransactionFilterRequest:
 
     def to_dict(self) -> Dict:
         return del_none(self.to_dict())
+
+
+@dataclass_json
+@dataclass
+class VerificationExceptionRequest:
+    user_id: Optional[str]
+    from_date: Optional[str]
+    to_date: Optional[str]
+    verifier_type: List[str]
+    created_by: Optional[str]
+    page: int
+    limit: int
+
+    def to_dict(self) -> Dict:
+        return del_none(self.to_dict())
