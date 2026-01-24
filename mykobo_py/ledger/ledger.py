@@ -96,7 +96,7 @@ class LedgerServiceClient(MykoboServiceClient):
             else:
                 url = f"{url}?from={from_date}"
         if profile_id:
-            url = f"{url}&profileId={profile_id}"
+            url = f"{url}&profile_id={profile_id}"
 
         response = requests.get(url, headers=self.generate_headers(token, **{"Content-type": "application/json"}))
         response.raise_for_status()
