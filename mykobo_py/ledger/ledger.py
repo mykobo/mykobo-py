@@ -134,6 +134,15 @@ class LedgerServiceClient(MykoboServiceClient):
         response.raise_for_status()
         return response.json()
 
+    def get_exception(self, token: Token, id: int):
+        url = f"{self.host}/transactions/exceptions/{id}"
+        response = requests.get(
+            url,
+            headers=self.generate_headers(token, **{"Content-type": "application/json"})
+        )
+        response.raise_for_status()
+        return response.json()
+
     def add_exception(self, token: Token, exception: AddVerificationException):
         url = f"{self.host}/transactions/exceptions"
         response = requests.post(
