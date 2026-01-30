@@ -115,3 +115,21 @@ class TransactionPayload(Payload):
     def to_dict(self):
         return del_none(self.to_dict())
 
+
+@dataclass_json
+@dataclass
+class UpdateProfilePayload(Payload):
+    """Payload for update profile instructions"""
+    address_line_1: Optional[str] = None
+    address_line_2: Optional[str] = None
+    bank_account_number: Optional[str] = None
+    bank_number: Optional[str] = None
+    tax_id: Optional[str] = None
+    tax_id_name: Optional[str] = None
+    id_country_code: Optional[str] = None
+    suspended_at: Optional[str] = None
+    deleted_at: Optional[str] = None
+
+    @property
+    def to_dict(self):
+        return del_none(self.to_dict())

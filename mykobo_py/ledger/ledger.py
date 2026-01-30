@@ -6,7 +6,7 @@ from logging import Logger
 import requests
 from mykobo_py.identity.models.auth import Token
 from mykobo_py.ledger.models.request import TransactionFilterRequest, GetVerificationExceptionRequest, \
-    AddVerificationException
+    AddVerificationException, RevokeExceptionRequest
 
 
 class LedgerServiceClient(MykoboServiceClient):
@@ -137,6 +137,16 @@ class LedgerServiceClient(MykoboServiceClient):
     def add_exception(self, token: Token, exception: AddVerificationException):
         url = f"{self.host}/transactions/exceptions"
         response = requests.post(
+            url,
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+            json=exception.to_dict()
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def revoke_exception(self, token: Token, exception_id: int, exception: RevokeExceptionRequest):
+        url = f"{self.host}/transactions/exceptions/{exception_id}/revoke"
+        response = requests.put(
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
             json=exception.to_dict()

@@ -47,3 +47,11 @@ class AddVerificationException:
 
     def to_dict(self) -> Dict:
         return del_none(self.to_dict())
+
+@dataclass_json
+@dataclass
+class RevokeExceptionRequest:
+    revoked_by: str
+
+    def to_dict(self) -> Dict:
+        return del_none(self.to_dict())

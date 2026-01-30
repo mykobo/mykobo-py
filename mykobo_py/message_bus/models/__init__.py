@@ -7,6 +7,7 @@ from mykobo_py.message_bus.models.instruction import (
     StatusUpdatePayload,
     CorrectionPayload,
     TransactionPayload,
+    UpdateProfilePayload,
 )
 from mykobo_py.message_bus.models.base import (
     InstructionType,
@@ -22,6 +23,7 @@ __all__ = [
     "StatusUpdatePayload",
     "CorrectionPayload",
     "TransactionPayload",
+    "UpdateProfilePayload",
     "InstructionType",
     "EventType",
     "TransactionType",

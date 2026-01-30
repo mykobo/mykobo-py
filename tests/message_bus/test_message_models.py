@@ -7,6 +7,7 @@ from mykobo_py.message_bus.models import (
     PaymentPayload,
     StatusUpdatePayload,
     CorrectionPayload,
+    UpdateProfilePayload,
     InstructionType,
     EventType,
     Direction,
@@ -304,6 +305,102 @@ class TestCorrectionPayload:
         payload = CorrectionPayload.from_json(json_str)
         assert payload.reference == "MYK123344545"
         assert payload.value == "2.00"
+
+
+class TestUpdateProfilePayload:
+    """Tests for UpdateProfilePayload model"""
+
+    def test_update_profile_payload_valid(self):
+        """Test creating valid UpdateProfilePayload with all fields"""
+        payload = UpdateProfilePayload(
+            address_line_1="123 Main Street",
+            address_line_2="Apt 4B",
+            bank_account_number="GB123456789012345678",
+            bank_number="123456",
+            tax_id="DE123456789",
+            tax_id_name="VAT",
+            id_country_code="DE",
+            suspended_at="2024-01-15T10:30:00Z",
+            deleted_at="2024-02-01T12:00:00Z"
+        )
+        assert payload.address_line_1 == "123 Main Street"
+        assert payload.address_line_2 == "Apt 4B"
+        assert payload.bank_account_number == "GB123456789012345678"
+        assert payload.bank_number == "123456"
+        assert payload.tax_id == "DE123456789"
+        assert payload.tax_id_name == "VAT"
+        assert payload.id_country_code == "DE"
+        assert payload.suspended_at == "2024-01-15T10:30:00Z"
+        assert payload.deleted_at == "2024-02-01T12:00:00Z"
+
+    def test_update_profile_payload_all_optional(self):
+        """Test UpdateProfilePayload with all fields as None"""
+        payload = UpdateProfilePayload()
+        assert payload.address_line_1 is None
+        assert payload.address_line_2 is None
+        assert payload.bank_account_number is None
+        assert payload.bank_number is None
+        assert payload.tax_id is None
+        assert payload.tax_id_name is None
+        assert payload.id_country_code is None
+        assert payload.suspended_at is None
+        assert payload.deleted_at is None
+
+    def test_update_profile_payload_partial_fields(self):
+        """Test UpdateProfilePayload with some fields set"""
+        payload = UpdateProfilePayload(
+            address_line_1="456 Oak Avenue",
+            bank_account_number="DE89370400440532013000"
+        )
+        assert payload.address_line_1 == "456 Oak Avenue"
+        assert payload.address_line_2 is None
+        assert payload.bank_account_number == "DE89370400440532013000"
+        assert payload.bank_number is None
+
+    def test_update_profile_payload_from_json(self):
+        """Test deserializing UpdateProfilePayload from JSON"""
+        json_str = json.dumps({
+            "address_line_1": "789 Pine Road",
+            "address_line_2": "Suite 100",
+            "bank_account_number": "FR7630006000011234567890189",
+            "bank_number": "30006",
+            "tax_id": "FR12345678901",
+            "tax_id_name": "SIRET",
+            "id_country_code": "FR",
+            "suspended_at": None,
+            "deleted_at": None
+        })
+        payload = UpdateProfilePayload.from_json(json_str)
+        assert payload.address_line_1 == "789 Pine Road"
+        assert payload.address_line_2 == "Suite 100"
+        assert payload.bank_account_number == "FR7630006000011234567890189"
+        assert payload.bank_number == "30006"
+        assert payload.tax_id == "FR12345678901"
+        assert payload.tax_id_name == "SIRET"
+        assert payload.id_country_code == "FR"
+
+    def test_update_profile_payload_from_json_partial(self):
+        """Test deserializing UpdateProfilePayload from JSON with partial fields"""
+        json_str = json.dumps({
+            "address_line_1": "123 Test Street",
+            "suspended_at": "2024-03-01T00:00:00Z"
+        })
+        payload = UpdateProfilePayload.from_json(json_str)
+        assert payload.address_line_1 == "123 Test Street"
+        assert payload.suspended_at == "2024-03-01T00:00:00Z"
+        assert payload.address_line_2 is None
+        assert payload.bank_account_number is None
+
+    def test_update_profile_payload_to_json(self):
+        """Test serializing UpdateProfilePayload to JSON"""
+        payload = UpdateProfilePayload(
+            address_line_1="Test Address",
+            bank_account_number="GB82WEST12345698765432"
+        )
+        json_str = payload.to_json()
+        parsed = json.loads(json_str)
+        assert parsed["address_line_1"] == "Test Address"
+        assert parsed["bank_account_number"] == "GB82WEST12345698765432"
 
 
 class TestMessageBusMessage:
@@ -766,6 +863,117 @@ class TestMessageBusMessage:
             )
 
         assert "CORRECTION requires CorrectionPayload" in str(exc_info.value)
+        assert "StatusUpdatePayload" in str(exc_info.value)
+
+    def test_update_profile_message_valid(self):
+        """Test creating valid update profile message"""
+        message = MessageBusMessage(
+            meta_data=MetaData(
+                source="USER_SERVICE",
+                instruction_type="UPDATE_PROFILE",
+                created_at="2024-01-01T00:00:00Z",
+                token="test.token.here",
+                idempotency_key="unique-key-profile-123"
+            ),
+            payload=UpdateProfilePayload(
+                address_line_1="123 Main Street",
+                bank_account_number="GB123456789012345678",
+                tax_id="DE123456789"
+            )
+        )
+        assert message.meta_data.source == "USER_SERVICE"
+        assert message.meta_data.instruction_type == InstructionType.UPDATE_PROFILE
+        assert message.meta_data.idempotency_key == "unique-key-profile-123"
+        assert isinstance(message.payload, UpdateProfilePayload)
+        assert message.payload.address_line_1 == "123 Main Street"
+
+    def test_update_profile_message_from_json(self):
+        """Test deserializing update profile message from JSON"""
+        json_str = json.dumps({
+            "meta_data": {
+                "source": "USER_SERVICE",
+                "instruction_type": "UPDATE_PROFILE",
+                "created_at": "2024-01-01T00:00:00Z",
+                "token": "test.token.here",
+                "idempotency_key": "unique-key-profile-456"
+            },
+            "payload": {
+                "address_line_1": "456 Oak Avenue",
+                "address_line_2": "Apt 2",
+                "bank_account_number": "DE89370400440532013000",
+                "bank_number": "37040044",
+                "tax_id": "DE987654321",
+                "tax_id_name": "VAT",
+                "id_country_code": "DE",
+                "suspended_at": None,
+                "deleted_at": None
+            }
+        })
+        message = MessageBusMessage.from_json(json_str)
+        assert message.meta_data.instruction_type == InstructionType.UPDATE_PROFILE
+        assert message.meta_data.idempotency_key == "unique-key-profile-456"
+        assert message.payload.address_line_1 == "456 Oak Avenue"
+        assert message.payload.bank_number == "37040044"
+
+    def test_create_update_profile_message(self):
+        """Test creating update profile message with convenience function"""
+        payload = UpdateProfilePayload(
+            address_line_1="789 Pine Road",
+            suspended_at="2024-06-01T00:00:00Z"
+        )
+
+        message = MessageBusMessage.create(
+            source="USER_SERVICE",
+            instruction_type=InstructionType.UPDATE_PROFILE,
+            payload=payload,
+            service_token="test.token.here"
+        )
+
+        assert message.meta_data.source == "USER_SERVICE"
+        assert message.meta_data.instruction_type == InstructionType.UPDATE_PROFILE
+        assert message.meta_data.token == "test.token.here"
+        assert message.meta_data.idempotency_key is not None
+        assert message.payload == payload
+
+    def test_update_profile_instruction_requires_update_profile_payload(self):
+        """Test that UPDATE_PROFILE instruction_type requires UpdateProfilePayload"""
+        payload = UpdateProfilePayload(
+            address_line_1="Test Address"
+        )
+
+        message = MessageBusMessage(
+            meta_data=MetaData(
+                source="USER_SERVICE",
+                instruction_type=InstructionType.UPDATE_PROFILE,
+                created_at="2024-01-01T00:00:00Z",
+                token="test.token",
+                idempotency_key="key-profile-123"
+            ),
+            payload=payload
+        )
+        assert isinstance(message.payload, UpdateProfilePayload)
+
+    def test_update_profile_instruction_rejects_wrong_payload(self):
+        """Test that UPDATE_PROFILE instruction_type rejects non-UpdateProfilePayload"""
+        wrong_payload = StatusUpdatePayload(
+            reference="REF123",
+            status="PENDING",
+            message="Test"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            MessageBusMessage(
+                meta_data=MetaData(
+                    source="USER_SERVICE",
+                    instruction_type=InstructionType.UPDATE_PROFILE,
+                    created_at="2024-01-01T00:00:00Z",
+                    token="test.token",
+                    idempotency_key="key-profile-456"
+                ),
+                payload=wrong_payload
+            )
+
+        assert "UPDATE_PROFILE requires UpdateProfilePayload" in str(exc_info.value)
         assert "StatusUpdatePayload" in str(exc_info.value)
 
     def test_create_event_message(self):

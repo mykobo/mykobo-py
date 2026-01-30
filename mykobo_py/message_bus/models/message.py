@@ -14,7 +14,7 @@ from mykobo_py.message_bus.models.event import NewTransactionEventPayload, Trans
     ProfileEventPayload, PaymentEventPayload, KycEventPayload, PasswordResetEventPayload, \
     VerificationRequestedEventPayload
 from mykobo_py.message_bus.models.instruction import PaymentPayload, StatusUpdatePayload, CorrectionPayload, \
-    TransactionPayload
+    TransactionPayload, UpdateProfilePayload
 from mykobo_py.utils import del_none
 
 @dataclass_json
@@ -83,6 +83,7 @@ class MessageBusMessage:
             InstructionType.STATUS_UPDATE: StatusUpdatePayload,
             InstructionType.CORRECTION: CorrectionPayload,
             InstructionType.TRANSACTION: TransactionPayload,
+            InstructionType.UPDATE_PROFILE: UpdateProfilePayload,
             EventType.NEW_TRANSACTION: NewTransactionEventPayload,
             EventType.TRANSACTION_STATUS_UPDATE: TransactionStatusEventPayload,
             EventType.NEW_BANK_PAYMENT: PaymentEventPayload,

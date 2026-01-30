@@ -5,6 +5,7 @@ from mykobo_py.message_bus.models import (
     StatusUpdatePayload,
     CorrectionPayload,
     TransactionPayload,
+    UpdateProfilePayload,
     InstructionType,
 )
 from mykobo_py.message_bus.sqs.SQS import SQS
@@ -16,6 +17,7 @@ __all__ = [
     "StatusUpdatePayload",
     "CorrectionPayload",
     "TransactionPayload",
+    "UpdateProfilePayload",
     "InstructionType",
     "SQS",
 ]

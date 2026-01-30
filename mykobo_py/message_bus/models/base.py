@@ -38,6 +38,7 @@ class InstructionType(str, Enum):
     STATUS_UPDATE = "STATUS_UPDATE"
     CORRECTION = "CORRECTION"
     TRANSACTION = "TRANSACTION"
+    UPDATE_PROFILE = "UPDATE_PROFILE"
 
 
 class TransactionType(str, Enum):
