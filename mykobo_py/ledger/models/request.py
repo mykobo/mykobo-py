@@ -51,6 +51,7 @@ class AddVerificationException:
 @dataclass_json
 @dataclass
 class RevokeExceptionRequest:
+    id: int
     revoked_by: str
 
     def to_dict(self) -> Dict:

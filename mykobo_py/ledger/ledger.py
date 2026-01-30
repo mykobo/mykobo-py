@@ -144,8 +144,8 @@ class LedgerServiceClient(MykoboServiceClient):
         response.raise_for_status()
         return response.json()
 
-    def revoke_exception(self, token: Token, exception_id: int, exception: RevokeExceptionRequest):
-        url = f"{self.host}/transactions/exceptions/{exception_id}/revoke"
+    def revoke_exception(self, token: Token, exception: RevokeExceptionRequest):
+        url = f"{self.host}/transactions/exceptions/{exception.id}/revoke"
         response = requests.put(
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
