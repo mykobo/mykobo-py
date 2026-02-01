@@ -226,3 +226,12 @@ class IdentityServiceClient(MykoboServiceClient):
         )
         response.raise_for_status()
         return response
+
+    def reset_user_risk_score(self, token: Token, profile_id: str) -> Response:
+        url = f"{self.host}/user/profile/{profile_id}/risk_profile/reset"
+        response = requests.post(
+            url,
+            headers=self.generate_headers(token, **{"Content-type": "application/json"})
+        )
+        response.raise_for_status()
+        return response
