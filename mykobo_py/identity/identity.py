@@ -6,7 +6,8 @@ import requests
 from logging import Logger
 from requests import Response
 from .models.auth import Token, OtcChallenge
-from .models.request import CustomerRequest, NewDocumentRequest, NewKycReviewRequest, UpdateProfileRequest
+from .models.request import CustomerRequest, NewDocumentRequest, NewKycReviewRequest, UpdateProfileRequest, \
+    UserRiskResetRequest
 from mykobo_py.utils import del_none
 from mykobo_py.client import MykoboServiceClient
 from mykobo_py.identity.models.request import UserProfileFilterRequest
