@@ -90,3 +90,12 @@ class UserProfileFilterRequest:
     @property
     def to_dict(self):
         return del_none(self.to_dict())
+
+@dataclass_json
+@dataclass
+class UserRiskResetRequest:
+    comments: Optional[str] = None
+
+    @property
+    def to_dict(self):
+        return del_none(self.to_dict())
