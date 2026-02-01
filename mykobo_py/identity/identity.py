@@ -233,7 +233,7 @@ class IdentityServiceClient(MykoboServiceClient):
         response = requests.post(
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
-            json=json.dumps(del_none(reset_request.to_dict().copy()))
+            data=json.dumps(del_none(reset_request.to_dict().copy()))
         )
         response.raise_for_status()
         return response
