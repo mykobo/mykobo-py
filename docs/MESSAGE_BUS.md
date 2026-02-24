@@ -297,7 +297,6 @@ status_event = MessageBusMessage.create(
 - `EventType.NEW_TRANSACTION`
 - `EventType.TRANSACTION_STATUS_UPDATE`
 - `EventType.NEW_BANK_PAYMENT`
-- `EventType.NEW_CHAIN_PAYMENT`
 - `EventType.NEW_PROFILE`
 - `EventType.VERIFICATION_REQUESTED`
 - `EventType.PASSWORD_RESET_REQUESTED`

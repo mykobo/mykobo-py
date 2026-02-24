@@ -39,8 +39,14 @@ class Kafka:
         self._consumers = {}
         self.producer_id = kwargs.get("producer_id", None)
         self.consumer_id = kwargs.get("consumer_id", None)
-        self.security_protocol = kwargs.get("security_protocol", "SASL_SSL")
-        self.sasl_mechanism = kwargs.get("sasl_mechanism", "PLAIN")
+        self.security_protocol = kwargs.get(
+            "security_protocol",
+            os.environ.get("KAFKA_API_PROTOCOL", "SASL_SSL")
+        )
+        self.sasl_mechanism = kwargs.get(
+            "sasl_mechanism",
+            os.environ.get("KAFKA_API_SASL_MECHANISM", "PLAIN")
+        )
         self.user_name = kwargs.get("user_name", None)
         self.password = kwargs.get("password", None)
 
@@ -48,19 +54,23 @@ class Kafka:
     def producer(self) -> KafkaProducer:
         """Lazily initialize and return the Kafka producer."""
         if self._producer is None:
-            self._producer = KafkaProducer(
+            producer_config = dict(
                 client_id=self.producer_id,
                 bootstrap_servers=self.bootstrap_servers,
                 value_serializer=lambda v: json.dumps(v).encode('utf-8'),
                 key_serializer=lambda k: k.encode('utf-8') if k else None,
-                security_protocol=self.security_protocol ,
-                sasl_mechanism=self.sasl_mechanism,
-                sasl_plain_username=self.user_name,
-                sasl_plain_password=self.password,
+                security_protocol=self.security_protocol,
                 acks='all',
                 retries=3,
                 max_in_flight_requests_per_connection=1
             )
+            if self.security_protocol == "SASL_SSL":
+                producer_config.update(
+                    sasl_mechanism=self.sasl_mechanism,
+                    sasl_plain_username=self.user_name,
+                    sasl_plain_password=self.password,
+                )
+            self._producer = KafkaProducer(**producer_config)
         return self._producer
 
     def send_message(
@@ -134,8 +144,7 @@ class Kafka:
 
             if consumer_key not in self._consumers:
                 actual_group_id = group_id or f"{topic}_consumer_group"
-                consumer = KafkaConsumer(
-                    topic,
+                consumer_config = dict(
                     client_id=self.consumer_id,
                     bootstrap_servers=self.bootstrap_servers,
                     group_id=actual_group_id,
@@ -144,10 +153,14 @@ class Kafka:
                     enable_auto_commit=auto_commit,
                     consumer_timeout_ms=timeout_ms,
                     security_protocol=self.security_protocol,
-                    sasl_mechanism=self.sasl_mechanism,
-                    sasl_plain_username=self.user_name,
-                    sasl_plain_password=self.password,
                 )
+                if self.security_protocol == "SASL_SSL":
+                    consumer_config.update(
+                        sasl_mechanism=self.sasl_mechanism,
+                        sasl_plain_username=self.user_name,
+                        sasl_plain_password=self.password,
+                    )
+                consumer = KafkaConsumer(topic, **consumer_config)
                 self._consumers[consumer_key] = consumer
 
             consumer = self._consumers[consumer_key]

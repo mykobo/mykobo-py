@@ -133,3 +133,39 @@ class UpdateProfilePayload(Payload):
     @property
     def to_dict(self):
         return del_none(self.to_dict())
+
+
+@dataclass_json
+@dataclass
+class MintPayload(Payload):
+    """Payload for mint instructions"""
+    value: str
+    currency: str
+    reference: str
+    message: Optional[str] = None
+
+    def __post_init__(self):
+        """Validate that all required fields are provided"""
+        validate_required_fields(self, ['value', 'currency', 'reference'])
+
+    @property
+    def to_dict(self):
+        return del_none(self.to_dict())
+
+
+@dataclass_json
+@dataclass
+class BurnPayload(Payload):
+    """Payload for burn instructions"""
+    value: str
+    currency: str
+    reference: str
+    message: Optional[str] = None
+
+    def __post_init__(self):
+        """Validate that all required fields are provided"""
+        validate_required_fields(self, ['value', 'currency', 'reference'])
+
+    @property
+    def to_dict(self):
+        return del_none(self.to_dict())

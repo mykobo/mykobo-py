@@ -8,6 +8,8 @@ from mykobo_py.message_bus.models import (
     StatusUpdatePayload,
     CorrectionPayload,
     UpdateProfilePayload,
+    MintPayload,
+    BurnPayload,
     InstructionType,
     EventType,
     Direction,
@@ -1088,3 +1090,321 @@ class TestMessageBusMessage:
 
         message = MessageBusMessage.from_json(payload)
         print(message)
+
+
+class TestMintPayload:
+    """Tests for MintPayload model"""
+
+    def test_mint_payload_valid(self):
+        """Test creating valid MintPayload"""
+        payload = MintPayload(
+            value="100.00",
+            currency="EUR",
+            reference="MYK123456",
+            message="Mint for deposit"
+        )
+        assert payload.value == "100.00"
+        assert payload.currency == "EUR"
+        assert payload.reference == "MYK123456"
+        assert payload.message == "Mint for deposit"
+
+    def test_mint_payload_valid_without_message(self):
+        """Test creating valid MintPayload without optional message"""
+        payload = MintPayload(
+            value="50.00",
+            currency="USD",
+            reference="MYK789012"
+        )
+        assert payload.value == "50.00"
+        assert payload.currency == "USD"
+        assert payload.reference == "MYK789012"
+        assert payload.message is None
+
+    def test_mint_payload_missing_value(self):
+        """Test MintPayload validation fails when value is missing"""
+        with pytest.raises(ValueError) as exc_info:
+            MintPayload(value="", currency="EUR", reference="MYK123456")
+        assert "value" in str(exc_info.value)
+
+    def test_mint_payload_missing_currency(self):
+        """Test MintPayload validation fails when currency is missing"""
+        with pytest.raises(ValueError) as exc_info:
+            MintPayload(value="100.00", currency="", reference="MYK123456")
+        assert "currency" in str(exc_info.value)
+
+    def test_mint_payload_missing_reference(self):
+        """Test MintPayload validation fails when reference is missing"""
+        with pytest.raises(ValueError) as exc_info:
+            MintPayload(value="100.00", currency="EUR", reference="")
+        assert "reference" in str(exc_info.value)
+
+    def test_mint_payload_from_json(self):
+        """Test deserializing MintPayload from JSON"""
+        json_str = json.dumps({
+            "value": "250.00",
+            "currency": "GBP",
+            "reference": "MYK_MINT_001",
+            "message": "Minting tokens"
+        })
+        payload = MintPayload.from_json(json_str)
+        assert payload.value == "250.00"
+        assert payload.currency == "GBP"
+        assert payload.reference == "MYK_MINT_001"
+        assert payload.message == "Minting tokens"
+
+    def test_mint_payload_serialization_roundtrip(self):
+        """Test MintPayload serialization roundtrip"""
+        original = MintPayload(
+            value="100.00",
+            currency="EUR",
+            reference="MYK123456",
+            message="Mint for deposit"
+        )
+        json_str = original.to_json()
+        deserialized = MintPayload.from_json(json_str)
+        assert original == deserialized
+
+
+class TestBurnPayload:
+    """Tests for BurnPayload model"""
+
+    def test_burn_payload_valid(self):
+        """Test creating valid BurnPayload"""
+        payload = BurnPayload(
+            value="75.00",
+            currency="EUR",
+            reference="MYK654321",
+            message="Burn for withdrawal"
+        )
+        assert payload.value == "75.00"
+        assert payload.currency == "EUR"
+        assert payload.reference == "MYK654321"
+        assert payload.message == "Burn for withdrawal"
+
+    def test_burn_payload_valid_without_message(self):
+        """Test creating valid BurnPayload without optional message"""
+        payload = BurnPayload(
+            value="200.00",
+            currency="USD",
+            reference="MYK111222"
+        )
+        assert payload.value == "200.00"
+        assert payload.currency == "USD"
+        assert payload.reference == "MYK111222"
+        assert payload.message is None
+
+    def test_burn_payload_missing_value(self):
+        """Test BurnPayload validation fails when value is missing"""
+        with pytest.raises(ValueError) as exc_info:
+            BurnPayload(value="", currency="EUR", reference="MYK654321")
+        assert "value" in str(exc_info.value)
+
+    def test_burn_payload_missing_currency(self):
+        """Test BurnPayload validation fails when currency is missing"""
+        with pytest.raises(ValueError) as exc_info:
+            BurnPayload(value="75.00", currency="", reference="MYK654321")
+        assert "currency" in str(exc_info.value)
+
+    def test_burn_payload_missing_reference(self):
+        """Test BurnPayload validation fails when reference is missing"""
+        with pytest.raises(ValueError) as exc_info:
+            BurnPayload(value="75.00", currency="EUR", reference="")
+        assert "reference" in str(exc_info.value)
+
+    def test_burn_payload_from_json(self):
+        """Test deserializing BurnPayload from JSON"""
+        json_str = json.dumps({
+            "value": "500.00",
+            "currency": "USD",
+            "reference": "MYK_BURN_001",
+            "message": "Burning tokens"
+        })
+        payload = BurnPayload.from_json(json_str)
+        assert payload.value == "500.00"
+        assert payload.currency == "USD"
+        assert payload.reference == "MYK_BURN_001"
+        assert payload.message == "Burning tokens"
+
+    def test_burn_payload_serialization_roundtrip(self):
+        """Test BurnPayload serialization roundtrip"""
+        original = BurnPayload(
+            value="75.00",
+            currency="EUR",
+            reference="MYK654321",
+            message="Burn for withdrawal"
+        )
+        json_str = original.to_json()
+        deserialized = BurnPayload.from_json(json_str)
+        assert original == deserialized
+
+
+class TestMintBurnMessages:
+    """Tests for Mint and Burn MessageBusMessage integration"""
+
+    def test_mint_message_valid(self):
+        """Test creating valid mint message"""
+        message = MessageBusMessage(
+            meta_data=MetaData(
+                source="LEDGER_SERVICE",
+                instruction_type=InstructionType.MINT,
+                created_at="2024-01-01T00:00:00Z",
+                token="test.token.here",
+                idempotency_key="mint-key-123"
+            ),
+            payload=MintPayload(
+                value="100.00",
+                currency="EUR",
+                reference="MYK_MINT_001",
+                message="Mint for deposit"
+            )
+        )
+        assert message.meta_data.instruction_type == InstructionType.MINT
+        assert isinstance(message.payload, MintPayload)
+        assert message.payload.value == "100.00"
+
+    def test_burn_message_valid(self):
+        """Test creating valid burn message"""
+        message = MessageBusMessage(
+            meta_data=MetaData(
+                source="LEDGER_SERVICE",
+                instruction_type=InstructionType.BURN,
+                created_at="2024-01-01T00:00:00Z",
+                token="test.token.here",
+                idempotency_key="burn-key-123"
+            ),
+            payload=BurnPayload(
+                value="75.00",
+                currency="EUR",
+                reference="MYK_BURN_001",
+                message="Burn for withdrawal"
+            )
+        )
+        assert message.meta_data.instruction_type == InstructionType.BURN
+        assert isinstance(message.payload, BurnPayload)
+        assert message.payload.value == "75.00"
+
+    def test_create_mint_message(self):
+        """Test creating mint message with convenience function"""
+        payload = MintPayload(
+            value="100.00",
+            currency="EUR",
+            reference="MYK_MINT_002"
+        )
+
+        message = MessageBusMessage.create(
+            source="LEDGER_SERVICE",
+            instruction_type=InstructionType.MINT,
+            payload=payload,
+            service_token="test.token.here"
+        )
+
+        assert message.meta_data.source == "LEDGER_SERVICE"
+        assert message.meta_data.instruction_type == InstructionType.MINT
+        assert message.payload == payload
+
+    def test_create_burn_message(self):
+        """Test creating burn message with convenience function"""
+        payload = BurnPayload(
+            value="75.00",
+            currency="EUR",
+            reference="MYK_BURN_002"
+        )
+
+        message = MessageBusMessage.create(
+            source="LEDGER_SERVICE",
+            instruction_type=InstructionType.BURN,
+            payload=payload,
+            service_token="test.token.here"
+        )
+
+        assert message.meta_data.source == "LEDGER_SERVICE"
+        assert message.meta_data.instruction_type == InstructionType.BURN
+        assert message.payload == payload
+
+    def test_mint_instruction_rejects_wrong_payload(self):
+        """Test that MINT instruction_type rejects non-MintPayload"""
+        wrong_payload = StatusUpdatePayload(
+            reference="REF123",
+            status="PENDING",
+            message="Test"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            MessageBusMessage(
+                meta_data=MetaData(
+                    source="LEDGER_SERVICE",
+                    instruction_type=InstructionType.MINT,
+                    created_at="2024-01-01T00:00:00Z",
+                    token="test.token",
+                    idempotency_key="key-123"
+                ),
+                payload=wrong_payload
+            )
+
+        assert "MINT requires MintPayload" in str(exc_info.value)
+
+    def test_burn_instruction_rejects_wrong_payload(self):
+        """Test that BURN instruction_type rejects non-BurnPayload"""
+        wrong_payload = StatusUpdatePayload(
+            reference="REF123",
+            status="PENDING",
+            message="Test"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            MessageBusMessage(
+                meta_data=MetaData(
+                    source="LEDGER_SERVICE",
+                    instruction_type=InstructionType.BURN,
+                    created_at="2024-01-01T00:00:00Z",
+                    token="test.token",
+                    idempotency_key="key-456"
+                ),
+                payload=wrong_payload
+            )
+
+        assert "BURN requires BurnPayload" in str(exc_info.value)
+
+    def test_mint_message_from_json(self):
+        """Test deserializing mint message from JSON"""
+        json_str = json.dumps({
+            "meta_data": {
+                "source": "LEDGER_SERVICE",
+                "instruction_type": "MINT",
+                "created_at": "2024-01-01T00:00:00Z",
+                "token": "test.token.here",
+                "idempotency_key": "mint-json-key"
+            },
+            "payload": {
+                "value": "100.00",
+                "currency": "EUR",
+                "reference": "MYK_MINT_JSON",
+                "message": "From JSON"
+            }
+        })
+        message = MessageBusMessage.from_json(json_str)
+        assert message.meta_data.instruction_type == InstructionType.MINT
+        assert message.payload.value == "100.00"
+        assert message.payload.reference == "MYK_MINT_JSON"
+
+    def test_burn_message_from_json(self):
+        """Test deserializing burn message from JSON"""
+        json_str = json.dumps({
+            "meta_data": {
+                "source": "LEDGER_SERVICE",
+                "instruction_type": "BURN",
+                "created_at": "2024-01-01T00:00:00Z",
+                "token": "test.token.here",
+                "idempotency_key": "burn-json-key"
+            },
+            "payload": {
+                "value": "75.00",
+                "currency": "EUR",
+                "reference": "MYK_BURN_JSON"
+            }
+        })
+        message = MessageBusMessage.from_json(json_str)
+        assert message.meta_data.instruction_type == InstructionType.BURN
+        assert message.payload.value == "75.00"
+        assert message.payload.reference == "MYK_BURN_JSON"
+        assert message.payload.message is None

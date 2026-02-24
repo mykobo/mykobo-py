@@ -8,6 +8,8 @@ from mykobo_py.message_bus.models.instruction import (
     CorrectionPayload,
     TransactionPayload,
     UpdateProfilePayload,
+    MintPayload,
+    BurnPayload,
 )
 from mykobo_py.message_bus.models.base import (
     InstructionType,
@@ -24,6 +26,8 @@ __all__ = [
     "CorrectionPayload",
     "TransactionPayload",
     "UpdateProfilePayload",
+    "MintPayload",
+    "BurnPayload",
     "InstructionType",
     "EventType",
     "TransactionType",
