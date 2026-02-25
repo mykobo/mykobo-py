@@ -2,4 +2,4 @@ release:
 	semantic-release version --changelog
 
 test:
-	poetry run pytest
+	@source .venv/bin/activate && poetry run pytest

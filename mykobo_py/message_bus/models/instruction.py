@@ -142,11 +142,12 @@ class MintPayload(Payload):
     value: str
     currency: str
     reference: str
+    chain: str
     message: Optional[str] = None
 
     def __post_init__(self):
         """Validate that all required fields are provided"""
-        validate_required_fields(self, ['value', 'currency', 'reference'])
+        validate_required_fields(self, ['value', 'currency', 'reference', 'chain'])
 
     @property
     def to_dict(self):
@@ -160,11 +161,12 @@ class BurnPayload(Payload):
     value: str
     currency: str
     reference: str
+    chain: str
     message: Optional[str] = None
 
     def __post_init__(self):
         """Validate that all required fields are provided"""
-        validate_required_fields(self, ['value', 'currency', 'reference'])
+        validate_required_fields(self, ['value', 'currency', 'reference', 'chain'])
 
     @property
     def to_dict(self):

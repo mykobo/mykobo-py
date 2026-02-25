@@ -1101,11 +1101,13 @@ class TestMintPayload:
             value="100.00",
             currency="EUR",
             reference="MYK123456",
+            chain="stellar",
             message="Mint for deposit"
         )
         assert payload.value == "100.00"
         assert payload.currency == "EUR"
         assert payload.reference == "MYK123456"
+        assert payload.chain == "stellar"
         assert payload.message == "Mint for deposit"
 
     def test_mint_payload_valid_without_message(self):
@@ -1113,7 +1115,8 @@ class TestMintPayload:
         payload = MintPayload(
             value="50.00",
             currency="USD",
-            reference="MYK789012"
+            reference="MYK789012",
+            chain="stellar"
         )
         assert payload.value == "50.00"
         assert payload.currency == "USD"
@@ -1123,19 +1126,19 @@ class TestMintPayload:
     def test_mint_payload_missing_value(self):
         """Test MintPayload validation fails when value is missing"""
         with pytest.raises(ValueError) as exc_info:
-            MintPayload(value="", currency="EUR", reference="MYK123456")
+            MintPayload(value="", currency="EUR", reference="MYK123456", chain="stellar")
         assert "value" in str(exc_info.value)
 
     def test_mint_payload_missing_currency(self):
         """Test MintPayload validation fails when currency is missing"""
         with pytest.raises(ValueError) as exc_info:
-            MintPayload(value="100.00", currency="", reference="MYK123456")
+            MintPayload(value="100.00", currency="", reference="MYK123456", chain="stellar")
         assert "currency" in str(exc_info.value)
 
     def test_mint_payload_missing_reference(self):
         """Test MintPayload validation fails when reference is missing"""
         with pytest.raises(ValueError) as exc_info:
-            MintPayload(value="100.00", currency="EUR", reference="")
+            MintPayload(value="100.00", currency="EUR", reference="", chain="stellar")
         assert "reference" in str(exc_info.value)
 
     def test_mint_payload_from_json(self):
@@ -1144,12 +1147,14 @@ class TestMintPayload:
             "value": "250.00",
             "currency": "GBP",
             "reference": "MYK_MINT_001",
+            "chain": "stellar",
             "message": "Minting tokens"
         })
         payload = MintPayload.from_json(json_str)
         assert payload.value == "250.00"
         assert payload.currency == "GBP"
         assert payload.reference == "MYK_MINT_001"
+        assert payload.chain == "stellar"
         assert payload.message == "Minting tokens"
 
     def test_mint_payload_serialization_roundtrip(self):
@@ -1158,6 +1163,7 @@ class TestMintPayload:
             value="100.00",
             currency="EUR",
             reference="MYK123456",
+            chain="stellar",
             message="Mint for deposit"
         )
         json_str = original.to_json()
@@ -1174,11 +1180,13 @@ class TestBurnPayload:
             value="75.00",
             currency="EUR",
             reference="MYK654321",
+            chain="stellar",
             message="Burn for withdrawal"
         )
         assert payload.value == "75.00"
         assert payload.currency == "EUR"
         assert payload.reference == "MYK654321"
+        assert payload.chain == "stellar"
         assert payload.message == "Burn for withdrawal"
 
     def test_burn_payload_valid_without_message(self):
@@ -1186,7 +1194,8 @@ class TestBurnPayload:
         payload = BurnPayload(
             value="200.00",
             currency="USD",
-            reference="MYK111222"
+            reference="MYK111222",
+            chain="stellar"
         )
         assert payload.value == "200.00"
         assert payload.currency == "USD"
@@ -1196,19 +1205,19 @@ class TestBurnPayload:
     def test_burn_payload_missing_value(self):
         """Test BurnPayload validation fails when value is missing"""
         with pytest.raises(ValueError) as exc_info:
-            BurnPayload(value="", currency="EUR", reference="MYK654321")
+            BurnPayload(value="", currency="EUR", reference="MYK654321", chain="stellar")
         assert "value" in str(exc_info.value)
 
     def test_burn_payload_missing_currency(self):
         """Test BurnPayload validation fails when currency is missing"""
         with pytest.raises(ValueError) as exc_info:
-            BurnPayload(value="75.00", currency="", reference="MYK654321")
+            BurnPayload(value="75.00", currency="", reference="MYK654321", chain="stellar")
         assert "currency" in str(exc_info.value)
 
     def test_burn_payload_missing_reference(self):
         """Test BurnPayload validation fails when reference is missing"""
         with pytest.raises(ValueError) as exc_info:
-            BurnPayload(value="75.00", currency="EUR", reference="")
+            BurnPayload(value="75.00", currency="EUR", reference="", chain="stellar")
         assert "reference" in str(exc_info.value)
 
     def test_burn_payload_from_json(self):
@@ -1217,12 +1226,14 @@ class TestBurnPayload:
             "value": "500.00",
             "currency": "USD",
             "reference": "MYK_BURN_001",
+            "chain": "stellar",
             "message": "Burning tokens"
         })
         payload = BurnPayload.from_json(json_str)
         assert payload.value == "500.00"
         assert payload.currency == "USD"
         assert payload.reference == "MYK_BURN_001"
+        assert payload.chain == "stellar"
         assert payload.message == "Burning tokens"
 
     def test_burn_payload_serialization_roundtrip(self):
@@ -1231,6 +1242,7 @@ class TestBurnPayload:
             value="75.00",
             currency="EUR",
             reference="MYK654321",
+            chain="stellar",
             message="Burn for withdrawal"
         )
         json_str = original.to_json()
@@ -1255,6 +1267,7 @@ class TestMintBurnMessages:
                 value="100.00",
                 currency="EUR",
                 reference="MYK_MINT_001",
+                chain="stellar",
                 message="Mint for deposit"
             )
         )
@@ -1276,6 +1289,7 @@ class TestMintBurnMessages:
                 value="75.00",
                 currency="EUR",
                 reference="MYK_BURN_001",
+                chain="stellar",
                 message="Burn for withdrawal"
             )
         )
@@ -1288,7 +1302,8 @@ class TestMintBurnMessages:
         payload = MintPayload(
             value="100.00",
             currency="EUR",
-            reference="MYK_MINT_002"
+            reference="MYK_MINT_002",
+            chain="stellar"
         )
 
         message = MessageBusMessage.create(
@@ -1307,7 +1322,8 @@ class TestMintBurnMessages:
         payload = BurnPayload(
             value="75.00",
             currency="EUR",
-            reference="MYK_BURN_002"
+            reference="MYK_BURN_002",
+            chain="stellar"
         )
 
         message = MessageBusMessage.create(
@@ -1379,6 +1395,7 @@ class TestMintBurnMessages:
                 "value": "100.00",
                 "currency": "EUR",
                 "reference": "MYK_MINT_JSON",
+                "chain": "stellar",
                 "message": "From JSON"
             }
         })
@@ -1400,7 +1417,8 @@ class TestMintBurnMessages:
             "payload": {
                 "value": "75.00",
                 "currency": "EUR",
-                "reference": "MYK_BURN_JSON"
+                "reference": "MYK_BURN_JSON",
+                "chain": "stellar"
             }
         })
         message = MessageBusMessage.from_json(json_str)
