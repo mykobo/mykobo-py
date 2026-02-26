@@ -62,11 +62,11 @@ class Kafka:
                 security_protocol=self.security_protocol,
                 acks='all',
                 retries=3,
-                max_in_flight_requests_per_connection=1
+                max_in_flight_requests_per_connection=1,
+                sasl_mechanism=self.sasl_mechanism,
             )
             if self.security_protocol == "SASL_SSL":
                 producer_config.update(
-                    sasl_mechanism=self.sasl_mechanism,
                     sasl_plain_username=self.user_name,
                     sasl_plain_password=self.password,
                 )
@@ -171,6 +171,7 @@ class Kafka:
                 for topic_partition, records in messages.items():
                     if records:
                         record = records[0]
+
                         receipt_handle = f"{topic_partition.topic}:{topic_partition.partition}:{record.offset}"
                         return {receipt_handle: record.value}
             return None
