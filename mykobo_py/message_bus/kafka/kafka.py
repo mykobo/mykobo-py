@@ -153,10 +153,10 @@ class Kafka:
                     enable_auto_commit=auto_commit,
                     consumer_timeout_ms=timeout_ms,
                     security_protocol=self.security_protocol,
+                    sasl_mechanism=self.sasl_mechanism,
                 )
                 if self.security_protocol == "SASL_SSL":
                     consumer_config.update(
-                        sasl_mechanism=self.sasl_mechanism,
                         sasl_plain_username=self.user_name,
                         sasl_plain_password=self.password,
                     )
@@ -171,8 +171,6 @@ class Kafka:
                 for topic_partition, records in messages.items():
                     if records:
                         record = records[0]
-                        # Return in SQS-like format: {receipt_handle: message_body}
-                        # Using offset as the "receipt handle"
                         receipt_handle = f"{topic_partition.topic}:{topic_partition.partition}:{record.offset}"
                         return {receipt_handle: record.value}
             return None
