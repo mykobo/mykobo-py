@@ -98,3 +98,11 @@ class CircleServiceClient(MykoboServiceClient):
         )
         response.raise_for_status()
         return response
+
+    def get_transaction(self, token: Token, transaction_id: str) -> Response:
+        response = requests.get(
+            f"{self.host}/transactions/{transaction_id}",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+        )
+        response.raise_for_status()
+        return response
