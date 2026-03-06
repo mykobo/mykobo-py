@@ -62,3 +62,39 @@ class CircleServiceClient(MykoboServiceClient):
         )
         response.raise_for_status()
         return response
+
+    def list_transactions(
+        self,
+        token: Token,
+        page: Optional[int] = None,
+        per_page: Optional[int] = None,
+        chain: Optional[str] = None,
+        status: Optional[str] = None,
+        asset: Optional[str] = None,
+        sender: Optional[str] = None,
+        recipient: Optional[str] = None,
+    ) -> Response:
+        url = f"{self.host}/transactions"
+        params = {}
+        if page is not None:
+            params["page"] = page
+        if per_page is not None:
+            params["per_page"] = per_page
+        if chain:
+            params["chain"] = chain
+        if status:
+            params["status"] = status
+        if asset:
+            params["token"] = asset
+        if sender:
+            params["sender"] = sender
+        if recipient:
+            params["recipient"] = recipient
+
+        response = requests.get(
+            url,
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+            params=params,
+        )
+        response.raise_for_status()
+        return response
