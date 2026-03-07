@@ -13,6 +13,7 @@ from mykobo_py.message_bus.models import (
     AddressOnboardedEventPayload,
     RelayInitiatedEventPayload,
     RelayCompletedEventPayload,
+    RelayOnboardedEventPayload,
     InstructionType,
     EventType,
     Direction,
@@ -1632,6 +1633,81 @@ class TestRelayCompletedEventPayload:
                 meta_data=MetaData(
                     source="RELAY_SERVICE",
                     event=EventType.RELAY_COMPLETED,
+                    created_at="2024-01-01T00:00:00Z",
+                    token="test.token",
+                    idempotency_key="key-123"
+                ),
+                payload=wrong_payload
+            )
+
+
+class TestRelayOnboardedEventPayload:
+    """Tests for RelayOnboardedEventPayload model"""
+
+    def test_valid_payload(self):
+        payload = RelayOnboardedEventPayload(
+            email="user@example.com",
+            payload={"wallet_id": "W123", "chain": "STELLAR"}
+        )
+        assert payload.email == "user@example.com"
+        assert payload.payload == {"wallet_id": "W123", "chain": "STELLAR"}
+
+    def test_missing_email(self):
+        with pytest.raises(ValueError) as exc_info:
+            RelayOnboardedEventPayload(email="", payload={"key": "value"})
+        assert "email" in str(exc_info.value)
+
+    def test_serialization_roundtrip(self):
+        original = RelayOnboardedEventPayload(
+            email="user@example.com",
+            payload={"wallet_id": "W123", "chain": "STELLAR"}
+        )
+        json_str = original.to_json()
+        deserialized = RelayOnboardedEventPayload.from_json(json_str)
+        assert original == deserialized
+
+    def test_message_bus_message_valid(self):
+        payload = RelayOnboardedEventPayload(
+            email="user@example.com",
+            payload={"wallet_id": "W123", "chain": "STELLAR"}
+        )
+        message = MessageBusMessage.create(
+            source="RELAY_SERVICE",
+            event=EventType.RELAY_ONBOARDED,
+            payload=payload,
+            service_token="test.token.here"
+        )
+        assert message.meta_data.event == EventType.RELAY_ONBOARDED
+        assert isinstance(message.payload, RelayOnboardedEventPayload)
+
+    def test_message_bus_message_from_json(self):
+        json_str = json.dumps({
+            "meta_data": {
+                "source": "RELAY_SERVICE",
+                "event": "RELAY_ONBOARDED",
+                "created_at": "2024-01-01T00:00:00Z",
+                "token": "test.token.here",
+                "idempotency_key": "key-relay-onboarded-123"
+            },
+            "payload": {
+                "email": "user@example.com",
+                "payload": {"wallet_id": "W123", "chain": "STELLAR"}
+            }
+        })
+        message = MessageBusMessage.from_json(json_str)
+        assert message.meta_data.event == EventType.RELAY_ONBOARDED
+        assert message.payload.email == "user@example.com"
+        assert message.payload.payload["chain"] == "STELLAR"
+
+    def test_rejects_wrong_payload(self):
+        wrong_payload = StatusUpdatePayload(
+            reference="REF123", status="PENDING", message="Test"
+        )
+        with pytest.raises(ValueError):
+            MessageBusMessage(
+                meta_data=MetaData(
+                    source="RELAY_SERVICE",
+                    event=EventType.RELAY_ONBOARDED,
                     created_at="2024-01-01T00:00:00Z",
                     token="test.token",
                     idempotency_key="key-123"

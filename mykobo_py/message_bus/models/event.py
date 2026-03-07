@@ -156,3 +156,17 @@ class RelayCompletedEventPayload(Payload):
     @property
     def to_dict(self):
         return del_none(self.to_dict())
+
+
+@dataclass_json
+@dataclass
+class RelayOnboardedEventPayload(Payload):
+    email: str
+    payload: Dict[str, str]
+
+    def __post_init__(self):
+        validate_required_fields(self, ['email'])
+
+    @property
+    def to_dict(self):
+        return del_none(self.to_dict())

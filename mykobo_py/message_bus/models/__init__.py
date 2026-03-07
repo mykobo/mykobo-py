@@ -15,6 +15,7 @@ from mykobo_py.message_bus.models.event import (
     AddressOnboardedEventPayload,
     RelayInitiatedEventPayload,
     RelayCompletedEventPayload,
+    RelayOnboardedEventPayload,
 )
 from mykobo_py.message_bus.models.base import (
     InstructionType,
@@ -36,6 +37,7 @@ __all__ = [
     "AddressOnboardedEventPayload",
     "RelayInitiatedEventPayload",
     "RelayCompletedEventPayload",
+    "RelayOnboardedEventPayload",
     "InstructionType",
     "EventType",
     "TransactionType",
