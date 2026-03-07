@@ -25,6 +25,7 @@ class CircleServiceClient(MykoboServiceClient):
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
             data=json.dumps(request.to_dict())
         )
+
         response.raise_for_status()
         return response
 
