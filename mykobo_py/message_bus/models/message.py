@@ -12,7 +12,8 @@ from mykobo_py.message_bus.models.base import (
 )
 from mykobo_py.message_bus.models.event import NewTransactionEventPayload, TransactionStatusEventPayload, \
     ProfileEventPayload, PaymentEventPayload, KycEventPayload, PasswordResetEventPayload, \
-    VerificationRequestedEventPayload
+    VerificationRequestedEventPayload, AddressOnboardedEventPayload, RelayInitiatedEventPayload, \
+    RelayCompletedEventPayload
 from mykobo_py.message_bus.models.instruction import PaymentPayload, StatusUpdatePayload, CorrectionPayload, \
     TransactionPayload, UpdateProfilePayload, MintPayload, BurnPayload
 from mykobo_py.utils import del_none
@@ -92,7 +93,10 @@ class MessageBusMessage:
             EventType.NEW_PROFILE: ProfileEventPayload,
             EventType.VERIFICATION_REQUESTED: VerificationRequestedEventPayload,
             EventType.PASSWORD_RESET_REQUESTED: PasswordResetEventPayload,
-            EventType.KYC_EVENT: KycEventPayload
+            EventType.KYC_EVENT: KycEventPayload,
+            EventType.ADDRESS_ONBOARDED: AddressOnboardedEventPayload,
+            EventType.RELAY_INITIATED: RelayInitiatedEventPayload,
+            EventType.RELAY_COMPLETED: RelayCompletedEventPayload
         }
 
         expected_payload_type = payload_type_map.get(message_type)

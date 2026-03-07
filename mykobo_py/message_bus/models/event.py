@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Dict, Optional
 
 from dataclasses_json import dataclass_json
 from mykobo_py.message_bus.models.base import TransactionType, validate_required_fields, Payload
@@ -110,6 +110,48 @@ class VerificationRequestedEventPayload(Payload):
 
     def __post_init__(self):
         validate_required_fields(self, ['to', 'subject'])
+
+    @property
+    def to_dict(self):
+        return del_none(self.to_dict())
+
+
+@dataclass_json
+@dataclass
+class AddressOnboardedEventPayload(Payload):
+    email: str
+    payload: Dict[str, str]
+
+    def __post_init__(self):
+        validate_required_fields(self, ['email'])
+
+    @property
+    def to_dict(self):
+        return del_none(self.to_dict())
+
+
+@dataclass_json
+@dataclass
+class RelayInitiatedEventPayload(Payload):
+    email: str
+    payload: Dict[str, str]
+
+    def __post_init__(self):
+        validate_required_fields(self, ['email'])
+
+    @property
+    def to_dict(self):
+        return del_none(self.to_dict())
+
+
+@dataclass_json
+@dataclass
+class RelayCompletedEventPayload(Payload):
+    email: str
+    payload: Dict[str, str]
+
+    def __post_init__(self):
+        validate_required_fields(self, ['email'])
 
     @property
     def to_dict(self):
