@@ -6,11 +6,18 @@ from dataclasses_json.api import dataclass_json
 
 @dataclass_json
 @dataclass
-class CreateRelayAddressRequest:
+class RelayAddressSide:
     chain: str
     address: str
     private_key: str
     label: Optional[str] = None
-    counterpart_id: Optional[str] = None
     external_address: Optional[str] = None
     client_domain: Optional[str] = None
+    email: Optional[str] = None
+
+
+@dataclass_json
+@dataclass
+class CreateRelayAddressPairRequest:
+    source: RelayAddressSide
+    destination: RelayAddressSide

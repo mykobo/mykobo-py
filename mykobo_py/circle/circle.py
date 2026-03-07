@@ -7,7 +7,7 @@ from requests import Response
 
 from mykobo_py.client import MykoboServiceClient
 from mykobo_py.identity.models.auth import Token
-from .models.request import CreateRelayAddressRequest
+from .models.request import CreateRelayAddressPairRequest
 
 
 class CircleServiceClient(MykoboServiceClient):
@@ -19,9 +19,9 @@ class CircleServiceClient(MykoboServiceClient):
         response.raise_for_status()
         return response
 
-    def create_relay_address(self, token: Token, request: CreateRelayAddressRequest) -> Response:
+    def create_relay_address_pair(self, token: Token, request: CreateRelayAddressPairRequest) -> Response:
         response = requests.post(
-            f"{self.host}/relay-addresses",
+            f"{self.host}/relay-addresses/pair",
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
             data=json.dumps(request.to_dict())
         )
