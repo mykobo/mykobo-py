@@ -1,12 +1,9 @@
-from dataclasses import dataclass
 from typing import Optional
 
-from dataclasses_json.api import dataclass_json
+from pydantic import BaseModel
 
 
-@dataclass_json
-@dataclass
-class RelayAddressSide:
+class RelayAddressSide(BaseModel):
     chain: str
     address: str
     private_key: str
@@ -16,8 +13,9 @@ class RelayAddressSide:
     email: Optional[str] = None
 
 
-@dataclass_json
-@dataclass
-class CreateRelayAddressPairRequest:
+class CreateRelayAddressPairRequest(BaseModel):
     source: RelayAddressSide
     destination: RelayAddressSide
+
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)

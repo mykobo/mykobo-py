@@ -34,7 +34,7 @@ class BusinessServiceClient(MykoboServiceClient):
         response = requests.post(
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
-            json=configuration.to_json()
+            json=configuration.model_dump()
         )
         response.raise_for_status()
         return response

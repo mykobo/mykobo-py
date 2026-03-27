@@ -1,12 +1,9 @@
-from datetime import datetime
-from dataclasses import dataclass
 from typing import Optional
 
-from dataclasses_json.api import dataclass_json
+from pydantic import BaseModel
 
-@dataclass_json
-@dataclass
-class FeeConfiguration:
+
+class FeeConfiguration(BaseModel):
     transaction_type: str
     fee_rate: float
     effective_from: str
