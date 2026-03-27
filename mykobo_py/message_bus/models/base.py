@@ -1,11 +1,12 @@
 from typing import List, Any
 from enum import Enum
 
+from pydantic import BaseModel
 
-class Payload:
-    @property
-    def to_dict(self):
-        raise NotImplemented()
+
+class Payload(BaseModel):
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)
 
 
 def validate_required_fields(instance: Any, required_fields: List[str], class_name: str = None):
