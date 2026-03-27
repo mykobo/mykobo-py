@@ -1,14 +1,16 @@
-from dataclasses import dataclass
 from datetime import datetime
 import jwt
+from pydantic import BaseModel, computed_field
+from typing import Optional
 
-@dataclass
-class Token:
+
+class Token(BaseModel):
     subject_id: str
     token: str
-    refresh_token: str | None
+    refresh_token: Optional[str] = None
     expires_at: datetime
 
+    @computed_field
     @property
     def is_expired(self) -> bool:
         return datetime.now() >= self.expires_at
@@ -33,11 +35,11 @@ class Token:
             expires_at=datetime.fromtimestamp(decoded["exp"])
         )
 
-class OtcChallenge:
-    def __init__(self, user_id: str, otp_required: bool, nonce: str):
-        self.user_id = user_id
-        self.otp_required = otp_required
-        self.nonce = nonce
+
+class OtcChallenge(BaseModel):
+    user_id: str
+    otp_required: bool
+    nonce: str
 
     @staticmethod
     def from_json(json_data: dict) -> 'OtcChallenge':
