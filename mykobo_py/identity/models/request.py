@@ -1,14 +1,10 @@
-from dataclasses import dataclass
 from datetime import datetime
-
-from dataclasses_json.api import dataclass_json
-
-from mykobo_py.utils import del_none
 from typing import Optional
 
-@dataclass_json
-@dataclass
-class CustomerRequest:
+from pydantic import BaseModel
+
+
+class CustomerRequest(BaseModel):
     id: Optional[str] = None
     account: Optional[str] = None
     first_name: Optional[str] = None
@@ -27,56 +23,47 @@ class CustomerRequest:
     tax_id_name: Optional[str] = None
     credential_id: Optional[str] = None
 
-    @property
-    def to_dict(self):
-        return del_none(self.to_dict())
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)
 
-@dataclass_json
-@dataclass
-class UpdateProfileRequest:
-    bank_account_number: Optional[str]
-    bank_number: Optional[str]
-    address_line_1: Optional[str]
-    address_line_2: Optional[str]
-    id_country_code: Optional[str]
-    tax_id: Optional[str]
-    tax_id_name: Optional[str]
-    suspended_at: Optional[str]
-    deleted_at: Optional[str]
 
-    @property
-    def to_dict(self):
-        return del_none(self.to_dict())
+class UpdateProfileRequest(BaseModel):
+    bank_account_number: Optional[str] = None
+    bank_number: Optional[str] = None
+    address_line_1: Optional[str] = None
+    address_line_2: Optional[str] = None
+    id_country_code: Optional[str] = None
+    tax_id: Optional[str] = None
+    tax_id_name: Optional[str] = None
+    suspended_at: Optional[str] = None
+    deleted_at: Optional[str] = None
 
-@dataclass_json
-@dataclass
-class NewDocumentRequest:
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)
+
+
+class NewDocumentRequest(BaseModel):
     profile_id: str
     document_type: str
     document_status: str
-    document_path: Optional[str]
-    updated_at: Optional[str]
-    document_sub_type: Optional[str]
+    document_path: Optional[str] = None
+    updated_at: Optional[str] = None
+    document_sub_type: Optional[str] = None
     created_at: str = datetime.now().isoformat()
 
-    @property
-    def to_dict(self):
-        return del_none(self.to_dict())
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)
 
-@dataclass_json
-@dataclass
-class NewKycReviewRequest:
+
+class NewKycReviewRequest(BaseModel):
     profile_id: str
     level: str
 
-    @property
-    def to_dict(self):
-        return del_none(self.to_dict())
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)
 
 
-@dataclass_json
-@dataclass
-class UserProfileFilterRequest:
+class UserProfileFilterRequest(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     email_address: Optional[str] = None
@@ -87,15 +74,12 @@ class UserProfileFilterRequest:
     page: int = 1
     limit: int = 10
 
-    @property
-    def to_dict(self):
-        return del_none(self.to_dict())
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)
 
-@dataclass_json
-@dataclass
-class UserRiskResetRequest:
+
+class UserRiskResetRequest(BaseModel):
     comments: Optional[str] = None
 
-    @property
-    def to_dict(self):
-        return del_none(self.to_dict())
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)
