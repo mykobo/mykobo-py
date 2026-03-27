@@ -95,7 +95,7 @@ class Kafka:
 
         # Convert MessageBusMessage to dict if needed
         if isinstance(message, MessageBusMessage):
-            message_dict = json.loads(message.to_json())
+            message_dict = message.to_dict()
         else:
             message_dict = message
 

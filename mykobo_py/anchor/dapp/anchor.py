@@ -39,7 +39,7 @@ class DappAnchorClient(MykoboServiceClient):
                 headers=self.generate_headers(service_token, **{"Content-type": "application/json"}),
             )
             if response.ok:
-                return Transaction.from_json(response.json())
+                return Transaction.model_validate(response.json())
             else:
                 return None
         except Exception as e:
