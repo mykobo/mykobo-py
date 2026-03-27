@@ -28,7 +28,7 @@ class WalletServiceClient(MykoboServiceClient):
         response = requests.post(
             f"{self.wallet_service_url}/wallet/register",
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
-            data=json.dumps(request.to_dict())
+            data=request.model_dump_json(exclude_none=True)
         )
         response.raise_for_status()
         return response

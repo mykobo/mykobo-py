@@ -1,14 +1,11 @@
-from dataclasses import dataclass
-from dataclasses_json.api import dataclass_json
+from pydantic import BaseModel
 
-@dataclass_json
-@dataclass
-class RegisterWalletRequest:
+
+class RegisterWalletRequest(BaseModel):
     profile_id: str
     public_key: str
     memo: str | None
     chain: str
 
-    @property
-    def to_dict(self):
-        return self.to_dict()
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)

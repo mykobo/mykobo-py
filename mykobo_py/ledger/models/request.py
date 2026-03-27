@@ -1,11 +1,9 @@
-from dataclasses import dataclass
-from typing import Dict, List, Optional
-from mykobo_py.utils import del_none
-from dataclasses_json.api import dataclass_json
+from typing import List, Optional
 
-@dataclass_json
-@dataclass
-class TransactionFilterRequest:
+from pydantic import BaseModel
+
+
+class TransactionFilterRequest(BaseModel):
     sources: List[str]
     transaction_types: List[str]
     statuses: List[str]
@@ -13,17 +11,15 @@ class TransactionFilterRequest:
     from_date: Optional[str]
     to_date: Optional[str]
     payee: Optional[str]
-    payer:  Optional[str]
+    payer: Optional[str]
     page: int
     limit: int
 
-    def to_dict(self) -> Dict:
-        return del_none(self.to_dict())
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)
 
 
-@dataclass_json
-@dataclass
-class GetVerificationExceptionRequest:
+class GetVerificationExceptionRequest(BaseModel):
     user_id: Optional[str]
     from_date: Optional[str]
     to_date: Optional[str]
@@ -32,12 +28,11 @@ class GetVerificationExceptionRequest:
     page: int
     limit: int
 
-    def to_dict(self) -> Dict:
-        return del_none(self.to_dict())
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)
 
-@dataclass_json
-@dataclass
-class AddVerificationException:
+
+class AddVerificationException(BaseModel):
     user_id: str
     verifier_type: str
     error_code: str
@@ -45,14 +40,13 @@ class AddVerificationException:
     created_by: str
     expires_at: Optional[str]
 
-    def to_dict(self) -> Dict:
-        return del_none(self.to_dict())
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)
 
-@dataclass_json
-@dataclass
-class RevokeExceptionRequest:
+
+class RevokeExceptionRequest(BaseModel):
     id: int
     revoked_by: str
 
-    def to_dict(self) -> Dict:
-        return del_none(self.to_dict())
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)
