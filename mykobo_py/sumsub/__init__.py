@@ -1,74 +1,60 @@
 
-from dataclasses import dataclass
 from typing import Optional, Dict
 
-@dataclass
-class AccessTokenRequest():
+from pydantic import BaseModel, Field, ConfigDict
+
+
+class AccessTokenRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     # this is our profile id. For sumsub it would be external to them.
-    external_user_id: str
+    external_user_id: str = Field(alias="externalUserId")
     # level name is the KYC level for which to derive this token from. Usually the SEP6 level, if it's non-interactive
-    level_name: str
+    level_name: str = Field(alias="levelName")
 
-    def to_dict(self) -> Dict:
-        return {
-            "externalUserId": self.external_user_id,
-            "levelName": self.level_name
-        }
+    def to_dict(self) -> dict:
+        return self.model_dump(by_alias=True, exclude_none=True)
 
-@dataclass
-class ProfileData():
-    first_name: str
-    last_name: str
+
+class ProfileData(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    first_name: str = Field(alias="firstName")
+    last_name: str = Field(alias="lastName")
     email: str
 
-    def to_dict(self) -> Dict:
-        return {
-            "firstName": self.first_name,
-            "lastName": self.last_name,
-            "email": self.email
-        }
+    def to_dict(self) -> dict:
+        return self.model_dump(by_alias=True, exclude_none=True)
 
 
-@dataclass
-class NewApplicantRequest():
-    external_user_id: str
-    level_name: str
+class NewApplicantRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    external_user_id: str = Field(alias="externalUserId")
+    level_name: str = Field(alias="levelName")
     profile: ProfileData
 
-    @staticmethod
-    def from_json(data: dict) -> 'NewApplicantRequest':
-        return NewApplicantRequest(
-            external_user_id=data.get('externalUserId', ''),
-            level_name=data.get('levelName', ''),
-            profile=ProfileData.from_json(data.get('profile', {}))
-        )
+    def to_dict(self) -> dict:
+        return self.model_dump(by_alias=True, exclude_none=True)
 
 
-@dataclass
-class DocumentMetadata():
-    id_doc_type: str
-    id_doc_sub_type: Optional[str] = None
+class DocumentMetadata(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    id_doc_type: str = Field(alias="idDocType")
+    id_doc_sub_type: Optional[str] = Field(default=None, alias="idDocSubType")
     country: Optional[str] = None
 
-    @staticmethod
-    def from_json(data: dict) -> 'DocumentMetadata':
-        return DocumentMetadata(
-            id_doc_type=data.get('idDocType', ''),
-            id_doc_sub_type=data.get('idDocSubType'),
-            country=data.get('country')
-        )
+    def to_dict(self) -> dict:
+        return self.model_dump(by_alias=True, exclude_none=True)
 
 
-@dataclass
-class NewDocumentRequest():
+class NewDocumentRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     metadata: DocumentMetadata
-    file_path: str
-    applicant_id: str
+    file_path: str = Field(alias="filePath")
+    applicant_id: str = Field(alias="applicantId")
 
-    @staticmethod
-    def from_json(data: dict) -> 'NewDocumentRequest':
-        return NewDocumentRequest(
-            metadata=DocumentMetadata.from_json(data.get('metadata', {})),
-            file_path=data.get('file_path', ''),
-            applicant_id=data.get('applicant_id', '')
-        )
+    def to_dict(self) -> dict:
+        return self.model_dump(by_alias=True, exclude_none=True)
