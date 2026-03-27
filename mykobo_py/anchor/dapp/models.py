@@ -1,32 +1,32 @@
-from dataclasses import dataclass, asdict
 from typing import Optional
 
+from pydantic import BaseModel
 
-@dataclass
-class Transaction:
-    created_at: str
-    fee: str
-    first_name: str
-    id: str
-    idempotency_key: str
-    incoming_currency: str
-    last_name: str
-    message_id: str
-    outgoing_currency: str
-    payee_id: Optional[str]
-    payer_id: str
-    queue_sent_at: str
-    reference: str
-    source: str
-    status: str
-    transaction_type: str
-    tx_hash: Optional[str]
-    updated_at: str
-    value: str
-    wallet_address: str
-    network: Optional[str]
-    client_domain: Optional[str]
-    comment: Optional[str]
+
+class Transaction(BaseModel):
+    created_at: str = ''
+    fee: str = '0'
+    first_name: str = ''
+    id: str = ''
+    idempotency_key: str = ''
+    incoming_currency: str = ''
+    last_name: str = ''
+    message_id: str = ''
+    outgoing_currency: str = ''
+    payee_id: Optional[str] = None
+    payer_id: str = ''
+    queue_sent_at: str = ''
+    reference: str = ''
+    source: str = ''
+    status: str = ''
+    transaction_type: str = ''
+    tx_hash: Optional[str] = None
+    updated_at: str = ''
+    value: str = '0'
+    wallet_address: str = ''
+    network: Optional[str] = None
+    client_domain: Optional[str] = None
+    comment: Optional[str] = None
 
     @property
     def is_pending_anchor(self):
@@ -44,33 +44,9 @@ class Transaction:
     def has_tx_hash(self):
         return self.tx_hash is not None and self.tx_hash != ""
 
-    @staticmethod
-    def from_json(json_data: dict) -> 'Transaction':
-        return Transaction(
-            created_at=json_data.get('created_at', ''),
-            fee=json_data.get('fee', '0'),
-            first_name=json_data.get('first_name', ''),
-            id=json_data.get('id', ''),
-            idempotency_key=json_data.get('idempotency_key', ''),
-            incoming_currency=json_data.get('incoming_currency', ''),
-            last_name=json_data.get('last_name', ''),
-            message_id=json_data.get('message_id', ''),
-            outgoing_currency=json_data.get('outgoing_currency', ''),
-            payee_id=json_data.get('payee_id'),
-            payer_id=json_data.get('payer_id', ''),
-            queue_sent_at=json_data.get('queue_sent_at', ''),
-            reference=json_data.get('reference', ''),
-            source=json_data.get('source', ''),
-            status=json_data.get('status', ''),
-            transaction_type=json_data.get('transaction_type', ''),
-            tx_hash=json_data.get('tx_hash'),
-            updated_at=json_data.get('updated_at', ''),
-            value=json_data.get('value', '0'),
-            wallet_address=json_data.get('wallet_address', ''),
-            network=json_data.get('network'),
-            client_domain=json_data.get('client_domain'),
-            comment=json_data.get('comment'),
-        )
-
-    def dict(self):
-        return {k: str(v) if v is not None else None for k, v in asdict(self).items()}
+    def dict(self, **kwargs) -> dict:
+        d = self.model_dump()
+        for key, value in d.items():
+            if value is not None:
+                d[key] = str(value)
+        return d
