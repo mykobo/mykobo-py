@@ -14,7 +14,7 @@ class Transaction(BaseModel):
     message_id: str = ''
     outgoing_currency: str = ''
     payee_id: Optional[str] = None
-    payer_id: str = ''
+    payer_id: Optional[str] = None
     queue_sent_at: str = ''
     reference: str = ''
     source: str = ''

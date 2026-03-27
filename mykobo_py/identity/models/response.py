@@ -36,11 +36,11 @@ class UserProfile(BaseModel):
     last_name: str
     email_address: str
     additional_name: Optional[str] = None
-    address: str
-    mobile_number: str
+    address: Optional[str] = None
+    mobile_number: Optional[str] = None
     birth_date: Optional[datetime] = None
-    birth_country_code: str
-    bank_account_number: str
+    birth_country_code: Optional[str] = None
+    bank_account_number: Optional[str] = None
     tax_id: Optional[str] = None
     tax_id_name: Optional[str] = None
     created_at: datetime
