@@ -40,7 +40,7 @@ def test_get_profile(requests_mock):
         requests_mock.get(f"{host}/user/profile/{id}", json=json_data)
 
     profile = identity_service.get_user_profile(test_token, id)
-    user_profile = UserProfile.from_json(profile.json())
+    user_profile = UserProfile.model_validate(profile.json())
     assert user_profile.id == "urn:usrp:fb497b2fcbfa479991de4e8b0abecad6"
     assert len(user_profile.kyc_documents) == 2
     assert user_profile.kyc_status
@@ -71,7 +71,7 @@ def test_new_customer(requests_mock):
     assert response
     assert response.status_code == 200
 
-    user_profile = UserProfile.from_json(response.json())
+    user_profile = UserProfile.model_validate(response.json())
     assert user_profile.id == "urn:usrp:6dd61598f5be470ea19ca9b8ef012116"
 
 
@@ -79,45 +79,45 @@ def test_user_risk_profile_deserialization():
     with open("tests/stubs/risk_profile.json") as f:
         json_data = json.loads(f.read())
 
-    risk_profile = UserRiskProfile.from_json(json_data)
+    risk_profile = UserRiskProfile.model_validate(json_data)
 
     # Test top-level fields
     assert risk_profile.risk_score == 13.0
     assert risk_profile.latest_score_history is None
 
     # Test breakdown
-    assert risk_profile.breakdown.total_score == 13.0
+    assert risk_profile.break_down.total_score == 13.0
 
     # Test verification indicators
-    assert risk_profile.breakdown.verification.tax_residence_verified == 0.5
-    assert risk_profile.breakdown.verification.name_verified == 1.0
-    assert risk_profile.breakdown.verification.aml_passed == 1.0
-    assert risk_profile.breakdown.verification.phone_verified == 0.5
-    assert risk_profile.breakdown.verification.id_verified == 1.0
-    assert risk_profile.breakdown.verification.email_verified == 0.0
-    assert risk_profile.breakdown.verification.dob_verified == 0.5
-    assert risk_profile.breakdown.verification.residence_verified == 0.5
-    assert risk_profile.breakdown.verification.citizenship_verified == 0.5
-    assert risk_profile.breakdown.verification.is_not_pep == 4.0
+    assert risk_profile.break_down.verification.tax_residence_verified == 0.5
+    assert risk_profile.break_down.verification.name_verified == 1.0
+    assert risk_profile.break_down.verification.aml_passed == 1.0
+    assert risk_profile.break_down.verification.phone_verified == 0.5
+    assert risk_profile.break_down.verification.id_verified == 1.0
+    assert risk_profile.break_down.verification.email_verified == 0.0
+    assert risk_profile.break_down.verification.dob_verified == 0.5
+    assert risk_profile.break_down.verification.residence_verified == 0.5
+    assert risk_profile.break_down.verification.citizenship_verified == 0.5
+    assert risk_profile.break_down.verification.is_not_pep == 4.0
 
     # Test source of funds
-    assert risk_profile.breakdown.source_of_funds.score == 1.0
-    assert risk_profile.breakdown.source_of_funds.breakdown == {"sof.EMPLOYMENT": 1.0}
+    assert risk_profile.break_down.source_of_funds.score == 1.0
+    assert risk_profile.break_down.source_of_funds.breakdown == {"sof.EMPLOYMENT": 1.0}
 
     # Test country risk jurisdiction
-    assert risk_profile.breakdown.country_risk_jurisdiction.score == 1.5
-    assert risk_profile.breakdown.country_risk_jurisdiction.breakdown == {"crj.LOW": 1.5}
+    assert risk_profile.break_down.country_risk_jurisdiction.score == 1.5
+    assert risk_profile.break_down.country_risk_jurisdiction.breakdown == {"crj.LOW": 1.5}
 
     # Test expected volume
-    assert risk_profile.breakdown.expected_volume.score == 1.0
-    assert risk_profile.breakdown.expected_volume.breakdown == {"ev.BELOW_THRESHOLD": 1.0}
+    assert risk_profile.break_down.expected_volume.score == 1.0
+    assert risk_profile.break_down.expected_volume.breakdown == {"ev.BELOW_THRESHOLD": 1.0}
 
 
 def test_profile_change_log_deserialization():
     with open("tests/stubs/profile_change_log.json") as f:
         json_data = json.loads(f.read())
 
-    change_log_response = ProfileChangeLogResponse.from_json(json_data)
+    change_log_response = ProfileChangeLogResponse.model_validate(json_data)
 
     # Test top-level fields
     assert change_log_response.profile_id == "urn:usrp:dd4fdc2870d742e19b1df78b649a1e98"
