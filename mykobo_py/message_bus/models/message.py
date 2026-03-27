@@ -1,5 +1,6 @@
 from typing import Optional, Union
 from datetime import datetime, UTC
+import json
 import uuid
 
 from pydantic import BaseModel, model_validator
@@ -75,6 +76,10 @@ class MessageBusMessage(BaseModel):
 
     model_config = {"arbitrary_types_allowed": True}
 
+    def to_json(self) -> str:
+        """Serialize the message to a JSON string."""
+        return json.dumps(self.to_dict())
+
     @model_validator(mode='after')
     def validate_payload_type(self):
         """Validate that instruction_type or event matches the payload type"""
@@ -96,18 +101,40 @@ class MessageBusMessage(BaseModel):
             self.payload = expected_payload_type.model_validate(self.payload)
 
         if not isinstance(self.payload, expected_payload_type):
-            if isinstance(self.payload, Payload):
-                self.payload = expected_payload_type.model_validate(self.payload.model_dump())
-            else:
-                raise ValueError(
-                    f"message type {message_type}: {message_type.value} requires "
-                    f"{expected_payload_type.__name__} but got {type(self.payload).__name__}"
-                )
+            raise ValueError(
+                f"message type {message_type}: {message_type.value} requires "
+                f"{expected_payload_type.__name__} but got {type(self.payload).__name__}"
+            )
 
         return self
 
     def to_dict(self) -> dict:
-        return self.model_dump(exclude_none=True)
+        result = self.model_dump(exclude_none=True)
+        # model_dump only serializes fields defined on the base Payload type,
+        # so we need to serialize the payload separately using its actual type.
+        result["payload"] = self.payload.model_dump(exclude_none=True, mode='json')
+        return result
+
+    @classmethod
+    def from_json(cls, json_str: str) -> 'MessageBusMessage':
+        """
+        Deserialize a MessageBusMessage from a JSON string.
+
+        This method handles discriminated payload deserialization by first
+        parsing metadata to determine the message type, then deserializing
+        the payload as the appropriate type.
+        """
+        data = json.loads(json_str) if isinstance(json_str, str) else json_str
+        meta_data = MetaData.model_validate(data.get("meta_data", {}))
+
+        # Determine the message type and resolve payload class
+        message_type = meta_data.instruction_type or meta_data.event
+        payload_class = PAYLOAD_TYPE_MAP.get(message_type)
+        if not payload_class:
+            raise ValueError(f"Unknown message type: {message_type}")
+
+        payload = payload_class.model_validate(data.get("payload", {}))
+        return cls(meta_data=meta_data, payload=payload)
 
     @staticmethod
     def create(

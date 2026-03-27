@@ -33,7 +33,7 @@ class SQS:
 
         # Convert MessageBusMessage to dict if needed
         if isinstance(message, MessageBusMessage):
-            message_body = message.model_dump_json(exclude_none=True)
+            message_body = message.to_json()
         else:
             message_body = json.dumps(message)
 
