@@ -33,7 +33,7 @@ class TestMetaData:
             idempotency_key="unique-key-123"
         )
         assert metadata.source == "BANKING_SERVICE"
-        assert metadata.instruction_type == "PAYMENT"
+        assert metadata.instruction_type == InstructionType.PAYMENT
         assert metadata.created_at == "2021-01-01T00:00:00Z"
         assert metadata.token == "test.token.here"
         assert metadata.idempotency_key == "unique-key-123"
@@ -87,9 +87,9 @@ class TestMetaData:
             "token": "test.token.here",
             "idempotency_key": "unique-key-123"
         })
-        metadata = MetaData.from_json(json_str)
+        metadata = MetaData.model_validate_json(json_str)
         assert metadata.source == "BANKING_SERVICE"
-        assert metadata.instruction_type == "PAYMENT"
+        assert metadata.instruction_type == InstructionType.PAYMENT
         assert metadata.idempotency_key == "unique-key-123"
 
     def test_metadata_missing_idempotency_key(self):
@@ -229,7 +229,7 @@ class TestPaymentPayload:
             "direction": "INBOUND",
             "bank_account_number": "GB123266734836738787454"
         })
-        payload = PaymentPayload.from_json(json_str)
+        payload = PaymentPayload.model_validate_json(json_str)
         assert payload.external_reference == "P763763453G"
         assert payload.payer_name == "John Doe"
 
@@ -265,7 +265,7 @@ class TestStatusUpdatePayload:
             "status": "PENDING_SERVICE",
             "message": "Payment was received"
         })
-        payload = StatusUpdatePayload.from_json(json_str)
+        payload = StatusUpdatePayload.model_validate_json(json_str)
         assert payload.reference == "MYK123344545"
         assert payload.status == "PENDING_SERVICE"
 
@@ -308,7 +308,7 @@ class TestCorrectionPayload:
             "currency": "EUR",
             "source": "BANK_WISE"
         })
-        payload = CorrectionPayload.from_json(json_str)
+        payload = CorrectionPayload.model_validate_json(json_str)
         assert payload.reference == "MYK123344545"
         assert payload.value == "2.00"
 
@@ -376,7 +376,7 @@ class TestUpdateProfilePayload:
             "suspended_at": None,
             "deleted_at": None
         })
-        payload = UpdateProfilePayload.from_json(json_str)
+        payload = UpdateProfilePayload.model_validate_json(json_str)
         assert payload.address_line_1 == "789 Pine Road"
         assert payload.address_line_2 == "Suite 100"
         assert payload.bank_account_number == "FR7630006000011234567890189"
@@ -391,7 +391,7 @@ class TestUpdateProfilePayload:
             "address_line_1": "123 Test Street",
             "suspended_at": "2024-03-01T00:00:00Z"
         })
-        payload = UpdateProfilePayload.from_json(json_str)
+        payload = UpdateProfilePayload.model_validate_json(json_str)
         assert payload.address_line_1 == "123 Test Street"
         assert payload.suspended_at == "2024-03-01T00:00:00Z"
         assert payload.address_line_2 is None
@@ -403,7 +403,7 @@ class TestUpdateProfilePayload:
             address_line_1="Test Address",
             bank_account_number="GB82WEST12345698765432"
         )
-        json_str = payload.to_json()
+        json_str = payload.model_dump_json(exclude_none=True)
         parsed = json.loads(json_str)
         assert parsed["address_line_1"] == "Test Address"
         assert parsed["bank_account_number"] == "GB82WEST12345698765432"
@@ -434,7 +434,7 @@ class TestMessageBusMessage:
             )
         )
         assert message.meta_data.source == "BANKING_SERVICE"
-        assert message.meta_data.instruction_type == "PAYMENT"
+        assert message.meta_data.instruction_type == InstructionType.PAYMENT
         assert message.meta_data.idempotency_key == "unique-key-123"
         assert isinstance(message.payload, PaymentPayload)
         assert message.payload.external_reference == "P763763453G"
@@ -504,7 +504,7 @@ class TestMessageBusMessage:
                 "bank_account_number": "GB123266734836738787454"
             }
         })
-        message = MessageBusMessage.from_json(json_str)
+        message = MessageBusMessage.model_validate_json(json_str)
         assert message.meta_data.source == "BANKING_SERVICE"
         assert message.meta_data.idempotency_key == "unique-key-123"
         assert message.payload.external_reference == "P763763453G"
@@ -525,8 +525,8 @@ class TestMessageBusMessage:
                 "message": "Payment was received"
             }
         })
-        message = MessageBusMessage.from_json(json_str)
-        assert message.meta_data.instruction_type == "STATUS_UPDATE"
+        message = MessageBusMessage.model_validate_json(json_str)
+        assert message.meta_data.instruction_type == InstructionType.STATUS_UPDATE
         assert message.meta_data.idempotency_key == "unique-key-456"
         assert message.payload.reference == "MYK123344545"
 
@@ -548,8 +548,8 @@ class TestMessageBusMessage:
                 "source": "BANK_WISE"
             }
         })
-        message = MessageBusMessage.from_json(json_str)
-        assert message.meta_data.instruction_type == "CORRECTION"
+        message = MessageBusMessage.model_validate_json(json_str)
+        assert message.meta_data.instruction_type == InstructionType.CORRECTION
         assert message.meta_data.idempotency_key == "unique-key-789"
         assert message.payload.value == "2.00"
 
@@ -574,7 +574,7 @@ class TestMessageBusMessage:
                 bank_account_number="GB123266734836738787454"
             )
         )
-        json_str = message.to_json()
+        json_str = message.model_dump_json(exclude_none=True)
         parsed = json.loads(json_str)
         assert parsed["meta_data"]["source"] == "BANKING_SERVICE"
         assert parsed["meta_data"]["idempotency_key"] == "unique-key-123"
@@ -601,7 +601,7 @@ class TestMessageBusMessage:
         )
 
         assert message.meta_data.source == "BANKING_SERVICE"
-        assert message.meta_data.instruction_type == "PAYMENT"
+        assert message.meta_data.instruction_type == InstructionType.PAYMENT
         assert message.meta_data.token == "test.token.here"
         assert message.meta_data.idempotency_key is not None
         assert len(message.meta_data.idempotency_key) > 0
@@ -627,7 +627,7 @@ class TestMessageBusMessage:
         )
 
         assert message.meta_data.source == "ANCHOR_MYKOBO"
-        assert message.meta_data.instruction_type == "STATUS_UPDATE"
+        assert message.meta_data.instruction_type == InstructionType.STATUS_UPDATE
         assert message.payload == payload
 
     def test_create_correction_message(self):
@@ -648,7 +648,7 @@ class TestMessageBusMessage:
         )
 
         assert message.meta_data.source == "WATCHTOWER"
-        assert message.meta_data.instruction_type == "CORRECTION"
+        assert message.meta_data.instruction_type == InstructionType.CORRECTION
         assert message.payload == payload
 
     def test_create_message_with_custom_idempotency_key(self):
@@ -915,7 +915,7 @@ class TestMessageBusMessage:
                 "deleted_at": None
             }
         })
-        message = MessageBusMessage.from_json(json_str)
+        message = MessageBusMessage.model_validate_json(json_str)
         assert message.meta_data.instruction_type == InstructionType.UPDATE_PROFILE
         assert message.meta_data.idempotency_key == "unique-key-profile-456"
         assert message.payload.address_line_1 == "456 Oak Avenue"
@@ -1092,7 +1092,7 @@ class TestMessageBusMessage:
             }
         })
 
-        message = MessageBusMessage.from_json(payload)
+        message = MessageBusMessage.model_validate_json(payload)
         print(message)
 
 
@@ -1154,7 +1154,7 @@ class TestMintPayload:
             "chain": "stellar",
             "message": "Minting tokens"
         })
-        payload = MintPayload.from_json(json_str)
+        payload = MintPayload.model_validate_json(json_str)
         assert payload.value == "250.00"
         assert payload.currency == "GBP"
         assert payload.reference == "MYK_MINT_001"
@@ -1170,8 +1170,8 @@ class TestMintPayload:
             chain="stellar",
             message="Mint for deposit"
         )
-        json_str = original.to_json()
-        deserialized = MintPayload.from_json(json_str)
+        json_str = original.model_dump_json(exclude_none=True)
+        deserialized = MintPayload.model_validate_json(json_str)
         assert original == deserialized
 
 
@@ -1233,7 +1233,7 @@ class TestBurnPayload:
             "chain": "stellar",
             "message": "Burning tokens"
         })
-        payload = BurnPayload.from_json(json_str)
+        payload = BurnPayload.model_validate_json(json_str)
         assert payload.value == "500.00"
         assert payload.currency == "USD"
         assert payload.reference == "MYK_BURN_001"
@@ -1249,8 +1249,8 @@ class TestBurnPayload:
             chain="stellar",
             message="Burn for withdrawal"
         )
-        json_str = original.to_json()
-        deserialized = BurnPayload.from_json(json_str)
+        json_str = original.model_dump_json(exclude_none=True)
+        deserialized = BurnPayload.model_validate_json(json_str)
         assert original == deserialized
 
 
@@ -1403,7 +1403,7 @@ class TestMintBurnMessages:
                 "message": "From JSON"
             }
         })
-        message = MessageBusMessage.from_json(json_str)
+        message = MessageBusMessage.model_validate_json(json_str)
         assert message.meta_data.instruction_type == InstructionType.MINT
         assert message.payload.value == "100.00"
         assert message.payload.reference == "MYK_MINT_JSON"
@@ -1425,7 +1425,7 @@ class TestMintBurnMessages:
                 "chain": "stellar"
             }
         })
-        message = MessageBusMessage.from_json(json_str)
+        message = MessageBusMessage.model_validate_json(json_str)
         assert message.meta_data.instruction_type == InstructionType.BURN
         assert message.payload.value == "75.00"
         assert message.payload.reference == "MYK_BURN_JSON"
@@ -1453,8 +1453,8 @@ class TestAddressOnboardedEventPayload:
             email="user@example.com",
             payload={"address": "0xabc123"}
         )
-        json_str = original.to_json()
-        deserialized = AddressOnboardedEventPayload.from_json(json_str)
+        json_str = original.model_dump_json(exclude_none=True)
+        deserialized = AddressOnboardedEventPayload.model_validate_json(json_str)
         assert original == deserialized
 
     def test_message_bus_message_valid(self):
@@ -1485,7 +1485,7 @@ class TestAddressOnboardedEventPayload:
                 "payload": {"address": "0xabc123", "chain": "stellar"}
             }
         })
-        message = MessageBusMessage.from_json(json_str)
+        message = MessageBusMessage.model_validate_json(json_str)
         assert message.meta_data.event == EventType.ADDRESS_ONBOARDED
         assert message.payload.email == "user@example.com"
         assert message.payload.payload == {"address": "0xabc123", "chain": "stellar"}
@@ -1528,8 +1528,8 @@ class TestRelayInitiatedEventPayload:
             email="user@example.com",
             payload={"transaction_id": "TX123"}
         )
-        json_str = original.to_json()
-        deserialized = RelayInitiatedEventPayload.from_json(json_str)
+        json_str = original.model_dump_json(exclude_none=True)
+        deserialized = RelayInitiatedEventPayload.model_validate_json(json_str)
         assert original == deserialized
 
     def test_message_bus_message_valid(self):
@@ -1560,7 +1560,7 @@ class TestRelayInitiatedEventPayload:
                 "payload": {"transaction_id": "TX123", "amount": "100.00"}
             }
         })
-        message = MessageBusMessage.from_json(json_str)
+        message = MessageBusMessage.model_validate_json(json_str)
         assert message.meta_data.event == EventType.RELAY_INITIATED
         assert message.payload.email == "user@example.com"
         assert message.payload.payload["transaction_id"] == "TX123"
@@ -1587,8 +1587,8 @@ class TestRelayCompletedEventPayload:
             email="user@example.com",
             payload={"transaction_id": "TX123", "status": "SUCCESS"}
         )
-        json_str = original.to_json()
-        deserialized = RelayCompletedEventPayload.from_json(json_str)
+        json_str = original.model_dump_json(exclude_none=True)
+        deserialized = RelayCompletedEventPayload.model_validate_json(json_str)
         assert original == deserialized
 
     def test_message_bus_message_valid(self):
@@ -1619,7 +1619,7 @@ class TestRelayCompletedEventPayload:
                 "payload": {"transaction_id": "TX123", "status": "SUCCESS"}
             }
         })
-        message = MessageBusMessage.from_json(json_str)
+        message = MessageBusMessage.model_validate_json(json_str)
         assert message.meta_data.event == EventType.RELAY_COMPLETED
         assert message.payload.email == "user@example.com"
         assert message.payload.payload["status"] == "SUCCESS"
@@ -1662,8 +1662,8 @@ class TestRelayOnboardedEventPayload:
             email="user@example.com",
             payload={"wallet_id": "W123", "chain": "STELLAR"}
         )
-        json_str = original.to_json()
-        deserialized = RelayOnboardedEventPayload.from_json(json_str)
+        json_str = original.model_dump_json(exclude_none=True)
+        deserialized = RelayOnboardedEventPayload.model_validate_json(json_str)
         assert original == deserialized
 
     def test_message_bus_message_valid(self):
@@ -1694,7 +1694,7 @@ class TestRelayOnboardedEventPayload:
                 "payload": {"wallet_id": "W123", "chain": "STELLAR"}
             }
         })
-        message = MessageBusMessage.from_json(json_str)
+        message = MessageBusMessage.model_validate_json(json_str)
         assert message.meta_data.event == EventType.RELAY_ONBOARDED
         assert message.payload.email == "user@example.com"
         assert message.payload.payload["chain"] == "STELLAR"
