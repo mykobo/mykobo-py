@@ -8,7 +8,6 @@ from requests import Response
 from .models.auth import Token, OtcChallenge
 from .models.request import CustomerRequest, NewDocumentRequest, NewKycReviewRequest, UpdateProfileRequest, \
     UserRiskResetRequest
-from mykobo_py.utils import del_none
 from mykobo_py.client import MykoboServiceClient
 from mykobo_py.identity.models.request import UserProfileFilterRequest
 
@@ -153,7 +152,7 @@ class IdentityServiceClient(MykoboServiceClient):
         response = requests.post(
             f"{self.host}/user/profile/new",
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
-            data=json.dumps(del_none(payload.to_dict().copy()))
+            data=payload.model_dump_json(exclude_none=True)
         )
         response.raise_for_status()
         return response
@@ -163,7 +162,7 @@ class IdentityServiceClient(MykoboServiceClient):
         response = requests.put(
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
-            data=json.dumps(del_none(payload.to_dict().copy()))
+            data=payload.model_dump_json(exclude_none=True)
         )
         response.raise_for_status()
         return response
@@ -173,7 +172,7 @@ class IdentityServiceClient(MykoboServiceClient):
         response = requests.post(
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
-            data=json.dumps(del_none(payload.to_dict().copy()))
+            data=payload.model_dump_json(exclude_none=True)
         )
         response.raise_for_status()
         return response
@@ -183,7 +182,7 @@ class IdentityServiceClient(MykoboServiceClient):
         response = requests.post(
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
-            data=json.dumps(del_none(filters.to_dict().copy()))
+            data=filters.model_dump_json(exclude_none=True)
         )
         response.raise_for_status()
         return response
@@ -195,7 +194,7 @@ class IdentityServiceClient(MykoboServiceClient):
         response = requests.patch(
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
-            data=json.dumps(del_none(payload.to_dict().copy()))
+            data=payload.model_dump_json(exclude_none=True)
         )
         response.raise_for_status()
         return response
@@ -233,7 +232,7 @@ class IdentityServiceClient(MykoboServiceClient):
         response = requests.post(
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
-            data=json.dumps(del_none(reset_request.to_dict().copy()))
+            data=reset_request.model_dump_json(exclude_none=True)
         )
         response.raise_for_status()
         return response
