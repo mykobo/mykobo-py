@@ -31,7 +31,7 @@ class TestTransaction:
             "wallet_address": "B2JAtKctzWLt4cegWpqBjRqABZDxSSBCNCXPP7Kyk24J"
         }
 
-        transaction = Transaction.from_json(json_data)
+        transaction = Transaction.model_validate(json_data)
 
         assert transaction.id == "29147822-396e-4817-9b64-931c92a05f46"
         assert transaction.first_name == "Kwabena"
@@ -74,7 +74,7 @@ class TestTransaction:
             "wallet_address": "B2JAtKctzWLt4cegWpqBjRqABZDxSSBCNCXPP7Kyk24J"
         }
 
-        transaction = Transaction.from_json(json_data)
+        transaction = Transaction.model_validate(json_data)
 
         assert transaction.tx_hash == "5YNmS1R9nNSCDzYx6H9FGqPM4SXNqD6sNgD3KL8XvW7P"
         assert transaction.payee_id == "payee-123"
@@ -106,11 +106,11 @@ class TestTransaction:
             "wallet_address": "wallet-addr"
         }
 
-        transaction = Transaction.from_json(json_data)
+        transaction = Transaction.model_validate(json_data)
         assert transaction.is_pending_anchor is True
 
         json_data["status"] = "COMPLETED"
-        transaction = Transaction.from_json(json_data)
+        transaction = Transaction.model_validate(json_data)
         assert transaction.is_pending_anchor is False
 
     def test_is_deposit_property(self):
@@ -138,7 +138,7 @@ class TestTransaction:
             "wallet_address": "wallet-addr"
         }
 
-        transaction = Transaction.from_json(json_data)
+        transaction = Transaction.model_validate(json_data)
         assert transaction.is_deposit is True
         assert transaction.is_withdrawal is False
 
@@ -167,7 +167,7 @@ class TestTransaction:
             "wallet_address": "wallet-addr"
         }
 
-        transaction = Transaction.from_json(json_data)
+        transaction = Transaction.model_validate(json_data)
         assert transaction.is_withdrawal is True
         assert transaction.is_deposit is False
 
@@ -196,15 +196,15 @@ class TestTransaction:
             "wallet_address": "wallet-addr"
         }
 
-        transaction = Transaction.from_json(json_data)
+        transaction = Transaction.model_validate(json_data)
         assert transaction.has_tx_hash is True
 
         json_data["tx_hash"] = None
-        transaction = Transaction.from_json(json_data)
+        transaction = Transaction.model_validate(json_data)
         assert transaction.has_tx_hash is False
 
         json_data["tx_hash"] = ""
-        transaction = Transaction.from_json(json_data)
+        transaction = Transaction.model_validate(json_data)
         assert transaction.has_tx_hash is False
 
     def test_transaction_dict_method(self):
@@ -232,7 +232,7 @@ class TestTransaction:
             "wallet_address": "B2JAtKctzWLt4cegWpqBjRqABZDxSSBCNCXPP7Kyk24J"
         }
 
-        transaction = Transaction.from_json(json_data)
+        transaction = Transaction.model_validate(json_data)
         result_dict = transaction.dict()
 
         assert isinstance(result_dict, dict)
@@ -249,7 +249,7 @@ class TestTransaction:
             "reference": "REF123"
         }
 
-        transaction = Transaction.from_json(minimal_json)
+        transaction = Transaction.model_validate(minimal_json)
 
         assert transaction.id == "test-id"
         assert transaction.reference == "REF123"
@@ -267,7 +267,7 @@ class TestTransaction:
         with open(payload_file, 'r') as f:
             json_data = json.load(f)
 
-        transaction = Transaction.from_json(json_data)
+        transaction = Transaction.model_validate(json_data)
 
         # Verify basic fields
         assert transaction.id == "3b40bc2a-9cc9-420b-a595-1b4d89ae169c"
@@ -306,7 +306,7 @@ class TestTransaction:
             "tx_hash": "stellar-hash-123"
         }
 
-        transaction = Transaction.from_json(stellar_data)
+        transaction = Transaction.model_validate(stellar_data)
         assert transaction.network == "stellar"
         assert transaction.wallet_address == "GDFDQ6QNTNUQK2NPLM3QLW73LAZ7FX6WXKWHQTLL47IKFTT3T7PRY34T"
 
@@ -319,7 +319,7 @@ class TestTransaction:
             "tx_hash": "solana-hash-456"
         }
 
-        transaction = Transaction.from_json(solana_data)
+        transaction = Transaction.model_validate(solana_data)
         assert transaction.network == "solana"
         assert transaction.wallet_address == "B2JAtKctzWLt4cegWpqBjRqABZDxSSBCNCXPP7Kyk24J"
 
@@ -331,7 +331,7 @@ class TestTransaction:
             "wallet_address": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
         }
 
-        transaction = Transaction.from_json(ethereum_data)
+        transaction = Transaction.model_validate(ethereum_data)
         assert transaction.network == "ethereum"
 
     def test_transaction_with_client_domain_field(self):
@@ -344,7 +344,7 @@ class TestTransaction:
             "network": "stellar"
         }
 
-        transaction = Transaction.from_json(stellar_domain_data)
+        transaction = Transaction.model_validate(stellar_domain_data)
         assert transaction.client_domain == "stellar.mykobo.app"
 
         # Test with different domain
@@ -355,7 +355,7 @@ class TestTransaction:
             "network": "solana"
         }
 
-        transaction = Transaction.from_json(solana_domain_data)
+        transaction = Transaction.model_validate(solana_domain_data)
         assert transaction.client_domain == "solana.mykobo.app"
 
         # Test with custom domain
@@ -366,7 +366,7 @@ class TestTransaction:
             "network": "stellar"
         }
 
-        transaction = Transaction.from_json(custom_domain_data)
+        transaction = Transaction.model_validate(custom_domain_data)
         assert transaction.client_domain == "custom.example.com"
 
     def test_transaction_with_comment_null(self):
@@ -379,7 +379,7 @@ class TestTransaction:
             "client_domain": "stellar.mykobo.app"
         }
 
-        transaction = Transaction.from_json(json_data)
+        transaction = Transaction.model_validate(json_data)
         assert transaction.comment is None
 
     def test_transaction_with_comment_value(self):
@@ -393,7 +393,7 @@ class TestTransaction:
             "client_domain": "stellar.mykobo.app"
         }
 
-        transaction = Transaction.from_json(json_data_1)
+        transaction = Transaction.model_validate(json_data_1)
         assert transaction.comment == "Payment for invoice #12345"
         assert transaction.comment is not None
 
@@ -405,7 +405,7 @@ class TestTransaction:
             "network": "solana"
         }
 
-        transaction = Transaction.from_json(json_data_2)
+        transaction = Transaction.model_validate(json_data_2)
         assert transaction.comment == "This is a longer comment with special characters: @#$% and unicode émojis 🚀"
 
         # Test with empty string comment
@@ -416,7 +416,7 @@ class TestTransaction:
             "network": "stellar"
         }
 
-        transaction = Transaction.from_json(json_data_3)
+        transaction = Transaction.model_validate(json_data_3)
         assert transaction.comment == ""
 
     def test_transaction_new_fields_in_dict_method(self):
@@ -447,7 +447,7 @@ class TestTransaction:
             "wallet_address": "test-wallet"
         }
 
-        transaction = Transaction.from_json(json_data)
+        transaction = Transaction.model_validate(json_data)
         result_dict = transaction.dict()
 
         # Verify new fields are present in dict output
@@ -470,7 +470,7 @@ class TestTransaction:
             "comment": None
         }
 
-        transaction = Transaction.from_json(json_data)
+        transaction = Transaction.model_validate(json_data)
         result_dict = transaction.dict()
 
         # Verify null values are preserved
@@ -504,7 +504,7 @@ class TestTransaction:
             "wallet_address": "legacy-wallet"
         }
 
-        transaction = Transaction.from_json(old_json_data)
+        transaction = Transaction.model_validate(old_json_data)
 
         # Verify basic fields work
         assert transaction.id == "legacy-id"
