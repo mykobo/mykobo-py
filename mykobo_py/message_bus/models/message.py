@@ -1,8 +1,8 @@
-from dataclasses import dataclass
 from typing import Optional, Union
 from datetime import datetime, UTC
 import uuid
-from dataclasses_json import dataclass_json
+
+from pydantic import BaseModel, model_validator
 
 from mykobo_py.message_bus.models.base import (
     Payload,
@@ -16,11 +16,30 @@ from mykobo_py.message_bus.models.event import NewTransactionEventPayload, Trans
     RelayCompletedEventPayload, RelayOnboardedEventPayload
 from mykobo_py.message_bus.models.instruction import PaymentPayload, StatusUpdatePayload, CorrectionPayload, \
     TransactionPayload, UpdateProfilePayload, MintPayload, BurnPayload
-from mykobo_py.utils import del_none
 
-@dataclass_json
-@dataclass
-class MetaData:
+PAYLOAD_TYPE_MAP = {
+    InstructionType.PAYMENT: PaymentPayload,
+    InstructionType.STATUS_UPDATE: StatusUpdatePayload,
+    InstructionType.CORRECTION: CorrectionPayload,
+    InstructionType.TRANSACTION: TransactionPayload,
+    InstructionType.UPDATE_PROFILE: UpdateProfilePayload,
+    InstructionType.MINT: MintPayload,
+    InstructionType.BURN: BurnPayload,
+    EventType.NEW_TRANSACTION: NewTransactionEventPayload,
+    EventType.TRANSACTION_STATUS_UPDATE: TransactionStatusEventPayload,
+    EventType.NEW_BANK_PAYMENT: PaymentEventPayload,
+    EventType.NEW_PROFILE: ProfileEventPayload,
+    EventType.VERIFICATION_REQUESTED: VerificationRequestedEventPayload,
+    EventType.PASSWORD_RESET_REQUESTED: PasswordResetEventPayload,
+    EventType.KYC_EVENT: KycEventPayload,
+    EventType.ADDRESS_ONBOARDED: AddressOnboardedEventPayload,
+    EventType.RELAY_INITIATED: RelayInitiatedEventPayload,
+    EventType.RELAY_COMPLETED: RelayCompletedEventPayload,
+    EventType.RELAY_ONBOARDED: RelayOnboardedEventPayload
+}
+
+
+class MetaData(BaseModel):
     """Metadata for message bus messages"""
     source: str
     created_at: str
@@ -30,15 +49,9 @@ class MetaData:
     event: Optional[EventType] = None
     ip_address: Optional[str] = None
 
-    def __post_init__(self):
+    @model_validator(mode='after')
+    def validate_fields(self):
         """Validate that all required fields are provided"""
-        # Convert string to enum if needed
-        if self.instruction_type and isinstance(self.instruction_type, str):
-            self.instruction_type = InstructionType(self.instruction_type)
-
-        if self.event and isinstance(self.event, str):
-            self.event = EventType(self.event)
-
         # Validate required base fields
         validate_required_fields(
             self,
@@ -49,74 +62,52 @@ class MetaData:
         if not self.instruction_type and not self.event:
             raise ValueError("MetaData must have either instruction_type or event")
 
-    @property
-    def to_dict(self):
-        return del_none(self.to_dict())
+        return self
+
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)
 
 
-
-@dataclass_json
-@dataclass
-class MessageBusMessage:
+class MessageBusMessage(BaseModel):
     """Complete message bus message structure - supports multiple payload types"""
     meta_data: MetaData
     payload: Payload
-    def __post_init__(self):
+
+    model_config = {"arbitrary_types_allowed": True}
+
+    @model_validator(mode='after')
+    def validate_payload_type(self):
         """Validate that instruction_type or event matches the payload type"""
         # Determine which type field to use
         message_type = None
         if self.meta_data.instruction_type:
-            # Ensure instruction_type is an enum
-            if isinstance(self.meta_data.instruction_type, str):
-                self.meta_data.instruction_type = InstructionType(self.meta_data.instruction_type)
             message_type = self.meta_data.instruction_type
         elif self.meta_data.event:
-            # Ensure event is an enum
-            if isinstance(self.meta_data.event, str):
-                self.meta_data.event = EventType(self.meta_data.event)
             message_type = self.meta_data.event
         else:
             raise ValueError("Either instruction_type or event must be provided in meta_data")
 
-        # Validate message_type matches payload type
-        payload_type_map = {
-            InstructionType.PAYMENT: PaymentPayload,
-            InstructionType.STATUS_UPDATE: StatusUpdatePayload,
-            InstructionType.CORRECTION: CorrectionPayload,
-            InstructionType.TRANSACTION: TransactionPayload,
-            InstructionType.UPDATE_PROFILE: UpdateProfilePayload,
-            InstructionType.MINT: MintPayload,
-            InstructionType.BURN: BurnPayload,
-            EventType.NEW_TRANSACTION: NewTransactionEventPayload,
-            EventType.TRANSACTION_STATUS_UPDATE: TransactionStatusEventPayload,
-            EventType.NEW_BANK_PAYMENT: PaymentEventPayload,
-            EventType.NEW_PROFILE: ProfileEventPayload,
-            EventType.VERIFICATION_REQUESTED: VerificationRequestedEventPayload,
-            EventType.PASSWORD_RESET_REQUESTED: PasswordResetEventPayload,
-            EventType.KYC_EVENT: KycEventPayload,
-            EventType.ADDRESS_ONBOARDED: AddressOnboardedEventPayload,
-            EventType.RELAY_INITIATED: RelayInitiatedEventPayload,
-            EventType.RELAY_COMPLETED: RelayCompletedEventPayload,
-            EventType.RELAY_ONBOARDED: RelayOnboardedEventPayload
-        }
-
-        expected_payload_type = payload_type_map.get(message_type)
+        expected_payload_type = PAYLOAD_TYPE_MAP.get(message_type)
         if not expected_payload_type:
             raise ValueError(f"Unknown message type: {message_type}")
 
         # If payload is a dict (from JSON deserialization), convert it to the appropriate type
         if isinstance(self.payload, dict):
-            self.payload = expected_payload_type.from_dict(self.payload)
+            self.payload = expected_payload_type.model_validate(self.payload)
 
         if not isinstance(self.payload, expected_payload_type):
-            raise ValueError(
-                f"message type {message_type}: {message_type.value} requires "
-                f"{expected_payload_type.__name__} but got {type(self.payload).__name__}"
-            )
+            if isinstance(self.payload, Payload):
+                self.payload = expected_payload_type.model_validate(self.payload.model_dump())
+            else:
+                raise ValueError(
+                    f"message type {message_type}: {message_type.value} requires "
+                    f"{expected_payload_type.__name__} but got {type(self.payload).__name__}"
+                )
 
-    @property
-    def to_dict(self):
-        return del_none(self.to_dict())
+        return self
+
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)
 
     @staticmethod
     def create(
@@ -156,12 +147,6 @@ class MessageBusMessage:
             idempotency_key = str(uuid.uuid4())
 
         created_at = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-        # Convert string to enum if needed
-        if instruction_type is not None and isinstance(instruction_type, str):
-            instruction_type = InstructionType(instruction_type)
-        if event is not None and isinstance(event, str):
-            event = EventType(event)
 
         meta_data = MetaData(
             source=source,
