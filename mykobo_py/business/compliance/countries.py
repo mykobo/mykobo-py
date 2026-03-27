@@ -22,6 +22,7 @@ WHITELISTED_COUNTRIES = {
     "LT": "Lithuania",
     "LU": "Luxembourg",
     "ME": "Montenegro",
+    "MT": "Malta",
     "NL": "Netherlands",
     "NZ": "New Zealand",
     "NO": "Norway",
