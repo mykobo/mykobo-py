@@ -3,12 +3,13 @@ import requests
 from time import time
 
 from mykobo_py.anchor.dapp.models import Transaction
+from mykobo_py.client import MykoboServiceClient
+from mykobo_py.identity.models.auth import Token
 
 
-class DappAnchorClient:
+class DappAnchorClient(MykoboServiceClient):
     def __init__(self, host, logger):
-        self.host = host
-        self.logger = logger
+        super().__init__(logger, host)
 
     def make_request(self, method, params):
         self.logger.info(f"Sending {method} request to {self.host}")
@@ -30,10 +31,13 @@ class DappAnchorClient:
             self.logger.error(f"Failed to make request to {self.host}: {e}")
             return None
 
-    def get_transaction(self, transaction_id) -> Optional[Transaction]:
+    def get_transaction(self, service_token: Token, transaction_id) -> Optional[Transaction]:
         try:
             self.logger.info(f"Getting transaction {transaction_id} from {self.host}/api/transactions/{transaction_id}")
-            response = requests.get(url=f"{self.host}/api/transactions/{transaction_id}")
+            response = requests.get(
+                url=f"{self.host}/api/transactions/{transaction_id}",
+                headers=self.generate_headers(service_token, **{"Content-type": "application/json"}),
+            )
             if response.ok:
                 return Transaction.from_json(response.json())
             else:

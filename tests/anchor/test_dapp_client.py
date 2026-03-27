@@ -1,11 +1,19 @@
+import datetime
 import pytest
 import logging
 from mykobo_py.anchor.dapp.anchor import DappAnchorClient
 from mykobo_py.anchor.dapp.models import Transaction
+from mykobo_py.identity.models.auth import Token
 
 
 logger = logging.getLogger("test")
 host = "https://test-anchor.example.com"
+test_token = Token(
+    subject_id="urn:usrp:test",
+    token="test_token",
+    refresh_token="test_token",
+    expires_at=datetime.datetime.now() + datetime.timedelta(days=30)
+)
 
 
 class TestDappAnchorClient:
@@ -80,7 +88,7 @@ class TestDappAnchorClient:
             json=mock_transaction_data
         )
 
-        transaction = client.get_transaction(transaction_id)
+        transaction = client.get_transaction(test_token, transaction_id)
 
         assert transaction is not None
         assert isinstance(transaction, Transaction)
@@ -101,7 +109,7 @@ class TestDappAnchorClient:
             status_code=404
         )
 
-        transaction = client.get_transaction(transaction_id)
+        transaction = client.get_transaction(test_token, transaction_id)
 
         assert transaction is None
 
@@ -115,7 +123,7 @@ class TestDappAnchorClient:
             status_code=500
         )
 
-        transaction = client.get_transaction(transaction_id)
+        transaction = client.get_transaction(test_token, transaction_id)
 
         assert transaction is None
 
@@ -129,7 +137,7 @@ class TestDappAnchorClient:
             exc=Exception("Network error")
         )
 
-        transaction = client.get_transaction(transaction_id)
+        transaction = client.get_transaction(test_token, transaction_id)
 
         assert transaction is None
 
@@ -186,7 +194,7 @@ class TestDappAnchorClient:
             json=mock_transaction_data
         )
 
-        transaction = client.get_transaction(transaction_id)
+        transaction = client.get_transaction(test_token, transaction_id)
 
         assert transaction is not None
         assert transaction.status == "COMPLETED"
