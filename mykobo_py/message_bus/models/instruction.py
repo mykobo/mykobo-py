@@ -1,60 +1,44 @@
-from dataclasses import dataclass
 from typing import Optional
 
-from dataclasses_json import dataclass_json
+from pydantic import model_validator
 
 from mykobo_py.message_bus.models.base import validate_required_fields, TransactionType, Direction, Payload
-from mykobo_py.utils import del_none
 
 
-@dataclass_json
-@dataclass
 class PaymentPayload(Payload):
     """Payload for payment instructions"""
     external_reference: str
-    payer_name: Optional[str]
+    payer_name: Optional[str] = None
     currency: str
     value: str
     source: str
     reference: str
     direction: Direction
-    bank_account_number: Optional[str]
+    bank_account_number: Optional[str] = None
 
-    def __post_init__(self):
+    @model_validator(mode='after')
+    def validate_fields(self):
         """Validate that all required fields are provided"""
-        # Convert string to enum if needed
-        if isinstance(self.direction, str):
-            self.direction = Direction(self.direction)
-
         validate_required_fields(
             self,
             ['external_reference', 'currency', 'value', 'source', 'reference', 'direction']
         )
-
-    @property
-    def to_dict(self):
-        return del_none(self.to_dict())
+        return self
 
 
-@dataclass_json
-@dataclass
 class StatusUpdatePayload(Payload):
     """Payload for status update instructions"""
     reference: str
     status: str
     message: Optional[str] = None
 
-    def __post_init__(self):
+    @model_validator(mode='after')
+    def validate_fields(self):
         """Validate that all required fields are provided"""
         validate_required_fields(self, ['reference', 'status'])
-
-    @property
-    def to_dict(self):
-        return del_none(self.to_dict())
+        return self
 
 
-@dataclass_json
-@dataclass
 class CorrectionPayload(Payload):
     """Payload for correction instructions"""
     reference: str
@@ -63,17 +47,13 @@ class CorrectionPayload(Payload):
     currency: str
     source: str
 
-    def __post_init__(self):
+    @model_validator(mode='after')
+    def validate_fields(self):
         """Validate that all required fields are provided"""
         validate_required_fields(self, ['reference', 'value', 'message', 'currency', 'source'])
-
-    @property
-    def to_dict(self):
-        return del_none(self.to_dict())
+        return self
 
 
-@dataclass_json
-@dataclass
 class TransactionPayload(Payload):
     """Payload for transaction instructions"""
     external_reference: str
@@ -87,15 +67,12 @@ class TransactionPayload(Payload):
     outgoing_currency: str
     value: str
     fee: str
-    payer: Optional[str]
-    payee: Optional[str]
+    payer: Optional[str] = None
+    payee: Optional[str] = None
 
-    def __post_init__(self):
+    @model_validator(mode='after')
+    def validate_fields(self):
         """Validate that all required fields are provided"""
-        # Convert string to enum if needed
-        if isinstance(self.transaction_type, str):
-            self.transaction_type = TransactionType(self.transaction_type)
-
         if self.transaction_type == TransactionType.DEPOSIT and self.payer is None:
             raise ValueError("Deposit transactions must be specify a payer id")
 
@@ -110,14 +87,9 @@ class TransactionPayload(Payload):
                 'value', 'fee'
             ]
         )
-
-    @property
-    def to_dict(self):
-        return del_none(self.to_dict())
+        return self
 
 
-@dataclass_json
-@dataclass
 class UpdateProfilePayload(Payload):
     """Payload for update profile instructions"""
     address_line_1: Optional[str] = None
@@ -130,13 +102,7 @@ class UpdateProfilePayload(Payload):
     suspended_at: Optional[str] = None
     deleted_at: Optional[str] = None
 
-    @property
-    def to_dict(self):
-        return del_none(self.to_dict())
 
-
-@dataclass_json
-@dataclass
 class MintPayload(Payload):
     """Payload for mint instructions"""
     value: str
@@ -145,17 +111,13 @@ class MintPayload(Payload):
     chain: str
     message: Optional[str] = None
 
-    def __post_init__(self):
+    @model_validator(mode='after')
+    def validate_fields(self):
         """Validate that all required fields are provided"""
         validate_required_fields(self, ['value', 'currency', 'reference', 'chain'])
-
-    @property
-    def to_dict(self):
-        return del_none(self.to_dict())
+        return self
 
 
-@dataclass_json
-@dataclass
 class BurnPayload(Payload):
     """Payload for burn instructions"""
     value: str
@@ -164,10 +126,8 @@ class BurnPayload(Payload):
     chain: str
     message: Optional[str] = None
 
-    def __post_init__(self):
+    @model_validator(mode='after')
+    def validate_fields(self):
         """Validate that all required fields are provided"""
         validate_required_fields(self, ['value', 'currency', 'reference', 'chain'])
-
-    @property
-    def to_dict(self):
-        return del_none(self.to_dict())
+        return self
