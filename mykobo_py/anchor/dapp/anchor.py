@@ -35,7 +35,7 @@ class DappAnchorClient:
             self.logger.info(f"Getting transaction {transaction_id} from {self.host}/api/transactions/{transaction_id}")
             response = requests.get(url=f"{self.host}/api/transactions/{transaction_id}")
             if response.ok:
-                return Transaction.from_json(response.json())
+                return Transaction.model_validate(response.json())
             else:
                 return None
         except Exception as e:

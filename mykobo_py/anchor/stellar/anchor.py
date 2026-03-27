@@ -41,7 +41,7 @@ class AnchorRpcClient:
         try:
             response = requests.get(url=f"{url}/transactions/{transaction_id}")
             if response.ok:
-                return Transaction.from_json(response.json())
+                return Transaction.model_validate(response.json())
             else:
                 self.logger.warning(f"CLIENT: Error fetching transaction {response.content}")
                 return None
