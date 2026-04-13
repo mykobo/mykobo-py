@@ -33,9 +33,9 @@ class DappAnchorClient(MykoboServiceClient):
 
     def get_transaction(self, service_token: Token, transaction_id) -> Optional[Transaction]:
         try:
-            self.logger.info(f"Getting transaction {transaction_id} from {self.host}/api/transactions/{transaction_id}")
+            self.logger.info(f"Getting transaction {transaction_id} from {self.host}/v1/transactions/{transaction_id}")
             response = requests.get(
-                url=f"{self.host}/api/transactions/{transaction_id}",
+                url=f"{self.host}/v1/transactions/{transaction_id}",
                 headers=self.generate_headers(service_token, **{"Content-type": "application/json"}),
             )
             if response.ok:
