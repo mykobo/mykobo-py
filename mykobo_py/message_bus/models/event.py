@@ -71,10 +71,11 @@ class KycEventPayload(Payload):
 class PasswordResetEventPayload(Payload):
     to: str
     subject: str
+    password: str
 
     @model_validator(mode='after')
     def validate_fields(self):
-        validate_required_fields(self, ['to', 'subject'])
+        validate_required_fields(self, ['to', 'subject', 'password'])
         return self
 
 
