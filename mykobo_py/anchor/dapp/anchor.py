@@ -41,7 +41,7 @@ class DappAnchorClient(MykoboServiceClient):
             if response.ok:
                 return Transaction.model_validate(response.json())
             else:
-                self.logger.error(f"Failed to get transaction {transaction_id}, response: {response.text}")
+                self.logger.error(f"Failed to get transaction {transaction_id}, response: {response.text}, {response.status_code}")
                 return None
         except Exception as e:
             self.logger.error(f"Failed to get transaction {transaction_id}: {e}")
