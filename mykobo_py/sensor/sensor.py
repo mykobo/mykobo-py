@@ -31,6 +31,14 @@ class SensorServiceClient(MykoboServiceClient):
         response.raise_for_status()
         return response
 
+    def status(self, token=None) -> Response:
+        response = requests.get(
+            f"{self.host}/status",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+        )
+        response.raise_for_status()
+        return response
+
     # --- Watched addresses ---
 
     def list_watched_addresses(
