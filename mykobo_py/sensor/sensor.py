@@ -7,6 +7,7 @@ from requests import Response
 from mykobo_py.client import MykoboServiceClient
 
 from .models.request import (
+    CreateIntentRequest,
     CreateWatchedAddressRequest,
     UpdateWatchedAddressRequest,
 )
@@ -113,6 +114,7 @@ class SensorServiceClient(MykoboServiceClient):
         status: Optional[str] = None,
         recipient: Optional[str] = None,
         limit: Optional[int] = None,
+        offset: Optional[int] = None,
     ) -> Response:
         params = {}
         if chain:
@@ -123,6 +125,8 @@ class SensorServiceClient(MykoboServiceClient):
             params["recipient"] = recipient
         if limit is not None:
             params["limit"] = limit
+        if offset is not None:
+            params["offset"] = offset
 
         response = requests.get(
             f"{self.host}{self.API_PREFIX}/transactions",
@@ -135,6 +139,14 @@ class SensorServiceClient(MykoboServiceClient):
     def get_chain_transaction(self, transaction_id: str, token=None) -> Response:
         response = requests.get(
             f"{self.host}{self.API_PREFIX}/transactions/{transaction_id}",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+        )
+        response.raise_for_status()
+        return response
+
+    def retry_chain_transaction(self, transaction_id: str, token=None) -> Response:
+        response = requests.post(
+            f"{self.host}{self.API_PREFIX}/transactions/{transaction_id}/retry",
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
         )
         response.raise_for_status()
@@ -169,6 +181,15 @@ class SensorServiceClient(MykoboServiceClient):
         response = requests.get(
             f"{self.host}{self.API_PREFIX}/intents/{intent_id}",
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+        )
+        response.raise_for_status()
+        return response
+
+    def create_intent(self, request: CreateIntentRequest, token=None) -> Response:
+        response = requests.post(
+            f"{self.host}{self.API_PREFIX}/intents",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+            data=request.model_dump_json(exclude_none=True),
         )
         response.raise_for_status()
         return response

@@ -1,3 +1,5 @@
+from datetime import datetime
+from decimal import Decimal
 from typing import List, Optional
 
 from pydantic import BaseModel
@@ -25,3 +27,15 @@ class UpdateWatchedAddressRequest(BaseModel):
     dispatch_topic: Optional[str] = None
     payload_source: Optional[str] = None
     max_dispatch_retries: Optional[int] = None
+
+
+class CreateIntentRequest(BaseModel):
+    chain: Chain
+    target_address: str
+    expected_sender: str
+    expected_amount: Decimal
+    expected_token: str
+    reference: str
+    source: Optional[str] = None
+    expires_at: Optional[datetime] = None
+    ttl_secs: Optional[int] = None

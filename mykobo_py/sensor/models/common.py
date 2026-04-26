@@ -15,4 +15,5 @@ class EnrichmentStrategy(str, Enum):
 class TransactionStatus(str, Enum):
     RECEIVED = "RECEIVED"
     DISPATCHED = "DISPATCHED"
+    UNMATCHED = "UNMATCHED"
     FAILED = "FAILED"
