@@ -6,8 +6,8 @@ import requests
 from logging import Logger
 from requests import Response
 from .models.auth import Token, OtcChallenge
-from .models.request import CustomerRequest, NewDocumentRequest, NewKycReviewRequest, PatchScopesRequest, \
-    UpdateProfileRequest, UpdateServiceProfileRequest, UserRiskResetRequest
+from .models.request import CustomerRequest, NewDocumentRequest, NewKycReviewRequest, NewServiceRequest, \
+    PatchScopesRequest, UpdateProfileRequest, UpdateServiceProfileRequest, UserRiskResetRequest
 from mykobo_py.client import MykoboServiceClient
 from mykobo_py.identity.models.request import UserProfileFilterRequest
 
@@ -243,6 +243,15 @@ class IdentityServiceClient(MykoboServiceClient):
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
             data=reset_request.model_dump_json(exclude_none=True)
+        )
+        response.raise_for_status()
+        return response
+
+    def create_service(self, token: Token, payload: NewServiceRequest) -> Response:
+        response = requests.post(
+            f"{self.host}/service/new",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+            data=payload.model_dump_json(exclude_none=True)
         )
         response.raise_for_status()
         return response

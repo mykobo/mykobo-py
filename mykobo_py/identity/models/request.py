@@ -85,6 +85,14 @@ class UserRiskResetRequest(BaseModel):
         return self.model_dump(exclude_none=True)
 
 
+class NewServiceRequest(BaseModel):
+    name: str
+    email: str
+
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)
+
+
 class UpdateServiceProfileRequest(BaseModel):
     name: Optional[str] = None
     email: Optional[str] = None
