@@ -6,8 +6,8 @@ import requests
 from logging import Logger
 from requests import Response
 from .models.auth import Token, OtcChallenge
-from .models.request import CustomerRequest, NewDocumentRequest, NewKycReviewRequest, UpdateProfileRequest, \
-    UserRiskResetRequest
+from .models.request import CustomerRequest, NewDocumentRequest, NewKycReviewRequest, PatchScopesRequest, \
+    UpdateProfileRequest, UpdateServiceProfileRequest, UserRiskResetRequest
 from mykobo_py.client import MykoboServiceClient
 from mykobo_py.identity.models.request import UserProfileFilterRequest
 
@@ -243,6 +243,78 @@ class IdentityServiceClient(MykoboServiceClient):
             url,
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
             data=reset_request.model_dump_json(exclude_none=True)
+        )
+        response.raise_for_status()
+        return response
+
+    def list_services(
+        self,
+        token: Token,
+        status: Optional[str] = None,
+        page: Optional[int] = None,
+        page_size: Optional[int] = None,
+    ) -> Response:
+        params = {}
+        if status is not None:
+            params["status"] = status
+        if page is not None:
+            params["page"] = page
+        if page_size is not None:
+            params["page_size"] = page_size
+        response = requests.get(
+            f"{self.host}/service/list",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+            params=params,
+        )
+        response.raise_for_status()
+        return response
+
+    def update_service(self, token: Token, service_id: str, payload: UpdateServiceProfileRequest) -> Response:
+        response = requests.put(
+            f"{self.host}/service/{service_id}",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+            data=payload.model_dump_json(exclude_none=True)
+        )
+        response.raise_for_status()
+        return response
+
+    def get_service_credentials(self, token: Token, service_id: str) -> Response:
+        response = requests.get(
+            f"{self.host}/service/{service_id}/credentials",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+        )
+        response.raise_for_status()
+        return response
+
+    def patch_service_credentials_scopes(self, token: Token, service_id: str, payload: PatchScopesRequest) -> Response:
+        response = requests.patch(
+            f"{self.host}/service/{service_id}/credentials/scopes",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+            data=payload.model_dump_json()
+        )
+        response.raise_for_status()
+        return response
+
+    def rotate_service_credentials(self, token: Token, service_id: str) -> Response:
+        response = requests.post(
+            f"{self.host}/service/{service_id}/credentials/rotate",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+        )
+        response.raise_for_status()
+        return response
+
+    def suspend_service_credentials(self, token: Token, service_id: str) -> Response:
+        response = requests.post(
+            f"{self.host}/service/{service_id}/credentials/suspend",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+        )
+        response.raise_for_status()
+        return response
+
+    def unsuspend_service_credentials(self, token: Token, service_id: str) -> Response:
+        response = requests.post(
+            f"{self.host}/service/{service_id}/credentials/unsuspend",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
         )
         response.raise_for_status()
         return response

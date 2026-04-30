@@ -34,7 +34,7 @@ class SensorServiceClient(MykoboServiceClient):
 
     def status(self, token=None) -> Response:
         response = requests.get(
-            f"{self.host}/status",
+            f"{self.host}{self.API_PREFIX}/status",
             headers=self.generate_headers(token, **{"Content-type": "application/json"}),
         )
         response.raise_for_status()

@@ -94,3 +94,27 @@ class ProfileChangeLogResponse(BaseModel):
     profile_id: str
     total_changes: int
     logs: List[ProfileChangeLog] = []
+
+
+class ServiceResponse(BaseModel):
+    id: str
+    name: str
+    email: str
+    access_key: Optional[str] = None
+    secret_key: Optional[str] = None
+
+
+class CredentialsResponse(BaseModel):
+    id: str
+    access_key: str
+    scopes: List[str] = []
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    suspended_at: Optional[datetime] = None
+
+
+class PaginatedServicesResponse(BaseModel):
+    items: List[ServiceResponse] = []
+    page: int
+    page_size: int
+    total: int

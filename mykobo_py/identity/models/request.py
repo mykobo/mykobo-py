@@ -83,3 +83,19 @@ class UserRiskResetRequest(BaseModel):
 
     def to_dict(self) -> dict:
         return self.model_dump(exclude_none=True)
+
+
+class UpdateServiceProfileRequest(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)
+
+
+class PatchScopesRequest(BaseModel):
+    add: list[str] = []
+    remove: list[str] = []
+
+    def to_dict(self) -> dict:
+        return self.model_dump(exclude_none=True)
