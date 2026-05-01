@@ -327,3 +327,27 @@ class IdentityServiceClient(MykoboServiceClient):
         )
         response.raise_for_status()
         return response
+
+    def revoke_service_sessions(self, token: Token, service_id: str) -> Response:
+        """Revoke all active access tokens for a service credential. Requires `token:admin` scope.
+
+        Returns a 204 No Content response on success.
+        """
+        response = requests.post(
+            f"{self.host}/service/{service_id}/credentials/revoke-sessions",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+        )
+        response.raise_for_status()
+        return response
+
+    def revoke_user_sessions(self, token: Token, credential_id: str) -> Response:
+        """Revoke all active access tokens for a user credential. Requires `token:admin` scope.
+
+        Returns a 204 No Content response on success.
+        """
+        response = requests.post(
+            f"{self.host}/user/sessions/{credential_id}/revoke",
+            headers=self.generate_headers(token, **{"Content-type": "application/json"}),
+        )
+        response.raise_for_status()
+        return response
