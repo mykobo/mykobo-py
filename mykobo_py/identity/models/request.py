@@ -21,6 +21,8 @@ class CustomerRequest(BaseModel):
     bank_number: Optional[str] = None
     tax_id: Optional[str] = None
     tax_id_name: Optional[str] = None
+    source_of_funds: Optional[str] = None
+    tax_country: Optional[str] = None
     credential_id: Optional[str] = None
 
     def to_dict(self) -> dict:
