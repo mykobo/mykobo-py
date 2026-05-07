@@ -31,15 +31,18 @@ class DappAnchorClient(MykoboServiceClient):
             self.logger.error(f"Failed to make request to {self.host}: {e}")
             return None
 
-    def get_transaction(self, service_token: Token, transaction_id) -> Optional[Transaction]:
+    def get_transaction(self, service_token: Token, transaction_id, full_detail: bool = False) -> Optional[Transaction]:
         try:
-            self.logger.info(f"Getting transaction {transaction_id} from {self.host}/v1/transactions/{transaction_id}")
+            url = f"{self.host}/v1/transactions/{transaction_id}"
+            self.logger.info(f"Getting transaction {transaction_id} from {url}")
             response = requests.get(
-                url=f"{self.host}/v1/transactions/{transaction_id}",
+                url=url,
+                params={"detail": "full"} if full_detail else None,
                 headers=self.generate_headers(service_token, **{"Content-type": "application/json"}),
             )
             if response.ok:
-                return Transaction.model_validate(response.json())
+                payload = response.json()
+                return Transaction.model_validate(payload.get("transaction", payload))
             else:
                 self.logger.error(f"Failed to get transaction {transaction_id}, response: {response.text}, {response.status_code}")
                 return None
