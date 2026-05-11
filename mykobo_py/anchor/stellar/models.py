@@ -44,6 +44,8 @@ class Transaction(BaseModel):
     amount_in: Amount = Amount()
     amount_out: Amount = Amount()
     fee_details: FeeDetails = FeeDetails()
+    memo: str = ''
+    external_transaction_id: str = ''
     started_at: str = ''
     updated_at: str = ''
     message: str = ''
