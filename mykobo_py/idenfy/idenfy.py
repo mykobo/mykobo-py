@@ -54,6 +54,21 @@ class IdenfyServiceClient(MykoboServiceClient):
         response.raise_for_status()
         return response
 
+    def initiate_kyc(self, request: AccessTokenRequest) -> Response:
+        """
+        Initiate an iDenfy KYC session and receive a hosted redirect URL.
+        Response body: {"redirect_url": "..."}.
+        """
+        self.logger.info(f"Initiating KYC for {request.external_ref} at {self.host}...")
+        url = f"{self.host}/initiate_kyc"
+        response = requests.post(
+            url,
+            headers={"Content-type": "application/json"},
+            data=json.dumps(request.to_dict()),
+        )
+        response.raise_for_status()
+        return response
+
     def send_event(self, token: Token, payload: dict) -> Response:
         """
         Forward an iDenfy webhook event to the gateway.
