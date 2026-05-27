@@ -11,11 +11,11 @@ class Transaction(BaseModel):
     idempotency_key: str = ''
     incoming_currency: str = ''
     last_name: str = ''
-    message_id: str = ''
+    message_id: Optional[str] = ''
     outgoing_currency: str = ''
     payee_id: Optional[str] = None
     payer_id: Optional[str] = None
-    queue_sent_at: str = ''
+    queue_sent_at: Optional[str] = ''
     reference: str = ''
     source: str = ''
     status: str = ''
