@@ -27,6 +27,7 @@ class Transaction(BaseModel):
     network: Optional[str] = None
     client_domain: Optional[str] = None
     comment: Optional[str] = None
+    ip_address: Optional[str] = None
 
     @property
     def is_pending_anchor(self):
