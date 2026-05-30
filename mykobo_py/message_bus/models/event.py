@@ -99,31 +99,3 @@ class AddressOnboardedEventPayload(Payload):
         return self
 
 
-class RelayInitiatedEventPayload(Payload):
-    email: str
-    payload: Dict[str, str]
-
-    @model_validator(mode='after')
-    def validate_fields(self):
-        validate_required_fields(self, ['email'])
-        return self
-
-
-class RelayCompletedEventPayload(Payload):
-    email: str
-    payload: Dict[str, str]
-
-    @model_validator(mode='after')
-    def validate_fields(self):
-        validate_required_fields(self, ['email'])
-        return self
-
-
-class RelayOnboardedEventPayload(Payload):
-    email: str
-    payload: Dict[str, str]
-
-    @model_validator(mode='after')
-    def validate_fields(self):
-        validate_required_fields(self, ['email'])
-        return self

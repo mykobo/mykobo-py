@@ -13,10 +13,12 @@ from mykobo_py.message_bus.models.base import (
 )
 from mykobo_py.message_bus.models.event import NewTransactionEventPayload, TransactionStatusEventPayload, \
     ProfileEventPayload, PaymentEventPayload, KycEventPayload, PasswordResetEventPayload, \
-    VerificationRequestedEventPayload, AddressOnboardedEventPayload, RelayInitiatedEventPayload, \
-    RelayCompletedEventPayload, RelayOnboardedEventPayload
+    VerificationRequestedEventPayload, AddressOnboardedEventPayload
 from mykobo_py.message_bus.models.instruction import PaymentPayload, StatusUpdatePayload, CorrectionPayload, \
     TransactionPayload, UpdateProfilePayload, MintPayload, BurnPayload
+from mykobo_py.message_bus.models.notification import (
+    CustomerNotificationPayload, PlatformNotificationPayload,
+)
 
 PAYLOAD_TYPE_MAP = {
     InstructionType.PAYMENT: PaymentPayload,
@@ -34,9 +36,15 @@ PAYLOAD_TYPE_MAP = {
     EventType.PASSWORD_RESET_REQUESTED: PasswordResetEventPayload,
     EventType.KYC_EVENT: KycEventPayload,
     EventType.ADDRESS_ONBOARDED: AddressOnboardedEventPayload,
-    EventType.RELAY_INITIATED: RelayInitiatedEventPayload,
-    EventType.RELAY_COMPLETED: RelayCompletedEventPayload,
-    EventType.RELAY_ONBOARDED: RelayOnboardedEventPayload
+    EventType.RELAY_INITIATED: CustomerNotificationPayload,
+    EventType.RELAY_COMPLETED: CustomerNotificationPayload,
+    EventType.RELAY_ONBOARDED: CustomerNotificationPayload,
+    EventType.RELAY_STUCK_DEPOSITING: PlatformNotificationPayload,
+    EventType.RELAY_STUCK_BRIDGING: PlatformNotificationPayload,
+    EventType.RELAY_STUCK_FORWARDING: PlatformNotificationPayload,
+    EventType.RELAY_FORWARDING_FAILED: PlatformNotificationPayload,
+    EventType.CIRCLE_API_5XX_BURST: PlatformNotificationPayload,
+    EventType.WEBHOOK_REPROCESSOR_BACKLOG: PlatformNotificationPayload,
 }
 
 
