@@ -1,6 +1,22 @@
 # CHANGELOG
 
 
+## v1.19.0 (2026-05-30)
+
+### Features
+
+- Add notification event types and payload models:
+  - `EventType` variants: `RELAY_STUCK_DEPOSITING/BRIDGING/FORWARDING`, `RELAY_FORWARDING_FAILED`, `CIRCLE_API_5XX_BURST`, `WEBHOOK_REPROCESSOR_BACKLOG`.
+  - `mykobo_py.message_bus.models.notification`: `Severity` (ordered enum), `RelaySubject`/`TransactionSubject`/`ProfileSubject` (pydantic, discriminated by `type`), `CustomerNotificationPayload`, `PlatformNotificationPayload`.
+  - `PAYLOAD_TYPE_MAP` routes 3 customer relay events through `CustomerNotificationPayload` and 6 platform events through `PlatformNotificationPayload`.
+  - `mykobo_py.notification.IdempotencyKey` helpers (`for_event`, `for_bucket`) and `NOTIFICATION_EVENTS` constant.
+- Cross-language notification fixtures under `tests/fixtures/notification/` (paired with mykobo-rs).
+
+### Breaking
+
+- Removed legacy single-purpose payload classes `RelayInitiatedEventPayload`, `RelayCompletedEventPayload`, `RelayOnboardedEventPayload`. The relay EventType variants now use `CustomerNotificationPayload` (typed subject + rendered data dict) per ADR 0003.
+
+
 ## v0.4.10 (2025-05-28)
 
 ### Bug Fixes
