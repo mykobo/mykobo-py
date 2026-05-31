@@ -42,7 +42,7 @@ PAYLOAD_TYPE_MAP = {
     EventType.RELAY_STUCK_DEPOSITING: PlatformNotificationPayload,
     EventType.RELAY_STUCK_BRIDGING: PlatformNotificationPayload,
     EventType.RELAY_STUCK_FORWARDING: PlatformNotificationPayload,
-    EventType.RELAY_FORWARDING_FAILED: PlatformNotificationPayload,
+    EventType.RELAY_FAILED: PlatformNotificationPayload,
     EventType.CIRCLE_API_5XX_BURST: PlatformNotificationPayload,
     EventType.WEBHOOK_REPROCESSOR_BACKLOG: PlatformNotificationPayload,
 }

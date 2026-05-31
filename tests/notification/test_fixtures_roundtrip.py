@@ -36,7 +36,7 @@ def test_fixtures_present():
         "customer_relay_completed",
         "customer_relay_onboarded",
         "platform_relay_stuck_depositing",
-        "platform_relay_forwarding_failed",
+        "platform_relay_failed",
         "platform_circle_api_5xx_burst",
         "platform_webhook_reprocessor_backlog",
     }

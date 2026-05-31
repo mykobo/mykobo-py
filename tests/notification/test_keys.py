@@ -15,9 +15,9 @@ def test_for_event_with_subject():
 
 def test_for_event_lowercases_event_value():
     k = IdempotencyKey.for_event(
-        producer="circle", event=EventType.RELAY_FORWARDING_FAILED, subject_id="r-1"
+        producer="circle", event=EventType.RELAY_FAILED, subject_id="r-1"
     )
-    assert k == "circle:relay_forwarding_failed:r-1"
+    assert k == "circle:relay_failed:r-1"
 
 
 def test_for_bucket_with_subject():
