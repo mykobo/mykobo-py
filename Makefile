@@ -1,4 +1,4 @@
-release:
+release: update-registry-snapshot test verify-peer
 	semantic-release version --changelog
 
 test:
