@@ -5,6 +5,11 @@
       "notifies": [],
       "reason": "Internal indexing event. User-facing onboarding lands via RELAY_ONBOARDED on the relay rail."
     },
+    "BANK_PAYMENT": {
+      "kind": "domain",
+      "notifies": [],
+      "reason": "Bank payment ingress event from banking-gateway; user is told via the resulting NEW_TRANSACTION + TRANSACTION_STATUS_UPDATE rails."
+    },
     "CIRCLE_API_5XX_BURST": {
       "audience": "platform",
       "kind": "notification",
@@ -14,11 +19,6 @@
       "kind": "domain",
       "notifies": [],
       "reason": "KYC outcomes surface to the user via dapp's idenfy/sumsub callbacks, not via this rail. No notification today; no migration planned."
-    },
-    "NEW_BANK_PAYMENT": {
-      "kind": "domain",
-      "notifies": [],
-      "reason": "Internal payment ingress; the user is told via the resulting NEW_TRANSACTION + TRANSACTION_STATUS_UPDATE rails, not via this event."
     },
     "NEW_PROFILE": {
       "kind": "domain",
@@ -39,6 +39,11 @@
       "audience": "customer",
       "kind": "notification",
       "severity": null
+    },
+    "PAYMENT": {
+      "kind": "domain",
+      "notifies": [],
+      "reason": "Generic payment event used by ledger; downstream notifications are emitted via NEW_TRANSACTION / TRANSACTION_STATUS_UPDATE rails, not this event."
     },
     "RELAY_COMPLETED": {
       "audience": "customer",

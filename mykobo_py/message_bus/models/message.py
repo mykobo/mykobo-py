@@ -12,7 +12,7 @@ from mykobo_py.message_bus.models.base import (
     EventType
 )
 from mykobo_py.message_bus.models.event import NewTransactionEventPayload, TransactionStatusEventPayload, \
-    ProfileEventPayload, PaymentEventPayload, KycEventPayload, PasswordResetEventPayload, \
+    ProfileEventPayload, PaymentEventPayload, BankPaymentEventPayload, KycEventPayload, PasswordResetEventPayload, \
     VerificationRequestedEventPayload, AddressOnboardedEventPayload
 from mykobo_py.message_bus.models.instruction import PaymentPayload, StatusUpdatePayload, CorrectionPayload, \
     TransactionPayload, UpdateProfilePayload, MintPayload, BurnPayload
@@ -20,7 +20,12 @@ from mykobo_py.message_bus.models.notification import (
     CustomerNotificationPayload, PlatformNotificationPayload,
 )
 
-PAYLOAD_TYPE_MAP = {
+# Separate maps per enum class to avoid str-enum key collisions.
+# InstructionType and EventType both inherit from str, so members with
+# the same string value (e.g. PAYMENT) compare equal across enum classes.
+# Keeping two dicts and resolving by isinstance() prevents that collision.
+
+INSTRUCTION_PAYLOAD_MAP = {
     InstructionType.PAYMENT: PaymentPayload,
     InstructionType.STATUS_UPDATE: StatusUpdatePayload,
     InstructionType.CORRECTION: CorrectionPayload,
@@ -28,9 +33,13 @@ PAYLOAD_TYPE_MAP = {
     InstructionType.UPDATE_PROFILE: UpdateProfilePayload,
     InstructionType.MINT: MintPayload,
     InstructionType.BURN: BurnPayload,
+}
+
+EVENT_PAYLOAD_MAP = {
     EventType.NEW_TRANSACTION: NewTransactionEventPayload,
     EventType.TRANSACTION_STATUS_UPDATE: TransactionStatusEventPayload,
-    EventType.NEW_BANK_PAYMENT: PaymentEventPayload,
+    EventType.PAYMENT: PaymentEventPayload,
+    EventType.BANK_PAYMENT: BankPaymentEventPayload,
     EventType.NEW_PROFILE: ProfileEventPayload,
     EventType.VERIFICATION_REQUESTED: VerificationRequestedEventPayload,
     EventType.PASSWORD_RESET_REQUESTED: PasswordResetEventPayload,
@@ -46,6 +55,19 @@ PAYLOAD_TYPE_MAP = {
     EventType.CIRCLE_API_5XX_BURST: PlatformNotificationPayload,
     EventType.WEBHOOK_REPROCESSOR_BACKLOG: PlatformNotificationPayload,
 }
+
+
+def _resolve_payload_class(message_type):
+    """Return the payload class for a given InstructionType or EventType."""
+    if isinstance(message_type, InstructionType):
+        return INSTRUCTION_PAYLOAD_MAP.get(message_type)
+    if isinstance(message_type, EventType):
+        return EVENT_PAYLOAD_MAP.get(message_type)
+    return None
+
+
+# Legacy alias kept for any external callers; prefer the split maps above.
+PAYLOAD_TYPE_MAP = {**INSTRUCTION_PAYLOAD_MAP, **EVENT_PAYLOAD_MAP}
 
 
 class MetaData(BaseModel):
@@ -100,7 +122,7 @@ class MessageBusMessage(BaseModel):
         else:
             raise ValueError("Either instruction_type or event must be provided in meta_data")
 
-        expected_payload_type = PAYLOAD_TYPE_MAP.get(message_type)
+        expected_payload_type = _resolve_payload_class(message_type)
         if not expected_payload_type:
             raise ValueError(f"Unknown message type: {message_type}")
 
@@ -137,7 +159,7 @@ class MessageBusMessage(BaseModel):
 
         # Determine the message type and resolve payload class
         message_type = meta_data.instruction_type or meta_data.event
-        payload_class = PAYLOAD_TYPE_MAP.get(message_type)
+        payload_class = _resolve_payload_class(message_type)
         if not payload_class:
             raise ValueError(f"Unknown message type: {message_type}")
 

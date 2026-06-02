@@ -44,12 +44,19 @@ variants:
       gains a `when: status == "FUNDS_RECEIVED"` rule. Captured as audited
       "legacy-derived, migration pending" for now.
 
-  NEW_BANK_PAYMENT:
+  PAYMENT:
     kind: domain
     notifies: []
     reason: >-
-      Internal payment ingress; the user is told via the resulting
-      NEW_TRANSACTION + TRANSACTION_STATUS_UPDATE rails, not via this event.
+      Generic payment event used by ledger; downstream notifications are emitted
+      via NEW_TRANSACTION / TRANSACTION_STATUS_UPDATE rails, not this event.
+
+  BANK_PAYMENT:
+    kind: domain
+    notifies: []
+    reason: >-
+      Bank payment ingress event from banking-gateway; user is told via the
+      resulting NEW_TRANSACTION + TRANSACTION_STATUS_UPDATE rails.
 
   NEW_PROFILE:
     kind: domain

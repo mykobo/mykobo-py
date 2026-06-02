@@ -31,10 +31,15 @@ def _minimal_data():
                     }
                 ],
             },
-            "NEW_BANK_PAYMENT": {
+            "PAYMENT": {
                 "kind": "domain",
                 "notifies": [],
-                "reason": "Internal ingress; user told via downstream rails.",
+                "reason": "Generic payment ingress; user told via downstream rails.",
+            },
+            "BANK_PAYMENT": {
+                "kind": "domain",
+                "notifies": [],
+                "reason": "Bank payment ingress; user told via downstream rails.",
             },
             "NEW_PROFILE": {
                 "kind": "domain",
