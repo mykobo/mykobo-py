@@ -45,3 +45,57 @@ def test_mint_burn_event_variants_exist():
     assert EventType.CUSTOMER_NOTIFY_FAILED.value == "CUSTOMER_NOTIFY_FAILED"
     assert EventType.MINT_INFO.value == "MINT_INFO"
     assert EventType.BURN_INFO.value == "BURN_INFO"
+
+
+def test_mint_completed_is_customer_notification():
+    assert REGISTRY.is_notification(EventType.MINT_COMPLETED)
+    assert REGISTRY.audience_of(EventType.MINT_COMPLETED) == Audience.CUSTOMER
+    assert REGISTRY.severity_of(EventType.MINT_COMPLETED) is None
+
+
+def test_burn_completed_is_customer_notification():
+    assert REGISTRY.is_notification(EventType.BURN_COMPLETED)
+    assert REGISTRY.audience_of(EventType.BURN_COMPLETED) == Audience.CUSTOMER
+    assert REGISTRY.severity_of(EventType.BURN_COMPLETED) is None
+
+
+def test_mint_held_is_customer_notification():
+    assert REGISTRY.is_notification(EventType.MINT_HELD)
+    assert REGISTRY.audience_of(EventType.MINT_HELD) == Audience.CUSTOMER
+    assert REGISTRY.severity_of(EventType.MINT_HELD) is None
+
+
+def test_burn_held_is_customer_notification():
+    assert REGISTRY.is_notification(EventType.BURN_HELD)
+    assert REGISTRY.audience_of(EventType.BURN_HELD) == Audience.CUSTOMER
+    assert REGISTRY.severity_of(EventType.BURN_HELD) is None
+
+
+def test_mint_held_alert_is_platform_warning():
+    assert REGISTRY.is_notification(EventType.MINT_HELD_ALERT)
+    assert REGISTRY.audience_of(EventType.MINT_HELD_ALERT) == Audience.PLATFORM
+    assert REGISTRY.severity_of(EventType.MINT_HELD_ALERT) == Severity.WARNING
+
+
+def test_burn_held_alert_is_platform_warning():
+    assert REGISTRY.is_notification(EventType.BURN_HELD_ALERT)
+    assert REGISTRY.audience_of(EventType.BURN_HELD_ALERT) == Audience.PLATFORM
+    assert REGISTRY.severity_of(EventType.BURN_HELD_ALERT) == Severity.WARNING
+
+
+def test_customer_notify_failed_is_platform_warning():
+    assert REGISTRY.is_notification(EventType.CUSTOMER_NOTIFY_FAILED)
+    assert REGISTRY.audience_of(EventType.CUSTOMER_NOTIFY_FAILED) == Audience.PLATFORM
+    assert REGISTRY.severity_of(EventType.CUSTOMER_NOTIFY_FAILED) == Severity.WARNING
+
+
+def test_mint_info_is_platform_info():
+    assert REGISTRY.is_notification(EventType.MINT_INFO)
+    assert REGISTRY.audience_of(EventType.MINT_INFO) == Audience.PLATFORM
+    assert REGISTRY.severity_of(EventType.MINT_INFO) == Severity.INFO
+
+
+def test_burn_info_is_platform_info():
+    assert REGISTRY.is_notification(EventType.BURN_INFO)
+    assert REGISTRY.audience_of(EventType.BURN_INFO) == Audience.PLATFORM
+    assert REGISTRY.severity_of(EventType.BURN_INFO) == Severity.INFO
