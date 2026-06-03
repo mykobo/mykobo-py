@@ -33,3 +33,15 @@ def test_kyc_event_no_notification_with_reason():
     assert entry.notifies == ()
     assert entry.reason is not None
     assert len(entry.reason) > 10
+
+
+def test_mint_burn_event_variants_exist():
+    assert EventType.MINT_COMPLETED.value == "MINT_COMPLETED"
+    assert EventType.BURN_COMPLETED.value == "BURN_COMPLETED"
+    assert EventType.MINT_HELD.value == "MINT_HELD"
+    assert EventType.BURN_HELD.value == "BURN_HELD"
+    assert EventType.MINT_HELD_ALERT.value == "MINT_HELD_ALERT"
+    assert EventType.BURN_HELD_ALERT.value == "BURN_HELD_ALERT"
+    assert EventType.CUSTOMER_NOTIFY_FAILED.value == "CUSTOMER_NOTIFY_FAILED"
+    assert EventType.MINT_INFO.value == "MINT_INFO"
+    assert EventType.BURN_INFO.value == "BURN_INFO"
