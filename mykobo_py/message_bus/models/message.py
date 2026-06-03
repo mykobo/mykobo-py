@@ -54,6 +54,15 @@ EVENT_PAYLOAD_MAP = {
     EventType.RELAY_FAILED: PlatformNotificationPayload,
     EventType.CIRCLE_API_5XX_BURST: PlatformNotificationPayload,
     EventType.WEBHOOK_REPROCESSOR_BACKLOG: PlatformNotificationPayload,
+    EventType.MINT_COMPLETED: CustomerNotificationPayload,
+    EventType.BURN_COMPLETED: CustomerNotificationPayload,
+    EventType.MINT_HELD: CustomerNotificationPayload,
+    EventType.BURN_HELD: CustomerNotificationPayload,
+    EventType.MINT_HELD_ALERT: PlatformNotificationPayload,
+    EventType.BURN_HELD_ALERT: PlatformNotificationPayload,
+    EventType.CUSTOMER_NOTIFY_FAILED: PlatformNotificationPayload,
+    EventType.MINT_INFO: PlatformNotificationPayload,
+    EventType.BURN_INFO: PlatformNotificationPayload,
 }
 
 
