@@ -80,6 +80,25 @@ def _minimal_data():
             "WEBHOOK_REPROCESSOR_BACKLOG": {
                 "kind": "notification", "audience": "platform", "severity": "warning",
             },
+            "MINT_COMPLETED": {"kind": "notification", "audience": "customer"},
+            "BURN_COMPLETED": {"kind": "notification", "audience": "customer"},
+            "MINT_HELD": {"kind": "notification", "audience": "customer"},
+            "BURN_HELD": {"kind": "notification", "audience": "customer"},
+            "MINT_HELD_ALERT": {
+                "kind": "notification", "audience": "platform", "severity": "warning",
+            },
+            "BURN_HELD_ALERT": {
+                "kind": "notification", "audience": "platform", "severity": "warning",
+            },
+            "CUSTOMER_NOTIFY_FAILED": {
+                "kind": "notification", "audience": "platform", "severity": "warning",
+            },
+            "MINT_INFO": {
+                "kind": "notification", "audience": "platform", "severity": "info",
+            },
+            "BURN_INFO": {
+                "kind": "notification", "audience": "platform", "severity": "info",
+            },
             "VERIFICATION_REQUESTED": {"kind": "notification", "audience": "customer"},
             "PASSWORD_RESET_REQUESTED": {"kind": "notification", "audience": "customer"},
         },
