@@ -41,6 +41,19 @@ class PaymentEventPayload(Payload):
         return self
 
 
+class BankPaymentEventPayload(Payload):
+    """Payload for notifying the business server of a bank payment event."""
+    transaction_id: str
+    status: str
+    reference: str
+    message: Optional[str] = None
+
+    @model_validator(mode='after')
+    def validate_fields(self):
+        validate_required_fields(self, ['transaction_id', 'status', 'reference'])
+        return self
+
+
 class ProfileEventPayload(Payload):
     """Payload for new profile event"""
     title: str

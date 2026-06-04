@@ -7,8 +7,8 @@ def test_new_relay_stuck_variants_exist():
     assert EventType.RELAY_STUCK_FORWARDING.value == "RELAY_STUCK_FORWARDING"
 
 
-def test_relay_forwarding_failed_exists():
-    assert EventType.RELAY_FORWARDING_FAILED.value == "RELAY_FORWARDING_FAILED"
+def test_relay_failed_exists():
+    assert EventType.RELAY_FAILED.value == "RELAY_FAILED"
 
 
 def test_circle_health_variants_exist():

@@ -14,8 +14,8 @@ def test_notification_events_includes_relay_stuck():
     assert EventType.RELAY_STUCK_FORWARDING in NOTIFICATION_EVENTS
 
 
-def test_notification_events_includes_forwarding_failed():
-    assert EventType.RELAY_FORWARDING_FAILED in NOTIFICATION_EVENTS
+def test_notification_events_includes_relay_failed():
+    assert EventType.RELAY_FAILED in NOTIFICATION_EVENTS
 
 
 def test_notification_events_includes_circle_health():
