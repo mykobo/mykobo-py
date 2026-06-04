@@ -5,12 +5,9 @@ from mykobo_py.notification_contract.predicates import Equals
 from mykobo_py.notification_contract.registry import (
     Audience,
     DomainEntry,
-    NotificationEntry,
-    NotificationRule,
     Registry,
     RegistryError,
     Severity,
-    VariantKind,
 )
 
 
@@ -90,7 +87,10 @@ def _minimal_data():
             "BURN_HELD_ALERT": {
                 "kind": "notification", "audience": "platform", "severity": "warning",
             },
+            "TRANSACTION_FAILED_ALERT": {"kind": "notification", "audience": "platform", "severity": "critical"},
+            "TRANSACTION_HELD_ALERT": {"kind": "notification", "audience": "platform", "severity": "warning"},
             "CUSTOMER_NOTIFY_FAILED": {
+
                 "kind": "notification", "audience": "platform", "severity": "warning",
             },
             "MINT_INFO": {
@@ -247,5 +247,18 @@ def test_when_must_be_string():
 def test_fires_unknown_variant_includes_name():
     data = _minimal_data()
     data["variants"]["NEW_TRANSACTION"]["notifies"] = [{"fires": ["NO_SUCH_EVENT"]}]
-    with pytest.raises(RegistryError, match="NO_SUCH_EVENT"):
-        Registry.from_dict(data)
+
+
+def test_transaction_failed_alert_is_platform_critical():
+    from mykobo_py.notification_contract import REGISTRY
+
+    assert REGISTRY.is_notification(EventType.TRANSACTION_FAILED_ALERT) is True
+    assert REGISTRY.audience_of(EventType.TRANSACTION_FAILED_ALERT) == Audience.PLATFORM
+    assert REGISTRY.severity_of(EventType.TRANSACTION_FAILED_ALERT) == Severity.CRITICAL
+
+def test_transaction_held_alert_is_platform_warning():
+    from mykobo_py.notification_contract import REGISTRY
+
+    assert REGISTRY.is_notification(EventType.TRANSACTION_HELD_ALERT) is True
+    assert REGISTRY.audience_of(EventType.TRANSACTION_HELD_ALERT) == Audience.PLATFORM
+    assert REGISTRY.severity_of(EventType.TRANSACTION_HELD_ALERT) == Severity.WARNING

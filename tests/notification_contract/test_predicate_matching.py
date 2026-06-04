@@ -4,6 +4,9 @@ from mykobo_py.notification_contract.predicates import (
     And, Equals, In, NotEquals, NotIn, Or, Predicate,
 )
 
+from mykobo_py.message_bus.models.base import EventType
+from mykobo_py.notification_contract import REGISTRY
+
 
 def test_equals_matches():
     p: Predicate = Equals(field="status", value="FUNDS_RECEIVED")
@@ -53,6 +56,7 @@ def test_and_true_when_both_true():
     assert p.matches({"status": "FUNDS_RECEIVED", "direction": "INBOUND"}) is True
 
 
+
 def test_or_true_when_either_true():
     p: Predicate = Or(
         left=Equals(field="status", value="FUNDS_RECEIVED"),
@@ -60,3 +64,22 @@ def test_or_true_when_either_true():
     )
     assert p.matches({"status": "REFUNDED"}) is True
     assert p.matches({"status": "PENDING"}) is False
+
+
+def test_transaction_status_update_failed_fires_failed_alert():
+    payload = {"status": "FAILED"}
+    fires = REGISTRY.notifications_for(EventType.TRANSACTION_STATUS_UPDATE, payload)
+    assert fires == [EventType.TRANSACTION_FAILED_ALERT]
+
+
+def test_transaction_status_update_held_fires_held_alert():
+    payload = {"status": "HELD"}
+    fires = REGISTRY.notifications_for(EventType.TRANSACTION_STATUS_UPDATE, payload)
+    assert fires == [EventType.TRANSACTION_HELD_ALERT]
+
+
+def test_transaction_status_update_other_status_fires_nothing():
+    payload = {"status": "FUNDS_RECEIVED"}
+    fires = REGISTRY.notifications_for(EventType.TRANSACTION_STATUS_UPDATE, payload)
+    assert fires == []
+
