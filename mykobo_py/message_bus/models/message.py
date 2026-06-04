@@ -63,6 +63,8 @@ EVENT_PAYLOAD_MAP = {
     EventType.CUSTOMER_NOTIFY_FAILED: PlatformNotificationPayload,
     EventType.MINT_INFO: PlatformNotificationPayload,
     EventType.BURN_INFO: PlatformNotificationPayload,
+    EventType.TRANSACTION_FAILED_ALERT: PlatformNotificationPayload,
+    EventType.TRANSACTION_HELD_ALERT: PlatformNotificationPayload,
 }
 
 
