@@ -99,6 +99,12 @@ def _minimal_data():
             "BURN_INFO": {
                 "kind": "notification", "audience": "platform", "severity": "info",
             },
+            "DEPOSIT_INITIATED": {"kind": "notification", "audience": "customer"},
+            "DEPOSIT_COMPLETED": {"kind": "notification", "audience": "customer"},
+            "DEPOSIT_FAILED": {"kind": "notification", "audience": "customer"},
+            "WITHDRAW_INITIATED": {"kind": "notification", "audience": "customer"},
+            "WITHDRAW_COMPLETED": {"kind": "notification", "audience": "customer"},
+            "WITHDRAW_FAILED": {"kind": "notification", "audience": "customer"},
             "VERIFICATION_REQUESTED": {"kind": "notification", "audience": "customer"},
             "PASSWORD_RESET_REQUESTED": {"kind": "notification", "audience": "customer"},
         },

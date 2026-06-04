@@ -65,6 +65,12 @@ EVENT_PAYLOAD_MAP = {
     EventType.BURN_INFO: PlatformNotificationPayload,
     EventType.TRANSACTION_FAILED_ALERT: PlatformNotificationPayload,
     EventType.TRANSACTION_HELD_ALERT: PlatformNotificationPayload,
+    EventType.DEPOSIT_INITIATED: CustomerNotificationPayload,
+    EventType.DEPOSIT_COMPLETED: CustomerNotificationPayload,
+    EventType.DEPOSIT_FAILED: CustomerNotificationPayload,
+    EventType.WITHDRAW_INITIATED: CustomerNotificationPayload,
+    EventType.WITHDRAW_COMPLETED: CustomerNotificationPayload,
+    EventType.WITHDRAW_FAILED: CustomerNotificationPayload,
 }
 
 
