@@ -45,6 +45,12 @@ PAYLOAD_TYPE_MAP = {
     EventType.RELAY_FORWARDING_FAILED: PlatformNotificationPayload,
     EventType.CIRCLE_API_5XX_BURST: PlatformNotificationPayload,
     EventType.WEBHOOK_REPROCESSOR_BACKLOG: PlatformNotificationPayload,
+    EventType.DEPOSIT_INITIATED: CustomerNotificationPayload,
+    EventType.DEPOSIT_COMPLETED: CustomerNotificationPayload,
+    EventType.DEPOSIT_FAILED: CustomerNotificationPayload,
+    EventType.WITHDRAW_INITIATED: CustomerNotificationPayload,
+    EventType.WITHDRAW_COMPLETED: CustomerNotificationPayload,
+    EventType.WITHDRAW_FAILED: CustomerNotificationPayload,
 }
 
 
