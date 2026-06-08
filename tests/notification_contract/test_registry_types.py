@@ -89,6 +89,10 @@ def _minimal_data():
             },
             "TRANSACTION_FAILED_ALERT": {"kind": "notification", "audience": "platform", "severity": "critical"},
             "TRANSACTION_HELD_ALERT": {"kind": "notification", "audience": "platform", "severity": "warning"},
+            "BANK_PAYMENT_BALANCE_INSUFFICIENT_ALERT": {"kind": "notification", "audience": "platform", "severity": "warning"},
+            "BANK_PAYMENT_EXECUTION_FAILED_ALERT": {"kind": "notification", "audience": "platform", "severity": "critical"},
+            "BCB_WEBHOOK_PROCESSING_FAILED_ALERT": {"kind": "notification", "audience": "platform", "severity": "warning"},
+            "BENEFICIARY_CREATION_FAILED_ALERT": {"kind": "notification", "audience": "platform", "severity": "warning"},
             "CUSTOMER_NOTIFY_FAILED": {
 
                 "kind": "notification", "audience": "platform", "severity": "warning",
