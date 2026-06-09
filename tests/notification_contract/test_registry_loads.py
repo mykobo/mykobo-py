@@ -99,3 +99,15 @@ def test_burn_info_is_platform_info():
     assert REGISTRY.is_notification(EventType.BURN_INFO)
     assert REGISTRY.audience_of(EventType.BURN_INFO) == Audience.PLATFORM
     assert REGISTRY.severity_of(EventType.BURN_INFO) == Severity.INFO
+
+
+def test_customer_funds_received_is_customer_audience():
+    assert REGISTRY.is_notification(EventType.CUSTOMER_FUNDS_RECEIVED)
+    assert REGISTRY.audience_of(EventType.CUSTOMER_FUNDS_RECEIVED) == Audience.CUSTOMER
+    assert REGISTRY.severity_of(EventType.CUSTOMER_FUNDS_RECEIVED) is None
+
+
+def test_transaction_funded_info_is_platform_info():
+    assert REGISTRY.is_notification(EventType.TRANSACTION_FUNDED_INFO)
+    assert REGISTRY.audience_of(EventType.TRANSACTION_FUNDED_INFO) == Audience.PLATFORM
+    assert REGISTRY.severity_of(EventType.TRANSACTION_FUNDED_INFO) == Severity.INFO

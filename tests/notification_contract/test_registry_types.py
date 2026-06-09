@@ -111,6 +111,10 @@ def _minimal_data():
             "WITHDRAW_FAILED": {"kind": "notification", "audience": "customer"},
             "VERIFICATION_REQUESTED": {"kind": "notification", "audience": "customer"},
             "PASSWORD_RESET_REQUESTED": {"kind": "notification", "audience": "customer"},
+            "CUSTOMER_FUNDS_RECEIVED": {"kind": "notification", "audience": "customer"},
+            "TRANSACTION_FUNDED_INFO": {
+                "kind": "notification", "audience": "platform", "severity": "info",
+            },
         },
     }
 
