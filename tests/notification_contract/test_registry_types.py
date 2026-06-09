@@ -93,6 +93,8 @@ def _minimal_data():
             "BANK_PAYMENT_EXECUTION_FAILED_ALERT": {"kind": "notification", "audience": "platform", "severity": "critical"},
             "BCB_WEBHOOK_PROCESSING_FAILED_ALERT": {"kind": "notification", "audience": "platform", "severity": "warning"},
             "BENEFICIARY_CREATION_FAILED_ALERT": {"kind": "notification", "audience": "platform", "severity": "warning"},
+            "BANK_PAYMENT_RECEIVED_INFO": {"kind": "notification", "audience": "platform", "severity": "info"},
+            "BANK_PAYMENT_SENT_INFO": {"kind": "notification", "audience": "platform", "severity": "info"},
             "CUSTOMER_NOTIFY_FAILED": {
 
                 "kind": "notification", "audience": "platform", "severity": "warning",

@@ -69,6 +69,8 @@ EVENT_PAYLOAD_MAP = {
     EventType.BANK_PAYMENT_EXECUTION_FAILED_ALERT: PlatformNotificationPayload,
     EventType.BCB_WEBHOOK_PROCESSING_FAILED_ALERT: PlatformNotificationPayload,
     EventType.BENEFICIARY_CREATION_FAILED_ALERT: PlatformNotificationPayload,
+    EventType.BANK_PAYMENT_RECEIVED_INFO: PlatformNotificationPayload,
+    EventType.BANK_PAYMENT_SENT_INFO: PlatformNotificationPayload,
     EventType.DEPOSIT_INITIATED: CustomerNotificationPayload,
     EventType.DEPOSIT_COMPLETED: CustomerNotificationPayload,
     EventType.DEPOSIT_FAILED: CustomerNotificationPayload,
