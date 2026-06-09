@@ -95,6 +95,8 @@ def _minimal_data():
             "BENEFICIARY_CREATION_FAILED_ALERT": {"kind": "notification", "audience": "platform", "severity": "warning"},
             "BANK_PAYMENT_RECEIVED_INFO": {"kind": "notification", "audience": "platform", "severity": "info"},
             "BANK_PAYMENT_SENT_INFO": {"kind": "notification", "audience": "platform", "severity": "info"},
+            "ONCHAIN_PAYMENT_RECEIVED_INFO": {"kind": "notification", "audience": "platform", "severity": "info"},
+            "ONCHAIN_PAYMENT_SENT_INFO": {"kind": "notification", "audience": "platform", "severity": "info"},
             "CUSTOMER_NOTIFY_FAILED": {
 
                 "kind": "notification", "audience": "platform", "severity": "warning",
