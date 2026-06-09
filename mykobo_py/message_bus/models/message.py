@@ -75,6 +75,8 @@ EVENT_PAYLOAD_MAP = {
     EventType.WITHDRAW_INITIATED: CustomerNotificationPayload,
     EventType.WITHDRAW_COMPLETED: CustomerNotificationPayload,
     EventType.WITHDRAW_FAILED: CustomerNotificationPayload,
+    EventType.CUSTOMER_FUNDS_RECEIVED: CustomerNotificationPayload,
+    EventType.TRANSACTION_FUNDED_INFO: PlatformNotificationPayload,
 }
 
 
