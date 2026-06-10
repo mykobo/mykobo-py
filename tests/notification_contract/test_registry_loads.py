@@ -53,10 +53,13 @@ def test_mint_completed_is_customer_notification():
     assert REGISTRY.severity_of(EventType.MINT_COMPLETED) is None
 
 
-def test_burn_completed_is_customer_notification():
+def test_burn_completed_is_platform_info_notification():
+    """BURN_COMPLETED is platform-info: the customer-facing withdraw
+    lifecycle is told via WITHDRAW_INITIATED / WITHDRAW_COMPLETED, so
+    BURN_COMPLETED is an ops-only signal on the slack channel."""
     assert REGISTRY.is_notification(EventType.BURN_COMPLETED)
-    assert REGISTRY.audience_of(EventType.BURN_COMPLETED) == Audience.CUSTOMER
-    assert REGISTRY.severity_of(EventType.BURN_COMPLETED) is None
+    assert REGISTRY.audience_of(EventType.BURN_COMPLETED) == Audience.PLATFORM
+    assert REGISTRY.severity_of(EventType.BURN_COMPLETED) == Severity.INFO
 
 
 def test_mint_held_is_customer_notification():

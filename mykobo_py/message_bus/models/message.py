@@ -73,6 +73,8 @@ EVENT_PAYLOAD_MAP = {
     EventType.BANK_PAYMENT_SENT_INFO: PlatformNotificationPayload,
     EventType.ONCHAIN_PAYMENT_RECEIVED_INFO: PlatformNotificationPayload,
     EventType.ONCHAIN_PAYMENT_SENT_INFO: PlatformNotificationPayload,
+    EventType.TRANSACTION_APPROVED_INFO: PlatformNotificationPayload,
+    EventType.TRANSACTION_FULFILLED_INFO: PlatformNotificationPayload,
     EventType.DEPOSIT_INITIATED: CustomerNotificationPayload,
     EventType.DEPOSIT_COMPLETED: CustomerNotificationPayload,
     EventType.DEPOSIT_FAILED: CustomerNotificationPayload,

@@ -78,7 +78,7 @@ def _minimal_data():
                 "kind": "notification", "audience": "platform", "severity": "warning",
             },
             "MINT_COMPLETED": {"kind": "notification", "audience": "customer"},
-            "BURN_COMPLETED": {"kind": "notification", "audience": "customer"},
+            "BURN_COMPLETED": {"kind": "notification", "audience": "platform", "severity": "info"},
             "MINT_HELD": {"kind": "notification", "audience": "customer"},
             "BURN_HELD": {"kind": "notification", "audience": "customer"},
             "MINT_HELD_ALERT": {
@@ -117,6 +117,12 @@ def _minimal_data():
             "PASSWORD_RESET_REQUESTED": {"kind": "notification", "audience": "customer"},
             "CUSTOMER_FUNDS_RECEIVED": {"kind": "notification", "audience": "customer"},
             "TRANSACTION_FUNDED_INFO": {
+                "kind": "notification", "audience": "platform", "severity": "info",
+            },
+            "TRANSACTION_APPROVED_INFO": {
+                "kind": "notification", "audience": "platform", "severity": "info",
+            },
+            "TRANSACTION_FULFILLED_INFO": {
                 "kind": "notification", "audience": "platform", "severity": "info",
             },
         },

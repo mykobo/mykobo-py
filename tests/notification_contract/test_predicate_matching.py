@@ -79,7 +79,7 @@ def test_transaction_status_update_held_fires_held_alert():
 
 
 def test_transaction_status_update_other_status_fires_nothing():
-    payload = {"status": "APPROVED"}
+    payload = {"status": "PENDING_PAYER"}
     fires = REGISTRY.notifications_for(EventType.TRANSACTION_STATUS_UPDATE, payload)
     assert fires == []
 
@@ -91,4 +91,18 @@ def test_funds_received_status_fires_customer_email_and_platform_info():
     assert EventType.CUSTOMER_FUNDS_RECEIVED in fires
     assert EventType.TRANSACTION_FUNDED_INFO in fires
     assert len(fires) == 2
+
+
+def test_approved_status_fires_transaction_approved_info():
+    fires = REGISTRY.notifications_for(
+        EventType.TRANSACTION_STATUS_UPDATE, {"status": "APPROVED"}
+    )
+    assert fires == [EventType.TRANSACTION_APPROVED_INFO]
+
+
+def test_fulfilled_status_fires_transaction_fulfilled_info():
+    fires = REGISTRY.notifications_for(
+        EventType.TRANSACTION_STATUS_UPDATE, {"status": "FULFILLED"}
+    )
+    assert fires == [EventType.TRANSACTION_FULFILLED_INFO]
 
