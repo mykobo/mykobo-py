@@ -2,7 +2,7 @@ from typing import Optional
 import requests
 from time import time
 
-from mykobo_py.anchor.dapp.models import Transaction
+from mykobo_py.anchor.dapp.models import DappIntentPayload, Transaction
 from mykobo_py.client import MykoboServiceClient
 from mykobo_py.identity.models.auth import Token
 
@@ -48,4 +48,25 @@ class DappAnchorClient(MykoboServiceClient):
                 return None
         except Exception as e:
             self.logger.error(f"Failed to get transaction {transaction_id}: {e}")
+            return None
+
+    def create_transaction_intent(self, service_token: Token, payload: DappIntentPayload) -> Optional[Transaction]:
+        try:
+            url = f"{self.host}/v1/transactions/intent"
+            self.logger.info(f"Creating transaction intent via {url}")
+            response = requests.post(
+                url=url,
+                json=payload.model_dump(exclude_none=True),
+                headers=self.generate_headers(service_token, **{"Content-type": "application/json"}),
+            )
+            if response.ok:
+                data = response.json()
+                return Transaction.model_validate(data.get("transaction", data))
+            else:
+                self.logger.error(
+                    f"Failed to create transaction intent, response: {response.text}, {response.status_code}"
+                )
+                return None
+        except Exception as e:
+            self.logger.error(f"Failed to create transaction intent: {e}")
             return None

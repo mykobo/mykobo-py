@@ -3,6 +3,19 @@ from typing import Optional
 from pydantic import BaseModel
 
 
+class DappIntentPayload(BaseModel):
+    """Payload for creating a transaction intent via the dApp REST API.
+    Matches the request body of POST /v1/transactions/intent."""
+    transaction_type: str  # "DEPOSIT" or "WITHDRAW"
+    wallet_address: str    # Stellar, Solana, or Ethereum/Base address
+    email_address: str     # Customer's email address — must resolve to a registered profile
+    value: str             # Transaction amount (must be > 0)
+    currency: str          # "EURC" or "USDC"
+    ip_address: str        # Client IP address (IPv4 or IPv6)
+    memo: Optional[str] = None       # Optional wallet memo (for Stellar shared wallets)
+    client_domain: Optional[str] = None  # Optional client domain for fee scoping
+
+
 class Transaction(BaseModel):
     created_at: str = ''
     fee: str = '0'
