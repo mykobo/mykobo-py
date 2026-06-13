@@ -50,6 +50,17 @@ class PaymentIntentServiceClient(MykoboServiceClient):
         response.raise_for_status()
         return response.json()
 
+    def list_all_references(self, user_token: str) -> list:
+        token = Token.from_jwt(user_token)
+        response = requests.get(
+            f"{self.host}/payment-references",
+            headers=self.generate_headers(
+                token, **{"Content-type": "application/json"}
+            ),
+        )
+        response.raise_for_status()
+        return response.json()
+
     def delete_reference(self, user_token: str, reference: str) -> bool:
         token = Token.from_jwt(user_token)
         response = requests.delete(
