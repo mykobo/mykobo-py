@@ -125,6 +125,7 @@ def _minimal_data():
             "TRANSACTION_FULFILLED_INFO": {
                 "kind": "notification", "audience": "platform", "severity": "info",
             },
+            "PAYMENT_REFERENCE_CREATED": {"kind": "notification", "audience": "customer"},
         },
     }
 

@@ -150,6 +150,11 @@
       "notifies": [],
       "reason": "Generic payment event used by ledger; downstream notifications are emitted via NEW_TRANSACTION / TRANSACTION_STATUS_UPDATE rails, not this event."
     },
+    "PAYMENT_REFERENCE_CREATED": {
+      "audience": "customer",
+      "kind": "notification",
+      "severity": null
+    },
     "RELAY_COMPLETED": {
       "audience": "customer",
       "kind": "notification",

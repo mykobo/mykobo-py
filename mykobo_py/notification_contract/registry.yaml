@@ -21,6 +21,9 @@ variants:
   CIRCLE_API_5XX_BURST:   { kind: notification, audience: platform, severity: warning }
   WEBHOOK_REPROCESSOR_BACKLOG: { kind: notification, audience: platform, severity: warning }
 
+  # ── Payment-intent notification variants (customer) ──────────────────
+  PAYMENT_REFERENCE_CREATED: { kind: notification, audience: customer }
+
   # ── Mint/burn notification variants (customer) ───────────────────────
   MINT_COMPLETED:          { kind: notification, audience: customer }
   MINT_HELD:               { kind: notification, audience: customer }
