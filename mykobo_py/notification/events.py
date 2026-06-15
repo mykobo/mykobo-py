@@ -18,4 +18,6 @@ NOTIFICATION_EVENTS: frozenset[EventType] = frozenset({
     EventType.WITHDRAW_INITIATED,
     EventType.WITHDRAW_COMPLETED,
     EventType.WITHDRAW_FAILED,
+    # Payment intent
+    EventType.PAYMENT_REFERENCE_CREATED,
 })
