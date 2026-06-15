@@ -83,6 +83,7 @@ EVENT_PAYLOAD_MAP = {
     EventType.WITHDRAW_FAILED: CustomerNotificationPayload,
     EventType.CUSTOMER_FUNDS_RECEIVED: CustomerNotificationPayload,
     EventType.TRANSACTION_FUNDED_INFO: PlatformNotificationPayload,
+    EventType.PAYMENT_REFERENCE_CREATED: CustomerNotificationPayload,
 }
 
 
