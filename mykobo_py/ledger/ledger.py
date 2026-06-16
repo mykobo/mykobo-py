@@ -33,8 +33,10 @@ class LedgerServiceClient(MykoboServiceClient):
            }
         """
         params_dict = params.to_dict()
-        params_dict["from"] = params.from_date
-        params_dict["to"] = params.to_date
+        if params.from_date is not None:
+            params_dict["from"] = params.from_date
+        if params.to_date is not None:
+            params_dict["to"] = params.to_date
 
         try:
             self.logger.info(f"Getting transactions with {params}")
@@ -122,8 +124,10 @@ class LedgerServiceClient(MykoboServiceClient):
 
     def get_exceptions(self, token: Token, params: GetVerificationExceptionRequest):
         params_dict = params.to_dict()
-        params_dict["from"] = params.from_date
-        params_dict["to"] = params.to_date
+        if params.from_date is not None:
+            params_dict["from"] = params.from_date
+        if params.to_date is not None:
+            params_dict["to"] = params.to_date
 
         url = f"{self.host}/transactions/exceptions"
         response = requests.get(
